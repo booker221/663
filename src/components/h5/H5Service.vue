@@ -68,7 +68,6 @@ import cardBg from '@/assets/img/service-card-bg-h5.png'
 /* 专员卡片 */
 .specialist-card {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   border-radius: 12px;
   overflow: hidden;
@@ -80,6 +79,7 @@ import cardBg from '@/assets/img/service-card-bg-h5.png'
 }
 
 .specialist-left {
+  
   flex: 1;
   min-width: 0;
   padding-bottom: 16px;
@@ -93,6 +93,13 @@ import cardBg from '@/assets/img/service-card-bg-h5.png'
 }
 
 .specialist-sub {
+  display: inline-flex;
+  padding: 4px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 32px;
+  background: linear-gradient(180deg, #FFF 0%, #E9F7FF 49.81%, #FFF 100%);
   font-family: "PingFang SC", sans-serif;
   font-size: 12px;
   font-weight: 500;
