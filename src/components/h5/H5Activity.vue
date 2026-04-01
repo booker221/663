@@ -4,6 +4,8 @@
       <h2 class="section-title"><span class="dot">◆</span> 活动专栏</h2>
     </div>
 
+    
+
     <div class="activity-card">
       <!-- 背景图 -->
       <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" />
@@ -49,7 +51,7 @@
         <div class="contact-row">
           <p class="act-contact"><span class="contact-label">商务合作：</span><span class="contact-handle">{{ BUSINESS_CONTACT.handle }}</span>
           </p>
-          <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务" />
+          <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务专员" loading="lazy" />
         </div>
       </div>
     </div>

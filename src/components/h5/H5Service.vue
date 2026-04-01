@@ -18,7 +18,7 @@
           <p class="specialist-sub">全程跟进对接，沟通无障碍</p>
         </div>
         <div class="specialist-right">
-          <img class="specialist-photo" src="@/assets/images/webp/service-person-h5.webp" alt="专员" />
+          <img class="specialist-photo" src="@/assets/images/webp/service-person-h5.webp" alt="一对一服务专员形象展示" loading="lazy" />
         </div>
       </div>
     </section>

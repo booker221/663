@@ -11,6 +11,8 @@
     @mousedown="onDragStart"
     @touchstart.passive="onDragStart"
     @click="onClick"
+    role="button"
+    aria-label="投诉与建议"
   >
     <slot />
   </div>

@@ -4,9 +4,9 @@
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">
-          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
           服务体系
-          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
         </h2>
         <p class="section-sub">全程跟进对接，沟通无障碍</p>
       </div>
@@ -21,7 +21,7 @@
           </p>
         </div>
         <div class="specialist-right">
-          <img class="specialist-photo" src="@/assets/images/webp/service-person-pc.webp" alt="专员" />
+          <img class="specialist-photo" src="@/assets/images/webp/service-person-pc.webp" alt="服务专员负责人肖像" loading="lazy" />
         </div>
       </div>
     </section>
@@ -43,25 +43,7 @@ import cardBg from '@/assets/images/webp/service-card-bg-pc.webp'
   margin-bottom: 40px;
 }
 
-.section-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text);
-  margin: 0 0 6px;
-  letter-spacing: 0.06em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.title-dot {
-  width: 12px;
-  height: 12px;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
-  vertical-align: middle;
-  margin: 0 8px;
-}
 
 .section-sub {
   font-size: 12px;

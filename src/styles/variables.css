@@ -51,11 +51,27 @@ img {
 
 /* ===== PC 板块标题统一样式 ===== */
 .pc-page .section-title {
-  color: #414A65 !important;
-  font-family: "PingFang SC", sans-serif !important;
-  font-size: 44px !important;
-  font-style: normal !important;
-  font-weight: 600 !important;
-  line-height: normal !important;
+  color: #414A65;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 44px;
+  font-weight: 600;
+  line-height: normal;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pc-page .title-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 12px;
+}
+
+/* ===== 锚点优化：防止被固定头部遮挡 ===== */
+[id] {
+  scroll-margin-top: 80px;
 }

@@ -3,9 +3,9 @@
     <!-- 标题 -->
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
         官方商务
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
       </h2>
       <p class="section-subtitle">只认准以下商务人员，其他勿信，谨防被骗</p>
     </div>
@@ -18,7 +18,7 @@
         <div class="partner-list">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <div class="partner-left">
-              <a :href="p.url" target="_blank" class="avatar-link">
+              <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
                 <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
               </a>
               <span class="partner-name">{{ p.name }}</span>
@@ -28,9 +28,9 @@
                 <span>{{ p.handle }}</span>
               </div>
             </div>
-            <button class="partner-copy" title="复制" @click="copy(p.handle)">
-              <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" />
-            </button>
+              <button class="partner-copy" title="复制" @click="copy(p.handle)">
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" />
+              </button>
           </div>
         </div>
       </div>
@@ -53,30 +53,25 @@
                 <span>{{ p.handle }}</span>
               </div>
             </div>
-            <button class="partner-copy" title="复制" @click="copy(p.handle)">
-              <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" />
-            </button>
+              <button class="partner-copy" title="复制" @click="copy(p.handle)">
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" />
+              </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源" />
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy" />
   </section>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import avatarDimao from '@/assets/images/webp/avatar-dimao.webp'
-import avatarTaiyang from '@/assets/images/webp/avatar-taiyang.webp'
-import avatarHema from '@/assets/images/webp/avatar-hema.webp'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 
-// 为每个联系人添加头像资源
-const avatarMap = { '迪猫': avatarDimao, '太阳': avatarTaiyang, '河马': avatarHema }
-const promotePartners = PROMOTE_PARTNERS.map(p => ({ ...p, avatar: avatarMap[p.name] }))
-const thirdPartners = THIRD_PARTNERS.map(p => ({ ...p, avatar: avatarMap[p.name] }))
+const promotePartners = PROMOTE_PARTNERS
+const thirdPartners = THIRD_PARTNERS
 
 const activeTab = ref('promote')
 const tabs = [
@@ -102,25 +97,7 @@ function copy(text) {
   margin-bottom: 20px;
 }
 
-.section-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text);
-  margin: 0 0 6px;
-  letter-spacing: 0.06em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.title-dot {
-  width: 12px;
-  height: 12px;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
-  vertical-align: middle;
-  margin: 0 8px;
-}
 
 .section-subtitle {
   color: #6C7BA8;

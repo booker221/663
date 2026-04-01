@@ -1,7 +1,7 @@
 <template>
   <section class="section" id="business">
     <div class="section-header">
-      <img class="section-title-img" src="@/assets/images/webp/biz-title-h5.webp" alt="官方商务" />
+      <img class="section-title-img" src="@/assets/images/webp/biz-title-h5.webp" alt="合兴集团业务商务合作" loading="lazy" />
     </div>
     <div class="section-card">
       <!-- Tab 切换：点击切换不同背景图 -->
@@ -29,7 +29,7 @@
       <div v-show="activeTab === 'promote'" class="partner-list">
         <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
           <div class="partner-left">
-            <a :href="p.url" target="_blank" class="avatar-link">
+            <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
               <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
             </a>
             <span class="partner-name">{{ p.name }}</span>
@@ -48,7 +48,7 @@
       <div v-show="activeTab === 'third'" class="partner-list">
         <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
           <div class="partner-left">
-            <a :href="p.url" target="_blank" class="avatar-link">
+            <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
               <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
             </a>
             <span class="partner-name">{{ p.name }}</span>
@@ -71,15 +71,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import avatarDimao from '@/assets/images/webp/avatar-dimao.webp'
-import avatarTaiyang from '@/assets/images/webp/avatar-taiyang.webp'
-import avatarHema from '@/assets/images/webp/avatar-hema.webp'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 
-// 为每个联系人添加头像资源
-const avatarMap = { '迪猫': avatarDimao, '太阳': avatarTaiyang, '河马': avatarHema }
-const promotePartners = PROMOTE_PARTNERS.map(p => ({ ...p, avatar: avatarMap[p.name] }))
-const thirdPartners  = THIRD_PARTNERS.map(p => ({ ...p, avatar: avatarMap[p.name] }))
+const promotePartners = PROMOTE_PARTNERS
+const thirdPartners = THIRD_PARTNERS
 
 const activeTab = ref('promote')
 const tabs = [

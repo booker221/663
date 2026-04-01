@@ -3,9 +3,9 @@
     <!-- 标题 -->
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
         投诉接受
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
       </h2>
       <p class="section-sub">全程跟进对接，沟通无障碍</p>
     </div>
@@ -14,7 +14,7 @@
     <div class="complaint-card">
       <!-- 左：头像 + 名字 -->
       <div class="partner-left">
-        <img class="partner-avatar" src="@/assets/images/webp/avatar-dimao.webp" :alt="COMPLAINT_CONTACT.name" />
+        <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" />
         <span class="partner-name">{{ COMPLAINT_CONTACT.name }}</span>
       </div>
 
@@ -23,7 +23,7 @@
         <img class="tg-icon" src="@/assets/images/webp/icon-telegram.webp" alt="TG" />
         <span class="partner-handle">{{ COMPLAINT_CONTACT.handle }}</span>
         <button class="btn-copy" title="复制" @click="copy(COMPLAINT_CONTACT.handle)">
-          <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制" />
+          <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" />
         </button>
       </div>
     </div>
@@ -51,25 +51,7 @@ function copy(text) {
   margin-bottom: 40px;
 }
 
-.section-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text);
-  margin: 0 0 6px;
-  letter-spacing: 0.06em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.title-dot {
-  width: 12px;
-  height: 12px;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
-  vertical-align: middle;
-  margin: 0 8px;
-}
 
 .section-sub {
   font-size: 12px;

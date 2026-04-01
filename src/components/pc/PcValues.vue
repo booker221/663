@@ -2,12 +2,12 @@
   <section class="section">
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
         核心价值观
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
       </h2>
     </div>
-    <img class="values-img" src="@/assets/images/webp/values-pc.webp" alt="核心价值观 - 诚信为本 合作共赢 追求卓越" />
+    <img class="values-img" src="@/assets/images/webp/values-pc.webp" alt="核心价值观" loading="lazy" />
   </section>
 </template>
 
@@ -25,26 +25,7 @@
   margin-bottom: 20px;
 }
 
-.section-title {
-  color: #414A65;
-  font-family: "PingFang SC";
-  font-size: 44px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.title-dot {
-  width: 12px;
-  height: 12px;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
-  vertical-align: middle;
-  margin: 0 8px;
-}
 
 .values-img {
   width: 100%;

@@ -2,9 +2,9 @@
   <section class="section" id="activity">
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
         活动专栏
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
       </h2>
     </div>
 
@@ -52,7 +52,7 @@
 
         <!-- 右侧人物图 -->
         <div class="content-right">
-          <img class="person-img" src="@/assets/images/webp/activity-person-pc.webp" alt="活动商务" />
+          <img class="person-img" src="@/assets/images/webp/activity-person-pc.webp" alt="活动商务负责人" loading="lazy" />
         </div>
       </div>
     </div>
@@ -75,25 +75,7 @@ import { BUSINESS_CONTACT } from '@/config/contacts.js'
   margin-top: 60px;
 }
 
-.section-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text);
-  margin: 0;
-  letter-spacing: 0.06em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.title-dot {
-  width: 12px;
-  height: 12px;
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
-  vertical-align: middle;
-  margin: 0 8px;
-}
 
 /* 活动卡片 */
 .activity-card {
