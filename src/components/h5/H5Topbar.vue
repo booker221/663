@@ -5,9 +5,24 @@
       <img class="brand-text" src="@/assets/images/webp/logo-text-hexing.webp" alt="合兴" width="141" height="56" />
       <img class="brand-domain" src="@/assets/images/webp/logo-text-663.webp" alt="663.com" width="209" height="36" />
     </div>
+
+    <div class="search-pill">
+      <span>点击搜索</span>
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+
     <div class="topbar-actions">
       <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
-      <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" width="64" height="64" />
+      <div class="menu-icon-wrap">
+        <svg class="menu-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="6" width="18" height="2" rx="1" fill="currentColor"/>
+          <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor"/>
+          <rect x="3" y="16" width="18" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </div>
     </div>
   </header>
 </template>
@@ -33,41 +48,86 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .brand-logo {
-  height: 28px;
+  height: 24px;
   width: auto;
 }
 
 .brand-text {
-  height: 16px;
+  height: 14px;
   width: auto;
 }
 
 .brand-domain {
-  height: 13px;
-  width: auto;
+  display: none;
+}
+
+@media (min-width: 360px) {
+  .brand-domain {
+    display: block;
+    height: 11px;
+    width: auto;
+  }
+  .brand { gap: 6px; }
+}
+
+.search-pill {
+  flex: 1;
+  margin: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  height: 32px;
+  background: #EEF6FF;
+  border: 1px solid #D8E7FF;
+  border-radius: 99px;
+  color: #A3B5D0;
+  font-size: 11px;
+  padding: 0 10px;
+  cursor: pointer;
+  max-width: 100px;
+  transition: all 0.2s;
+}
+
+.search-pill:active {
+  background: #e1efff;
+}
+
+.search-icon {
+  color: #A3B5D0;
+  flex-shrink: 0;
 }
 
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .flag-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
 }
 
-.menu-icon {
-  width: 24px;
-  height: 24px;
+.menu-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #414A65;
   cursor: pointer;
+}
+
+.menu-icon-svg {
+  width: 22px;
+  height: 22px;
 }
 </style>
