@@ -1,7 +1,11 @@
 <template>
   <section class="section">
     <div class="section-header">
-      <h2 class="section-title">核心价值观</h2>
+      <h2 class="section-title">
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        核心价值观
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+      </h2>
     </div>
     <img class="values-img" src="@/assets/img/values-pc.png" alt="核心价值观 - 诚信为本 合作共赢 追求卓越" />
   </section>
@@ -28,13 +32,18 @@
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.section-title::before,
-.section-title::after {
-  content: "•";
-  color: var(--primary);
-  margin: 0 10px;
+.title-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 8px;
 }
 
 .values-img {

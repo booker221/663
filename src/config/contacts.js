@@ -9,9 +9,10 @@ export const BUSINESS_CONTACT = {
   url: 'https://t.me/hexing663',
 }
 
-// ✅ 联系客服（点击打开新窗口）
+// ✅ 联系客服 / 投诉建议浮球跳转
 export const CUSTOMER_SERVICE = {
-  url: 'https://www.baidu.com',
+  handle: '@hexing663',
+  url: 'https://t.me/hexing663',
 }
 
 // ✅ 投诉接受

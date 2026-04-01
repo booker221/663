@@ -2,7 +2,11 @@
   <section class="section" id="business">
     <!-- 标题 -->
     <div class="section-header">
-      <h2 class="section-title">官方商务</h2>
+      <h2 class="section-title">
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        官方商务
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+      </h2>
       <p class="section-subtitle">只认准以下商务人员，其他勿信，谨防被骗</p>
     </div>
 
@@ -104,13 +108,18 @@ function copy(text) {
   color: var(--text);
   margin: 0 0 6px;
   letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.section-title::before,
-.section-title::after {
-  content: "•";
-  color: var(--primary);
-  margin: 0 10px;
+.title-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 8px;
 }
 
 .section-subtitle {

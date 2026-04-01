@@ -1,7 +1,11 @@
 <template>
   <section class="section" id="activity">
     <div class="section-header">
-      <h2 class="section-title">活动专栏</h2>
+      <h2 class="section-title">
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        活动专栏
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+      </h2>
     </div>
 
     <div class="activity-card">
@@ -12,16 +16,16 @@
 
           <div class="act-block">
             <p class="act-label">【活动一】每月发量：</p>
-            <p class="act-line red">提供&gt;500万量的机房，奖励：1888$</p>
-            <p class="act-line red">提供&gt;1000万量的机房，奖励：2888$</p>
-            <p class="act-line red">提供&gt;1500万量的机房，奖励：5888$</p>
-            <p class="act-line red">提供&gt;3000万量的机房，奖励：8888$</p>
+            <p class="act-line">提供&gt; <span class="red">500</span>万量的机房，奖励：<span class="red">1888$</span></p>
+            <p class="act-line">提供&gt; <span class="red">1000</span>万量的机房，奖励：<span class="red">2888$</span></p>
+            <p class="act-line">提供&gt; <span class="red">1500</span>万量的机房，奖励：<span class="red">5888$</span></p>
+            <p class="act-line">提供&gt; <span class="red">3000</span>万量的机房，奖励：<span class="red">8888$</span></p>
           </div>
 
           <div class="act-block">
             <p class="act-label">【活动二】优质机房搭建深度合作</p>
-            <p class="act-line red">第一名奖励：3888$</p>
-            <p class="act-line red">第二名奖励：2888$</p>
+            <p class="act-line ">第一名奖励：<span class="red">3888$</span></p>
+            <p class="act-line ">第二名奖励：<span class="red">2888$</span></p>
             <p class="act-line red">第三名奖励：1888$</p>
           </div>
 
@@ -77,13 +81,18 @@ import { BUSINESS_CONTACT } from '@/config/contacts.js'
   color: var(--text);
   margin: 0;
   letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.section-title::before,
-.section-title::after {
-  content: "•";
-  color: var(--primary);
-  margin: 0 10px;
+.title-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 8px;
 }
 
 /* 活动卡片 */
@@ -108,15 +117,18 @@ import { BUSINESS_CONTACT } from '@/config/contacts.js'
 }
 
 .content-right {
-  width: 280px;
+  width: 400px;
+  height: 400px;
   flex-shrink: 0;
   display: flex;
   align-items: flex-end;
   align-self: stretch;
+  margin-top: 120px;
 }
 
 .person-img {
-  width: 100%;
+  width: 400px;
+  height: 400px;
   object-fit: contain;
   object-position: bottom;
 }
@@ -146,9 +158,8 @@ import { BUSINESS_CONTACT } from '@/config/contacts.js'
   line-height: 1.8;
   margin: 0;
 }
-
-.act-line.red {
-  color: var(--primary);
+.red {
+  color: #FF5E5E;
   font-weight: 600;
 }
 

@@ -2,7 +2,11 @@
   <section class="section" id="complaint">
     <!-- 标题 -->
     <div class="section-header">
-      <h2 class="section-title">投诉接受</h2>
+      <h2 class="section-title">
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        投诉接受
+        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+      </h2>
       <p class="section-sub">全程跟进对接，沟通无障碍</p>
     </div>
 
@@ -53,13 +57,18 @@ function copy(text) {
   color: var(--text);
   margin: 0 0 6px;
   letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.section-title::before,
-.section-title::after {
-  content: "•";
-  color: var(--primary);
-  margin: 0 10px;
+.title-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 8px;
 }
 
 .section-sub {

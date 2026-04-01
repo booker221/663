@@ -3,7 +3,11 @@
     <!-- 服务体系 -->
     <section class="section">
       <div class="section-header">
-        <h2 class="section-title">服务体系</h2>
+        <h2 class="section-title">
+          <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+          服务体系
+          <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        </h2>
         <p class="section-sub">全程跟进对接，沟通无障碍</p>
       </div>
 
@@ -45,13 +49,18 @@ import cardBg from '@/assets/img/service-card-bg-pc.png'
   color: var(--text);
   margin: 0 0 6px;
   letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.section-title::before,
-.section-title::after {
-  content: "•";
-  color: var(--primary);
-  margin: 0 10px;
+.title-dot {
+  width: 12px;
+  height: 12px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 8px;
 }
 
 .section-sub {
