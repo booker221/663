@@ -40,3 +40,11 @@ export const THIRD_PARTNERS = [
   { name: '太阳', handle: '@hexing95277', url: 'https://t.me/hexing95277', avatar: avatarTaiyang },
   { name: '河马', handle: '@hm777321', url: 'https://t.me/hm777321', avatar: avatarHema },
 ]
+
+// ✅ 搜索核验配置
+export const SEARCH_CONFIG = {
+  placeholder: '点击搜索',
+  defaultValue: '@hm777321',
+  successText: '此飞机号属于合兴一路向前招商人员',
+  failText: '此飞机不属于合兴一路向前招商人员，请谨慎被骗',
+}

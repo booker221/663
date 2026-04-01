@@ -7,8 +7,23 @@
     </div>
 
     <div class="search-pill">
-      <span>点击搜索</span>
-      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <input
+        type="text"
+        v-model="searchHandle"
+        class="search-input"
+        :placeholder="SEARCH_CONFIG.placeholder"
+        @keyup.enter="handleSearch"
+      />
+      <svg
+        class="search-icon"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        @click="handleSearch"
+      >
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
@@ -28,6 +43,22 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { SEARCH_CONFIG } from '@/config/contacts.js'
+import { verifyOfficialHandle } from '@/utils/verify.js'
+
+const searchHandle = ref(SEARCH_CONFIG.defaultValue || '')
+
+const handleSearch = () => {
+  if (!searchHandle.value.trim()) return
+
+  const isOfficial = verifyOfficialHandle(searchHandle.value)
+  if (isOfficial) {
+    alert(SEARCH_CONFIG.successText)
+  } else {
+    alert(SEARCH_CONFIG.failText)
+  }
+}
 </script>
 
 <style scoped>
@@ -76,8 +107,9 @@
 }
 
 .search-pill {
-  flex: 1;
-  margin: 0 12px;
+  flex: none;
+  margin-left: auto;
+  margin-right: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -92,6 +124,20 @@
   cursor: pointer;
   max-width: 100px;
   transition: all 0.2s;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 11px;
+  color: #2c3e50;
+  width: 100%;
+  padding: 0;
+}
+
+.search-input::placeholder {
+  color: #A3B5D0;
 }
 
 .search-pill:active {

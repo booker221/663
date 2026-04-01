@@ -8,8 +8,26 @@
       </div>
       <div class="topbar-actions">
         <div class="search-pill">
-          <span>点击搜索</span>
-          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="text"
+            v-model="searchHandle"
+            class="search-input"
+            :placeholder="SEARCH_CONFIG.placeholder"
+            @keyup.enter="handleSearch"
+          />
+          <svg
+            class="search-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            @click="handleSearch"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
         </div>
         <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
         <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" width="64" height="64" />
@@ -19,6 +37,22 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import { SEARCH_CONFIG } from '@/config/contacts.js'
+import { verifyOfficialHandle } from '@/utils/verify.js'
+
+const searchHandle = ref(SEARCH_CONFIG.defaultValue || '')
+
+const handleSearch = () => {
+  if (!searchHandle.value.trim()) return
+
+  const isOfficial = verifyOfficialHandle(searchHandle.value)
+  if (isOfficial) {
+    alert(SEARCH_CONFIG.successText)
+  } else {
+    alert(SEARCH_CONFIG.failText)
+  }
+}
 </script>
 
 <style scoped>
@@ -75,12 +109,23 @@
   gap: 6px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: #f5f7fa;
-  border: 1px solid #e8ecf2;
-  font-size: 13px;
   color: #a0a8b4;
   cursor: pointer;
+  max-width: 200px;
   transition: all 0.2s;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  color: #2c3e50;
+  width: 100%;
+}
+
+.search-input::placeholder {
+  color: #a0a8b4;
 }
 
 .search-pill:hover {
