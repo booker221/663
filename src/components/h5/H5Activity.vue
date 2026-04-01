@@ -8,7 +8,7 @@
 
     <div class="activity-card">
       <!-- 背景图 -->
-      <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" />
+    <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" width="734" height="1444" />
 
       <!-- 内容 -->
       <div class="card-content">
@@ -51,7 +51,7 @@
         <div class="contact-row">
           <p class="act-contact"><span class="contact-label">商务合作：</span><span class="contact-handle">{{ BUSINESS_CONTACT.handle }}</span>
           </p>
-          <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务专员" loading="lazy" />
+          <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务专员" loading="lazy" width="312" height="312" />
         </div>
       </div>
     </div>

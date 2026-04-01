@@ -2,7 +2,7 @@
   <section class="hero">
     <div class="hero-banner-wrap">
       <!-- Banner 图作为背景 -->
-      <img class="hero-banner" src="@/assets/images/webp/hero-banner-h5.webp" alt="合兴集团 - 合于信 兴于行" fetchpriority="high" loading="eager" />
+      <img class="hero-banner" src="@/assets/images/webp/hero-banner-h5.webp" alt="合兴集团 - 合于信 兴于行" fetchpriority="high" loading="eager" width="750" height="420" />
       <!-- 文字叠加在 banner 下半部分 -->
       <div class="about-overlay">
         <h3 class="about-title">关于合兴</h3>

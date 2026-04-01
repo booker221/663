@@ -3,9 +3,9 @@
     <!-- 标题 -->
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
         官方商务
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
       </h2>
       <p class="section-subtitle">只认准以下商务人员，其他勿信，谨防被骗</p>
     </div>
@@ -24,12 +24,12 @@
               <span class="partner-name">{{ p.name }}</span>
               <span class="divider">丨</span>
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" />
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" width="64" height="64" />
                 <span>{{ p.handle }}</span>
               </div>
             </div>
               <button class="partner-copy" title="复制" @click="copy(p.handle)">
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" />
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" width="36" height="36" />
               </button>
           </div>
         </div>
@@ -62,7 +62,7 @@
     </div>
 
     <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy" />
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy" width="2320" height="192" />
   </section>
 </template>
 

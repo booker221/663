@@ -2,17 +2,17 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <img class="brand-logo" src="@/assets/images/webp/logo-hx.webp" alt="HX" />
-        <img class="brand-text" src="@/assets/images/webp/logo-text-hexing.webp" alt="合兴" />
-        <img class="brand-domain" src="@/assets/images/webp/logo-text-663.webp" alt="663.com" />
+        <img class="brand-logo" src="@/assets/images/webp/logo-hx.webp" alt="HX" width="96" height="96" />
+        <img class="brand-text" src="@/assets/images/webp/logo-text-hexing.webp" alt="合兴" width="141" height="56" />
+        <img class="brand-domain" src="@/assets/images/webp/logo-text-663.webp" alt="663.com" width="209" height="36" />
       </div>
       <div class="topbar-actions">
         <div class="search-pill">
           <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <span>合兴搜索</span>
         </div>
-        <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" />
-        <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" />
+        <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
+        <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" width="64" height="64" />
       </div>
     </div>
   </header>

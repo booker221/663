@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <img class="values-img" src="@/assets/images/webp/values-h5.webp" alt="核心价值观展示图" loading="lazy" />
+    <img class="values-img" src="@/assets/images/webp/values-h5.webp" alt="核心价值观展示图" loading="lazy" width="729" height="328" />
   </section>
 </template>
 

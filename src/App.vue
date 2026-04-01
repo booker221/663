@@ -20,13 +20,6 @@ function handleResize() {
 }
 
 onMounted(() => {
-  // 首次加载时检测设备并跳转
-  const device = getDeviceType()
-  const currentPath = router.currentRoute.value.path
-  if (currentPath !== `/${device}`) {
-    router.replace(`/${device}`)
-  }
-
   // 监听窗口大小变化
   window.addEventListener('resize', handleResize)
 })

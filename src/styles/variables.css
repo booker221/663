@@ -46,7 +46,21 @@ a {
 
 img {
   max-width: 100%;
+  height: auto; /* 配合 width/height 属性使用 */
   display: block;
+  font-style: italic; /* 占位符样式 */
+  background: rgba(0,0,0,0.02);
+}
+
+/* 统一特定组件的宽高比以防偏移 */
+.partner-avatar { aspect-ratio: 1 / 1; border-radius: 50%; }
+.hero-banner { width: 100%; height: auto; aspect-ratio: 3840 / 1280; }
+@media (max-width: 768px) {
+  .hero-banner { aspect-ratio: 750 / 420; }
+}
+.values-img { aspect-ratio: 2449 / 564; }
+@media (max-width: 768px) {
+  .values-img { aspect-ratio: 729 / 328; }
 }
 
 /* ===== PC 板块标题统一样式 ===== */

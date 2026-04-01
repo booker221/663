@@ -3,9 +3,9 @@
     <!-- 标题 -->
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
         投诉接受
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
       </h2>
       <p class="section-sub">全程跟进对接，沟通无障碍</p>
     </div>
@@ -14,16 +14,16 @@
     <div class="complaint-card">
       <!-- 左：头像 + 名字 -->
       <div class="partner-left">
-        <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" />
+        <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" width="88" height="88" />
         <span class="partner-name">{{ COMPLAINT_CONTACT.name }}</span>
       </div>
 
       <!-- 右：Telegram + handle + 复制 -->
       <div class="partner-right">
-        <img class="tg-icon" src="@/assets/images/webp/icon-telegram.webp" alt="TG" />
+        <img class="tg-icon" src="@/assets/images/webp/icon-telegram.webp" alt="TG" width="64" height="64" />
         <span class="partner-handle">{{ COMPLAINT_CONTACT.handle }}</span>
         <button class="btn-copy" title="复制" @click="copy(COMPLAINT_CONTACT.handle)">
-          <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" />
+          <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" width="36" height="36" />
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <section class="section" id="business">
     <div class="section-header">
-      <img class="section-title-img" src="@/assets/images/webp/biz-title-h5.webp" alt="合兴集团业务商务合作" loading="lazy" />
+      <img class="section-title-img" src="@/assets/images/webp/biz-title-h5.webp" alt="合兴集团业务商务合作" loading="lazy" width="618" height="40" />
     </div>
     <div class="section-card">
       <!-- Tab 切换：点击切换不同背景图 -->
@@ -11,11 +11,15 @@
             :class="['tabs-bg-img', { 'tab-hidden': activeTab !== 'promote' }]"
             src="@/assets/images/webp/biz-tab-left-active.webp"
             alt=""
+            width="702"
+            height="100"
           />
           <img
             :class="['tabs-bg-img', { 'tab-hidden': activeTab !== 'third' }]"
             src="@/assets/images/webp/biz-tab-right-active.webp"
             alt=""
+            width="702"
+            height="100"
           />
         </div>
         <button
@@ -40,7 +44,7 @@
             </div>
           </div>
           <button class="partner-copy" title="复制" @click="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" />
+            <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" width="36" height="36" />
           </button>
         </div>
       </div>
@@ -65,7 +69,7 @@
       </div>
     </div>
     <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" />
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" width="646" height="176" />
   </section>
 </template>
 

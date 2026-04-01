@@ -4,9 +4,9 @@
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">
-          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
           服务体系
-          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
         </h2>
         <p class="section-sub">全程跟进对接，沟通无障碍</p>
       </div>
@@ -21,7 +21,7 @@
           </p>
         </div>
         <div class="specialist-right">
-          <img class="specialist-photo" src="@/assets/images/webp/service-person-pc.webp" alt="服务专员负责人肖像" loading="lazy" />
+          <img class="specialist-photo" src="@/assets/images/webp/service-person-pc.webp" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
         </div>
       </div>
     </section>

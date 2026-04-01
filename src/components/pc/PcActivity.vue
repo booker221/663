@@ -2,7 +2,7 @@
   <section class="section" id="activity">
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
         活动专栏
         <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
       </h2>
@@ -52,7 +52,7 @@
 
         <!-- 右侧人物图 -->
         <div class="content-right">
-          <img class="person-img" src="@/assets/images/webp/activity-person-pc.webp" alt="活动商务负责人" loading="lazy" />
+          <img class="person-img" src="@/assets/images/webp/activity-person-pc.webp" alt="活动商务负责人" loading="lazy" width="1000" height="1000" />
         </div>
       </div>
     </div>

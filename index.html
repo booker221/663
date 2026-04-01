@@ -3,6 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- ===== 性能优化：首屏预加载 & 设备检测 ===== -->
+    <link rel="preload" as="image" href="/src/assets/images/webp/hero-banner-pc.webp" media="(min-width: 769px)" />
+    <link rel="preload" as="image" href="/src/assets/images/webp/hero-banner-h5.webp" media="(max-width: 768px)" />
+    
+    <script>
+      (function() {
+        const device = window.innerWidth > 768 ? 'pc' : 'h5';
+        const hash = window.location.hash;
+        if (!hash || hash === '#/') {
+          window.location.hash = '#/' + device;
+        } else if (hash !== '#/' + device) {
+          // 当前路径与设备不符时（例如预览分享链接），强制对齐
+          window.location.hash = '#/' + device;
+        }
+      })();
+    </script>
+
+    <style>
+      /* 基础性能样式：消除加载时的布局跳动 */
+      :root { --primary: #D90D0D; --bg: #F4F7FF; }
+      body { margin: 0; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+      #app { min-height: 100vh; }
+      /* 预设 Banner 容器宽高比 */
+      .hero-banner-wrap { aspect-ratio: 3840 / 1280; overflow: hidden; background: #eee; }
+      @media (max-width: 768px) { .hero-banner-wrap { aspect-ratio: 750 / 420; } }
+    </style>
 
     <!-- ===== 基础 SEO ===== -->
     <title>合兴集团 - 合于信 兴于行 | 官方落地页</title>
