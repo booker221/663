@@ -8,7 +8,7 @@
     <H5Service />
     <H5Complaint />
     <!-- 可拖拽浮球 -->
-    <DraggableFab :href="CUSTOMER_SERVICE.url" :default-right="16" :default-bottom="80">
+    <DraggableFab :href="CUSTOMER_SERVICE.url" :default-right="16" :default-bottom="80" :fab-width="48" :fab-height="46.4">
       <img class="fab-icon" :src="complaintIcon" alt="" />
       <span class="fab-label">投诉建议</span>
     </DraggableFab>
@@ -37,15 +37,18 @@ import H5Complaint from '../components/h5/H5Complaint.vue'
 }
 
 .fab-icon {
-  width: 20px;
-  height: 20px;
+  width: 20.372px;
+  height: 19.2px;
   object-fit: contain;
   pointer-events: none;
 }
 
 .fab-label {
+  font-family: "PingFang SC", sans-serif;
   font-size: 8px;
+  font-style: normal;
   font-weight: 600;
+  line-height: normal;
   color: #fff;
   letter-spacing: 0.3px;
   white-space: nowrap;

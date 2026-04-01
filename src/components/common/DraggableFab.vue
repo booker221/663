@@ -1,7 +1,13 @@
 <template>
   <div
     class="draggable-fab"
-    :style="{ top: pos.y + 'px', left: pos.x + 'px' }"
+    :style="{
+      top: pos.y + 'px',
+      left: pos.x + 'px',
+      '--fab-w': props.fabWidth + 'px',
+      '--fab-h': props.fabHeight + 'px',
+      '--fab-r': (props.fabHeight * 0.56) + 'px',
+    }"
     @mousedown="onDragStart"
     @touchstart.passive="onDragStart"
     @click="onClick"
@@ -17,6 +23,8 @@ const props = defineProps({
   href: { type: String, default: '#' },
   defaultRight: { type: Number, default: 24 },
   defaultBottom: { type: Number, default: 80 },
+  fabWidth: { type: Number, default: 80 },
+  fabHeight: { type: Number, default: 77.333 },
 })
 
 // 初始位置（右下角换算为 left/top）
@@ -27,11 +35,13 @@ const hasDragged = ref(false)
 // 拖拽状态
 let startX = 0, startY = 0
 let startPosX = 0, startPosY = 0
-const FAB_SIZE = 80 // 浮球大小（px）
+// 使用 props 驱动尺寸
+const FAB_W = () => props.fabWidth
+const FAB_H = () => props.fabHeight
 
 function initPos() {
-  pos.value.x = window.innerWidth - FAB_SIZE - props.defaultRight
-  pos.value.y = window.innerHeight - FAB_SIZE - props.defaultBottom
+  pos.value.x = window.innerWidth - FAB_W() - props.defaultRight
+  pos.value.y = window.innerHeight - FAB_H() - props.defaultBottom
 }
 
 function getClientXY(e) {
@@ -65,8 +75,8 @@ function onDragMove(e) {
   // 超过 5px 才算拖动
   if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasDragged.value = true
 
-  pos.value.x = Math.max(0, Math.min(window.innerWidth - FAB_SIZE, startPosX + dx))
-  pos.value.y = Math.max(0, Math.min(window.innerHeight - FAB_SIZE, startPosY + dy))
+  pos.value.x = Math.max(0, Math.min(window.innerWidth - FAB_W(), startPosX + dx))
+  pos.value.y = Math.max(0, Math.min(window.innerHeight - FAB_H(), startPosY + dy))
 }
 
 function onDragEnd() {
@@ -78,9 +88,9 @@ function onDragEnd() {
 
   // 松手后吸附到左或右边缘
   const mid = window.innerWidth / 2
-  if (pos.value.x + FAB_SIZE / 2 > mid) {
+  if (pos.value.x + FAB_W() / 2 > mid) {
     // 吸右
-    pos.value.x = window.innerWidth - FAB_SIZE - 16
+    pos.value.x = window.innerWidth - FAB_W() - 16
   } else {
     // 吸左
     pos.value.x = 16
@@ -96,8 +106,8 @@ function onClick() {
 
 // 窗口大小变化时重新计算，防止跑出屏幕
 function onResize() {
-  pos.value.x = Math.min(pos.value.x, window.innerWidth - FAB_SIZE)
-  pos.value.y = Math.min(pos.value.y, window.innerHeight - FAB_SIZE)
+  pos.value.x = Math.min(pos.value.x, window.innerWidth - FAB_W())
+  pos.value.y = Math.min(pos.value.y, window.innerHeight - FAB_H())
 }
 
 onMounted(() => {
@@ -113,9 +123,9 @@ onUnmounted(() => {
 <style scoped>
 .draggable-fab {
   position: fixed;
-  width: 80px;
-  height: 77.333px;
-  border-radius: 45.333px;
+  width: var(--fab-w, 80px);
+  height: var(--fab-h, 77.333px);
+  border-radius: var(--fab-r, 43.5px);
   background: linear-gradient(180deg, #FA4F24 0%, #D90D0D 50%, #FA4F24 100%);
   display: flex;
   flex-direction: column;

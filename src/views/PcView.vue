@@ -36,15 +36,19 @@ import PcComplaint from '../components/pc/PcComplaint.vue'
 }
 
 .fab-icon {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 32px;
+  aspect-ratio: 17 / 16;
   object-fit: contain;
   pointer-events: none;
 }
 
 .fab-label {
-  font-size: 11px;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 14px;
+  font-style: normal;
   font-weight: 600;
+  line-height: normal;
   color: #fff;
   letter-spacing: 0.5px;
   white-space: nowrap;
