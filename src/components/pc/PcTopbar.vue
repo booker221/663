@@ -13,6 +13,7 @@
             v-model="searchHandle"
             class="search-input"
             :placeholder="SEARCH_CONFIG.placeholder"
+            @input="onInput"
             @keyup.enter="handleSearch"
           />
           <svg
@@ -40,17 +41,22 @@
 import { ref } from 'vue'
 import { SEARCH_CONFIG } from '@/config/contacts.js'
 import { verifyOfficialHandle } from '@/utils/verify.js'
+import { showToast } from '@/utils/toast.js'
 
 const searchHandle = ref(SEARCH_CONFIG.defaultValue || '')
+
+const onInput = (e) => {
+  searchHandle.value = searchHandle.value.replace(/[^a-zA-Z0-9]/g, '')
+}
 
 const handleSearch = () => {
   if (!searchHandle.value.trim()) return
 
   const isOfficial = verifyOfficialHandle(searchHandle.value)
   if (isOfficial) {
-    alert(SEARCH_CONFIG.successText)
+    showToast(SEARCH_CONFIG.successText, 'success')
   } else {
-    alert(SEARCH_CONFIG.failText)
+    showToast(SEARCH_CONFIG.failText, 'warning', 3500)
   }
 }
 </script>

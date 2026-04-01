@@ -1,11 +1,15 @@
 <template>
-  <router-view />
+  <div id="app-root">
+    <router-view />
+    <Toast />
+  </div>
 </template>
 
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getDeviceType } from './utils/device.js'
+import Toast from './components/common/Toast.vue'
 
 const router = useRouter()
 

@@ -32,10 +32,11 @@
 
 <script setup>
 import { COMPLAINT_CONTACT } from '@/config/contacts.js'
+import { showToast } from '@/utils/toast.js'
 
 function copy(text) {
   navigator.clipboard.writeText(text).then(() => {
-    alert('已复制: ' + text)
+    showToast('已复制: ' + text, 'success')
   })
 }
 </script>
