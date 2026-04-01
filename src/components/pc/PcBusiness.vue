@@ -19,12 +19,12 @@
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <div class="partner-left">
               <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
-                <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
+                <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="88" height="88" />
               </a>
               <span class="partner-name">{{ p.name }}</span>
               <span class="divider">丨</span>
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" width="64" height="64" />
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="22" height="22" />
                 <span>{{ p.handle }}</span>
               </div>
             </div>
@@ -44,12 +44,12 @@
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <div class="partner-left">
               <a :href="p.url" target="_blank" class="avatar-link">
-                <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
+                <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="88" height="88" />
               </a>
               <span class="partner-name">{{ p.name }}</span>
               <span class="divider">丨</span>
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" />
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="22" height="22" />
                 <span>{{ p.handle }}</span>
               </div>
             </div>

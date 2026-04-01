@@ -10,20 +10,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [
     vue(),
+    // 构建时生成 Gzip 压缩产物
     viteCompression({
-      verbose: true,
-      disable: false,
-      threshold: 10240,
       algorithm: 'gzip',
       ext: '.gz',
     }),
+    // 构建时生成 Brotli 压缩产物
     viteCompression({
-      verbose: true,
-      disable: false,
-      threshold: 10240,
       algorithm: 'brotliCompress',
       ext: '.br',
-    }),
+    })
   ],
   resolve: {
     alias: {

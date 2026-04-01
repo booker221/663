@@ -11,6 +11,7 @@
             :class="['tabs-bg-img', { 'tab-hidden': activeTab !== 'promote' }]"
             src="@/assets/images/webp/biz-tab-left-active.webp"
             alt=""
+            loading="lazy"
             width="702"
             height="100"
           />
@@ -18,6 +19,7 @@
             :class="['tabs-bg-img', { 'tab-hidden': activeTab !== 'third' }]"
             src="@/assets/images/webp/biz-tab-right-active.webp"
             alt=""
+            loading="lazy"
             width="702"
             height="100"
           />
@@ -34,17 +36,17 @@
         <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
           <div class="partner-left">
             <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
-              <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
+              <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="80" height="80" />
             </a>
             <span class="partner-name">{{ p.name }}</span>
             <span class="divider">丨</span>
             <div class="partner-handle">
-              <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" />
+              <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="36" height="36" />
               <span>{{ p.handle }}</span>
             </div>
           </div>
           <button class="partner-copy" title="复制" @click="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" width="36" height="36" />
+            <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" loading="lazy" width="36" height="36" />
           </button>
         </div>
       </div>
@@ -63,13 +65,13 @@
             </div>
           </div>
           <button class="partner-copy" title="复制" @click="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" />
+            <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="复制" loading="lazy" width="36" height="36" />
           </button>
         </div>
       </div>
     </div>
     <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" width="646" height="176" />
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" loading="lazy" width="646" height="176" />
   </section>
 </template>
 

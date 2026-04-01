@@ -8,7 +8,7 @@
 
     <div class="activity-card">
       <!-- 背景图 -->
-    <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" width="734" height="1444" />
+    <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" loading="lazy" width="734" height="1444" />
 
       <!-- 内容 -->
       <div class="card-content">
