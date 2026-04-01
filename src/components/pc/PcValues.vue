@@ -2,12 +2,12 @@
   <section class="section">
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        <img class="title-dot" src="@/assets/img/icon-title-dot.webp" alt="" />
         核心价值观
-        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        <img class="title-dot" src="@/assets/img/icon-title-dot.webp" alt="" />
       </h2>
     </div>
-    <img class="values-img" src="@/assets/img/values-pc.png" alt="核心价值观 - 诚信为本 合作共赢 追求卓越" />
+    <img class="values-img" src="@/assets/img/values-pc.webp" alt="核心价值观 - 诚信为本 合作共赢 追求卓越" />
   </section>
 </template>
 

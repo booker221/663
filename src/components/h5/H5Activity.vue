@@ -6,7 +6,7 @@
 
     <div class="activity-card">
       <!-- 背景图 -->
-      <img class="card-bg" src="@/assets/img/activity-bg-h5.png" alt="" />
+      <img class="card-bg" src="@/assets/img/activity-bg-h5.webp" alt="" />
 
       <!-- 内容 -->
       <div class="card-content">
@@ -49,7 +49,7 @@
         <div class="contact-row">
           <p class="act-contact"><span class="contact-label">商务合作：</span><span class="contact-handle">{{ BUSINESS_CONTACT.handle }}</span>
           </p>
-          <img class="person-img" src="@/assets/img/activity-person-h5.png" alt="活动商务" />
+          <img class="person-img" src="@/assets/img/activity-person-h5.webp" alt="活动商务" />
         </div>
       </div>
     </div>

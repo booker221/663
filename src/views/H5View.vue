@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import complaintIcon from '../assets/img/icon-complaint.png'
+import complaintIcon from '../assets/img/icon-complaint.webp'
 import { BUSINESS_CONTACT, CUSTOMER_SERVICE } from '../config/contacts.js'
 import DraggableFab from '../components/common/DraggableFab.vue'
 import H5Topbar from '../components/h5/H5Topbar.vue'

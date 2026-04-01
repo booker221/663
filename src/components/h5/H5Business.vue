@@ -1,7 +1,7 @@
 <template>
   <section class="section" id="business">
     <div class="section-header">
-      <img class="section-title-img" src="@/assets/img/biz-title-h5.png" alt="官方商务" />
+      <img class="section-title-img" src="@/assets/img/biz-title-h5.webp" alt="官方商务" />
     </div>
     <div class="section-card">
       <!-- Tab 切换：点击切换不同背景图 -->
@@ -9,12 +9,12 @@
         <div class="biz-tabs-bg">
           <img
             :class="['tabs-bg-img', { 'tab-hidden': activeTab !== 'promote' }]"
-            src="@/assets/img/biz-tab-left-active.png"
+            src="@/assets/img/biz-tab-left-active.webp"
             alt=""
           />
           <img
             :class="['tabs-bg-img', { 'tab-hidden': activeTab !== 'third' }]"
-            src="@/assets/img/biz-tab-right-active.png"
+            src="@/assets/img/biz-tab-right-active.webp"
             alt=""
           />
         </div>
@@ -35,12 +35,12 @@
             <span class="partner-name">{{ p.name }}</span>
             <span class="divider">丨</span>
             <div class="partner-handle">
-              <img class="icon-tg" src="@/assets/img/icon-telegram.png" alt="Telegram" />
+              <img class="icon-tg" src="@/assets/img/icon-telegram.webp" alt="Telegram" />
               <span>{{ p.handle }}</span>
             </div>
           </div>
           <button class="partner-copy" title="复制" @click="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/img/icon-copy.png" alt="复制" />
+            <img class="icon-copy" src="@/assets/img/icon-copy.webp" alt="复制" />
           </button>
         </div>
       </div>
@@ -54,26 +54,26 @@
             <span class="partner-name">{{ p.name }}</span>
             <span class="divider">丨</span>
             <div class="partner-handle">
-              <img class="icon-tg" src="@/assets/img/icon-telegram.png" alt="Telegram" />
+              <img class="icon-tg" src="@/assets/img/icon-telegram.webp" alt="Telegram" />
               <span>{{ p.handle }}</span>
             </div>
           </div>
           <button class="partner-copy" title="复制" @click="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/img/icon-copy.png" alt="复制" />
+            <img class="icon-copy" src="@/assets/img/icon-copy.webp" alt="复制" />
           </button>
         </div>
       </div>
     </div>
     <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/img/collab-banner-h5.png" alt="寻求代投资源" />
+    <img class="collab-banner" src="@/assets/img/collab-banner-h5.webp" alt="寻求代投资源" />
   </section>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import avatarDimao from '@/assets/img/avatar-dimao.png'
-import avatarTaiyang from '@/assets/img/avatar-taiyang.png'
-import avatarHema from '@/assets/img/avatar-hema.png'
+import avatarDimao from '@/assets/img/avatar-dimao.webp'
+import avatarTaiyang from '@/assets/img/avatar-taiyang.webp'
+import avatarHema from '@/assets/img/avatar-hema.webp'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 
 // 为每个联系人添加头像资源

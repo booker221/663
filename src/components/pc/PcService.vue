@@ -4,9 +4,9 @@
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">
-          <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+          <img class="title-dot" src="@/assets/img/icon-title-dot.webp" alt="" />
           服务体系
-          <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+          <img class="title-dot" src="@/assets/img/icon-title-dot.webp" alt="" />
         </h2>
         <p class="section-sub">全程跟进对接，沟通无障碍</p>
       </div>
@@ -21,7 +21,7 @@
           </p>
         </div>
         <div class="specialist-right">
-          <img class="specialist-photo" src="@/assets/img/service-person-pc.png" alt="专员" />
+          <img class="specialist-photo" src="@/assets/img/service-person-pc.webp" alt="专员" />
         </div>
       </div>
     </section>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import cardBg from '@/assets/img/service-card-bg-pc.png'
+import cardBg from '@/assets/img/service-card-bg-pc.webp'
 </script>
 
 <style scoped>

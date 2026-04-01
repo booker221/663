@@ -1,6 +1,6 @@
 <template>
   <section class="section">
-    <img class="values-img" src="@/assets/img/values-h5.png" alt="核心价值观 - 诚信为本 合作共赢 追求卓越" />
+    <img class="values-img" src="@/assets/img/values-h5.webp" alt="核心价值观 - 诚信为本 合作共赢 追求卓越" />
   </section>
 </template>
 

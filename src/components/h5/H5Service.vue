@@ -18,7 +18,7 @@
           <p class="specialist-sub">全程跟进对接，沟通无障碍</p>
         </div>
         <div class="specialist-right">
-          <img class="specialist-photo" src="@/assets/img/service-person-h5.png" alt="专员" />
+          <img class="specialist-photo" src="@/assets/img/service-person-h5.webp" alt="专员" />
         </div>
       </div>
     </section>
@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import cardBg from '@/assets/img/service-card-bg-h5.png'
+import cardBg from '@/assets/img/service-card-bg-h5.webp'
 </script>
 
 <style scoped>

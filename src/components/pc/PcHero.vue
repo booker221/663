@@ -1,7 +1,7 @@
 <template>
   <section class="hero">
     <div class="hero-banner-wrap">
-      <img class="hero-banner" src="@/assets/img/hero-banner-pc.png" alt="合兴集团 - 合于信 兴于行" />
+      <img class="hero-banner" src="@/assets/img/hero-banner-pc.webp" alt="合兴集团 - 合于信 兴于行" />
       <div class="about-overlay">
         <div class="about-inner">
           <h3 class="about-title">关于合兴：</h3>

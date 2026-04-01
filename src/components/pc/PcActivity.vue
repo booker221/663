@@ -2,9 +2,9 @@
   <section class="section" id="activity">
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        <img class="title-dot" src="@/assets/img/icon-title-dot.webp" alt="" />
         活动专栏
-        <img class="title-dot" src="@/assets/img/icon-title-dot.png" alt="" />
+        <img class="title-dot" src="@/assets/img/icon-title-dot.webp" alt="" />
       </h2>
     </div>
 
@@ -52,7 +52,7 @@
 
         <!-- 右侧人物图 -->
         <div class="content-right">
-          <img class="person-img" src="@/assets/img/activity-person-pc.png" alt="活动商务" />
+          <img class="person-img" src="@/assets/img/activity-person-pc.webp" alt="活动商务" />
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import actBg from '@/assets/img/activity-content-bg-pc.png'
+import actBg from '@/assets/img/activity-content-bg-pc.webp'
 import { BUSINESS_CONTACT } from '@/config/contacts.js'
 </script>
 
