@@ -52,7 +52,7 @@ import { showToast } from '@/utils/toast.js'
 const searchHandle = ref(SEARCH_CONFIG.defaultValue || '')
 
 const onInput = (e) => {
-  searchHandle.value = searchHandle.value.replace(/[^a-zA-Z0-9]/g, '')
+  searchHandle.value = searchHandle.value.replace(/[^a-zA-Z0-9@]/g, '')
 }
 
 const handleSearch = () => {
@@ -128,7 +128,7 @@ const handleSearch = () => {
   font-size: 11px;
   padding: 0 10px;
   cursor: pointer;
-  max-width: 100px;
+  width: 130px;
   transition: all 0.2s;
 }
 

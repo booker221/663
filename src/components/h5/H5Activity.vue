@@ -49,7 +49,11 @@
 
         <!-- 底部人物 + 联系方式 -->
         <div class="contact-row">
-          <p class="act-contact"><span class="contact-label">商务合作：</span><span class="contact-handle">{{ BUSINESS_CONTACT.handle }}</span>
+          <p class="act-contact">
+            <span class="contact-label">商务合作：</span>
+            <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)">
+              {{ BUSINESS_CONTACT.handle }}
+            </span>
           </p>
           <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务专员" loading="lazy" width="312" height="312" />
         </div>
@@ -60,6 +64,7 @@
 
 <script setup>
 import { BUSINESS_CONTACT } from '@/config/contacts.js'
+import { copyToClipboard } from '@/utils/copy.js'
 </script>
 
 <style scoped>
@@ -208,6 +213,11 @@ import { BUSINESS_CONTACT } from '@/config/contacts.js'
   font-weight: 500;
   line-height: 16px;
   color: #4676FF;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.contact-handle:active {
+  opacity: 0.6;
 }
 
 .person-img {

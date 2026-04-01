@@ -46,7 +46,11 @@
           </div>
 
           <p class="act-footer">其他投流方式的合作伙伴均会出台相对应的活动及奖励，欢迎业界顶尖合作伙伴前来合作。</p>
-          <p class="act-contact"><span class="contact-label">商务合作：</span><span class="contact-handle">{{ BUSINESS_CONTACT.handle }}</span>
+          <p class="act-contact">
+            <span class="contact-label">商务合作：</span>
+            <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)" title="点击复制">
+              {{ BUSINESS_CONTACT.handle }}
+            </span>
           </p>
         </div>
 
@@ -62,6 +66,7 @@
 <script setup>
 import actBg from '@/assets/images/webp/activity-content-bg-pc.webp'
 import { BUSINESS_CONTACT } from '@/config/contacts.js'
+import { copyToClipboard } from '@/utils/copy.js'
 </script>
 
 <style scoped>
@@ -179,5 +184,12 @@ import { BUSINESS_CONTACT } from '@/config/contacts.js'
   font-weight: 500;
   line-height: 24px;
   color: #4676FF;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.contact-handle:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 </style>

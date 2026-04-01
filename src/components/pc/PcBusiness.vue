@@ -69,7 +69,7 @@
 <script setup>
 import { ref } from 'vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
-import { showToast } from '@/utils/toast.js'
+import { copyToClipboard } from '@/utils/copy.js'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS
@@ -81,9 +81,7 @@ const tabs = [
 ]
 
 function copy(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('已复制: ' + text, 'success')
-  })
+  copyToClipboard(text)
 }
 </script>
 
