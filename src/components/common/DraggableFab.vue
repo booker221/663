@@ -1,0 +1,137 @@
+<template>
+  <div
+    class="draggable-fab"
+    :style="{ top: pos.y + 'px', left: pos.x + 'px' }"
+    @mousedown="onDragStart"
+    @touchstart.passive="onDragStart"
+    @click="onClick"
+  >
+    <slot />
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const props = defineProps({
+  href: { type: String, default: '#' },
+  defaultRight: { type: Number, default: 24 },
+  defaultBottom: { type: Number, default: 80 },
+})
+
+// 初始位置（右下角换算为 left/top）
+const pos = ref({ x: 0, y: 0 })
+const dragging = ref(false)
+const hasDragged = ref(false)
+
+// 拖拽状态
+let startX = 0, startY = 0
+let startPosX = 0, startPosY = 0
+const FAB_SIZE = 80 // 浮球大小（px）
+
+function initPos() {
+  pos.value.x = window.innerWidth - FAB_SIZE - props.defaultRight
+  pos.value.y = window.innerHeight - FAB_SIZE - props.defaultBottom
+}
+
+function getClientXY(e) {
+  if (e.touches) return { x: e.touches[0].clientX, y: e.touches[0].clientY }
+  return { x: e.clientX, y: e.clientY }
+}
+
+function onDragStart(e) {
+  dragging.value = true
+  hasDragged.value = false
+  const { x, y } = getClientXY(e)
+  startX = x
+  startY = y
+  startPosX = pos.value.x
+  startPosY = pos.value.y
+
+  window.addEventListener('mousemove', onDragMove)
+  window.addEventListener('mouseup', onDragEnd)
+  window.addEventListener('touchmove', onDragMove, { passive: false })
+  window.addEventListener('touchend', onDragEnd)
+}
+
+function onDragMove(e) {
+  if (!dragging.value) return
+  if (e.cancelable) e.preventDefault()
+
+  const { x, y } = getClientXY(e)
+  const dx = x - startX
+  const dy = y - startY
+
+  // 超过 5px 才算拖动
+  if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasDragged.value = true
+
+  pos.value.x = Math.max(0, Math.min(window.innerWidth - FAB_SIZE, startPosX + dx))
+  pos.value.y = Math.max(0, Math.min(window.innerHeight - FAB_SIZE, startPosY + dy))
+}
+
+function onDragEnd() {
+  dragging.value = false
+  window.removeEventListener('mousemove', onDragMove)
+  window.removeEventListener('mouseup', onDragEnd)
+  window.removeEventListener('touchmove', onDragMove)
+  window.removeEventListener('touchend', onDragEnd)
+
+  // 松手后吸附到左或右边缘
+  const mid = window.innerWidth / 2
+  if (pos.value.x + FAB_SIZE / 2 > mid) {
+    // 吸右
+    pos.value.x = window.innerWidth - FAB_SIZE - 16
+  } else {
+    // 吸左
+    pos.value.x = 16
+  }
+}
+
+function onClick() {
+  // 只有没拖动时才触发跳转
+  if (!hasDragged.value) {
+    window.open(props.href, '_blank')
+  }
+}
+
+// 窗口大小变化时重新计算，防止跑出屏幕
+function onResize() {
+  pos.value.x = Math.min(pos.value.x, window.innerWidth - FAB_SIZE)
+  pos.value.y = Math.min(pos.value.y, window.innerHeight - FAB_SIZE)
+}
+
+onMounted(() => {
+  initPos()
+  window.addEventListener('resize', onResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', onResize)
+})
+</script>
+
+<style scoped>
+.draggable-fab {
+  position: fixed;
+  width: 80px;
+  height: 77.333px;
+  border-radius: 45.333px;
+  background: linear-gradient(180deg, #FA4F24 0%, #D90D0D 50%, #FA4F24 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  z-index: 999;
+  box-shadow: 0 6px 24px rgba(217, 13, 13, 0.4);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: box-shadow 0.2s;
+}
+
+.draggable-fab:active {
+  cursor: grabbing;
+  box-shadow: 0 10px 32px rgba(217, 13, 13, 0.55);
+}
+</style>

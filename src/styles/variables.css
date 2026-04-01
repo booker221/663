@@ -1,0 +1,61 @@
+/* ===== 共享 CSS 变量 ===== */
+:root {
+  --primary: #e63027;
+  --primary-dark: #c41f17;
+  --primary-light: #ff6b5a;
+  --primary-bg: rgba(230, 48, 39, 0.06);
+  --blue: #3d7cff;
+  --blue-light: #41b8ff;
+  --gold: #d4a853;
+  --gold-light: #f0d68a;
+  --text: #2c3e50;
+  --text-muted: #8a96a5;
+  --bg: #eef3fa;
+  --white: #ffffff;
+  --card-border: rgba(180, 200, 230, 0.25);
+  --shadow: 0 4px 20px rgba(130, 160, 200, 0.12);
+  --shadow-lg: 0 8px 32px rgba(130, 160, 200, 0.18);
+  --radius: 16px;
+  --radius-lg: 20px;
+}
+
+/* ===== 全局重置 ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", -apple-system, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ===== PC 板块标题统一样式 ===== */
+.pc-page .section-title {
+  color: #414A65 !important;
+  font-family: "PingFang SC", sans-serif !important;
+  font-size: 44px !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  line-height: normal !important;
+  margin: 0;
+}
