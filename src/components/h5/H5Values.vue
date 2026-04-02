@@ -10,7 +10,6 @@
 <style scoped>
 .section {
   margin-bottom: 12px;
-  margin-top: 40px;
 }
 
 .values-img {
