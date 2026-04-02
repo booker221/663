@@ -28,6 +28,11 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+#app {
+  overflow-x: hidden;
 }
 
 body {

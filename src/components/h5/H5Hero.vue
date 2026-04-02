@@ -19,9 +19,6 @@
 
 <style scoped>
 .hero {
-  /* 突破父容器 16px 左右 padding，实现全宽 */
-  margin-left: -16px;
-  margin-right: -16px;
   margin-bottom: 12px;
 }
 

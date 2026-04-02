@@ -80,6 +80,8 @@ const handleSearch = () => {
   left: 0;
   z-index: 100;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .brand {

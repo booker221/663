@@ -15,8 +15,8 @@ export const BUSINESS_CONTACT = {
 
 // ✅ 联系客服 / 投诉建议浮球跳转
 export const CUSTOMER_SERVICE = {
-  handle: '@hexing663',
-  url: 'https://t.me/hexing663',
+  handle: '@hx_zs888',
+  url: 'https://t.me/hx_zs888',
 }
 
 // ✅ 投诉接受
