@@ -38,7 +38,7 @@
 
         <div class="act-block">
           <p class="act-label"><span class="label-desc">【活动四】资源扶持计划</span></p>
-          <p class="act-line">给予任何想要与合兴一起攀登顶峰的伙伴帮助及支持，符合以下规则</p>
+          <p class="act-line"> <span class="label-desc">给予任何想要与合兴一起攀登顶峰的伙伴帮助及支持，符合以下规则</span></p>
           <p class="act-line">1，符合以上条件均可联系合兴工作人员申领，经审核通过直接发放</p>
           <p class="act-line">2，每一位机房通道，仅能享受一次奖励若有违规者，将不享受此优惠</p>
           <p class="act-line">3，任何违反活动规则可能被取消资格，连带引荐人的相关利益</p>
@@ -145,7 +145,13 @@ import { copyToClipboard } from '@/utils/copy.js'
 
 /* 活动标签描述文字 - 深色 */
 .label-desc {
-  color: #414A65;
+ color: #414A65;
+font-family: "PingFang SC";
+font-size: 12px;
+font-style: normal;
+font-weight: 600;
+line-height: 16px; /* 133.333% */
+letter-spacing: 1.2px;
 }
 
 .act-line {

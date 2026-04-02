@@ -2,7 +2,8 @@
   <section class="section" id="activity">
     <div class="section-header">
       <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28"
+          height="28" />
         活动专栏
         <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
       </h2>
@@ -56,7 +57,8 @@
 
         <!-- 右侧人物图 -->
         <div class="content-right">
-          <img class="person-img" src="@/assets/images/webp/activity-person-pc.webp" alt="活动商务负责人" loading="lazy" width="1000" height="1000" />
+          <img class="person-img" src="@/assets/images/webp/activity-person-pc.webp" alt="活动商务负责人" loading="lazy"
+            width="1000" height="1000" />
         </div>
       </div>
     </div>
@@ -70,13 +72,11 @@ import { copyToClipboard } from '@/utils/copy.js'
 </script>
 
 <style scoped>
-.section {
-   
-}
+.section {}
 
 .section-header {
   text-align: center;
- margin-bottom: 40px;
+  margin-bottom: 40px;
   margin-top: 60px;
 }
 
@@ -100,6 +100,9 @@ import { copyToClipboard } from '@/utils/copy.js'
 
 .content-left {
   flex: 1;
+  max-width: 580px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   /* padding: 40px; */
 }
 
@@ -130,6 +133,7 @@ import { copyToClipboard } from '@/utils/copy.js'
 
 .act-block {
   margin-bottom: 12px;
+  letter-spacing: 1.6px;
 }
 
 .act-label {
@@ -145,6 +149,7 @@ import { copyToClipboard } from '@/utils/copy.js'
   line-height: 1.8;
   margin: 0;
 }
+
 .red {
   color: #FF5E5E;
   font-weight: 600;
@@ -156,10 +161,12 @@ import { copyToClipboard } from '@/utils/copy.js'
 }
 
 .act-footer {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.7;
-  margin: 12px 0 10px;
+   font-family: "PingFang SC";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  margin-bottom: 8px;
 }
 
 .act-contact {
