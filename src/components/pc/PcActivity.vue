@@ -26,7 +26,7 @@
             <p class="act-label">【活动二】优质机房搭建深度合作</p>
             <p class="act-line ">第一名奖励：<span class="red">3888$</span></p>
             <p class="act-line ">第二名奖励：<span class="red">2888$</span></p>
-            <p class="act-line red">第三名奖励：1888$</p>
+            <p class="act-line ">第三名奖励：<span class="red">1888$</span></p>
           </div>
 
           <div class="act-block">
