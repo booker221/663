@@ -60,9 +60,6 @@
         </div>
       </div>
     </div>
-
-    <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy" width="2320" height="192" />
   </section>
 </template>
 

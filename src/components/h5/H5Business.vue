@@ -70,8 +70,6 @@
         </div>
       </div>
     </div>
-    <!-- 合作横幅 -->
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" loading="lazy" width="646" height="176" />
   </section>
 </template>
 

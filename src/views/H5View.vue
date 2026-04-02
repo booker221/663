@@ -4,6 +4,8 @@
     <H5Hero />
     <H5Values />
     <H5Business />
+    <H5Guarantee />
+    <img class="collab-banner-h5" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" loading="lazy" width="646" height="176" />
     <H5Activity />
     <H5Service />
     <H5Complaint />
@@ -23,6 +25,7 @@ import H5Topbar from '../components/h5/H5Topbar.vue'
 import H5Hero from '../components/h5/H5Hero.vue'
 import H5Values from '../components/h5/H5Values.vue'
 import H5Business from '../components/h5/H5Business.vue'
+import H5Guarantee from '../components/h5/H5Guarantee.vue'
 import H5Activity from '../components/h5/H5Activity.vue'
 import H5Service from '../components/h5/H5Service.vue'
 import H5Complaint from '../components/h5/H5Complaint.vue'
@@ -53,5 +56,11 @@ import H5Complaint from '../components/h5/H5Complaint.vue'
   letter-spacing: 0.3px;
   white-space: nowrap;
   pointer-events: none;
+}
+
+.collab-banner-h5 {
+  width: 95%;
+  display: block;
+  margin: 12px auto;
 }
 </style>

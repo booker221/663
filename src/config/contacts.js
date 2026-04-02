@@ -48,3 +48,23 @@ export const SEARCH_CONFIG = {
   successText: '此飞机号属于合兴一路向前招商人员',
   failText: '此飞机不属于合兴一路向前招商人员，请谨慎被骗',
 }
+
+// ✅ 担保验证 - 官方认证账户列表
+export const GUARANTEE_ACCOUNTS = [
+  '@qiyu16168',
+  '@Awang6866',
+  '@Qin789789',
+  '@DF98888888',
+  '@laowang168888',
+  '@xiaofeng0900',
+  '@AQ888866666',
+  '@xiaoyu8829',
+  '@all16816888',
+  '@xiaocheng95270',
+  '@pk9888888',
+  '@lan52085',
+  '@ksf6158',
+  '@hx_zs663',
+]
+
+

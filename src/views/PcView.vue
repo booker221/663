@@ -4,6 +4,8 @@
     <PcHero />
     <PcValues />
     <PcBusiness />
+    <PcGuarantee />
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy" width="2320" height="192" />
     <PcActivity />
     <PcService />
     <PcComplaint />
@@ -23,6 +25,7 @@ import PcTopbar from '../components/pc/PcTopbar.vue'
 import PcHero from '../components/pc/PcHero.vue'
 import PcValues from '../components/pc/PcValues.vue'
 import PcBusiness from '../components/pc/PcBusiness.vue'
+import PcGuarantee from '../components/pc/PcGuarantee.vue'
 import PcActivity from '../components/pc/PcActivity.vue'
 import PcService from '../components/pc/PcService.vue'
 import PcComplaint from '../components/pc/PcComplaint.vue'
@@ -53,5 +56,11 @@ import PcComplaint from '../components/pc/PcComplaint.vue'
   letter-spacing: 0.5px;
   white-space: nowrap;
   pointer-events: none;
+}
+
+.collab-banner {
+  width: 100%;
+  display: block;
+  margin-top: 16px;
 }
 </style>
