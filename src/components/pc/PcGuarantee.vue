@@ -115,17 +115,23 @@ const handleVerify = () => {
 
 /* 标题 */
 .guarantee-title {
+  color: #414A65;
+  text-align: center;
   font-family: "PingFang SC", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--blue);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
   margin: 0 0 8px;
 }
 
 .guarantee-subtitle {
+  color: #414A65;
   font-family: "PingFang SC", sans-serif;
-  font-size: 13px;
-  color: #6C7BA8;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
   margin: 0 0 24px;
 }
 
