@@ -9,8 +9,8 @@ import avatarHema from '@/assets/images/webp/avatar-hema.webp'
 
 // ✅ 商务合作（活动区 + FAB 按钮跳转）
 export const BUSINESS_CONTACT = {
-  handle: '@hexing663',
-  url: 'https://t.me/hexing663',
+  handle: '@hx_zs888',
+  url: 'https://t.me/hx_zs888',
 }
 
 // ✅ 联系客服 / 投诉建议浮球跳转

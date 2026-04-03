@@ -20,6 +20,7 @@
           <p class="act-line">提供&gt; <span class="red">1000万</span>量的机房，奖励：<span class="red">2888$</span></p>
           <p class="act-line">提供&gt; <span class="red">1500万</span>量的机房，奖励：<span class="red">5888$</span></p>
           <p class="act-line">提供&gt; <span class="red">3000万</span>量的机房，奖励：<span class="red">8888$</span></p>
+          <p class="act-line">各个渠道的品质制定分类以（量+价格+成本）后计算奖励，联系663客服登记、查询</p>
         </div>
 
         <div class="act-block">
