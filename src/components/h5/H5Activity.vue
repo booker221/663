@@ -33,7 +33,7 @@
         <div class="act-block">
           <p class="act-label"><span class="label-desc">【活动三】引荐资源红包</span></p>
           <p class="act-line">1，合作伙伴推荐靠谱机房</p>
-          <p class="act-line">2，机房头像、名称改为：<span class="highlight red">【合兴】XXX</span></p>
+          <p class="act-line">2，深度合作机房，TG签名添加：<span class="highlight red">【合兴】优秀合作伙伴，指定官网：663.com</span></p>
           <p class="act-line">3，频道发布信息成功引荐真实机房</p>
         </div>
 
