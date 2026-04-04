@@ -1,6 +1,9 @@
 import avatarDimao from '@/assets/images/webp/avatar-dimao.webp'
 import avatarTaiyang from '@/assets/images/webp/avatar-taiyang.webp'
 import avatarHema from '@/assets/images/webp/avatar-hema.webp'
+import avatarXiaoxiong from '@/assets/images/webp/avatar-xiaoxiong.webp'
+import avatarHehua from '@/assets/images/webp/avatar-hehua.webp'
+import avatarHexing from '@/assets/images/webp/avatar-hexing.webp'
 
 /**
  * 合兴落地页 - 联系方式统一配置
@@ -36,9 +39,9 @@ export const PROMOTE_PARTNERS = [
 
 // ✅ 三方招商部人员列表
 export const THIRD_PARTNERS = [
-  { name: '迪猫', handle: '@hx_zs888', url: 'https://t.me/hx_zs888', avatar: avatarDimao },
-  { name: '太阳', handle: '@hexing95277', url: 'https://t.me/hexing95277', avatar: avatarTaiyang },
-  { name: '河马', handle: '@hm777321', url: 'https://t.me/hm777321', avatar: avatarHema },
+  { name: '小熊', handle: '@xiiiong', url: 'https://t.me/xiiiong', avatar: avatarXiaoxiong },
+  { name: '荷花', handle: '@newhexing', url: 'https://t.me/newhexing', avatar: avatarHehua },
+  { name: '合兴', handle: '@HX_88888', url: 'https://t.me/HX_88888', avatar: avatarHexing },
 ]
 
 // ✅ 搜索核验配置
