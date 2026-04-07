@@ -4,11 +4,12 @@
       <h2 class="section-title"><span class="dot">◆</span> 活动专栏</h2>
     </div>
 
-    
+
 
     <div class="activity-card">
       <!-- 背景图 -->
-    <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" loading="lazy" width="734" height="1444" />
+      <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" loading="lazy" width="734"
+        height="1444" />
 
       <!-- 内容 -->
       <div class="card-content">
@@ -50,13 +51,29 @@
 
         <!-- 底部人物 + 联系方式 -->
         <div class="contact-row">
-          <p class="act-contact">
-            <span class="contact-label">商务合作：</span>
-            <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)">
-              {{ BUSINESS_CONTACT.handle }}
-            </span>
-          </p>
-          <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务专员" loading="lazy" width="312" height="312" />
+          <div class="contact-info">
+            <p class="act-contact">
+              <span class="contact-label">商务合作：</span>
+              <br>
+              <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)">
+                {{ BUSINESS_CONTACT.handle }}
+                <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制"
+                  @click="copyToClipboard(BUSINESS_CONTACT.handle)" width="16" height="16" />
+
+              </span>
+            </p>
+            <p class="act-contact">
+              <span class="contact-label">TG招商群：</span>
+              <br>
+              <span class="contact-handle" @click="copyToClipboard(TG_RECRUIT_GROUP.url)">
+                {{ TG_RECRUIT_GROUP.url }}
+                <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制"
+                  @click="copyToClipboard(TG_RECRUIT_GROUP.url)" width="16" height="16" />
+              </span>
+            </p>
+          </div>
+          <img class="person-img" src="@/assets/images/webp/activity-person-h5.webp" alt="活动商务专员" loading="lazy"
+            width="312" height="312" />
         </div>
       </div>
     </div>
@@ -64,7 +81,7 @@
 </template>
 
 <script setup>
-import { BUSINESS_CONTACT } from '@/config/contacts.js'
+import { BUSINESS_CONTACT, TG_RECRUIT_GROUP } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 </script>
 
@@ -86,7 +103,7 @@ import { copyToClipboard } from '@/utils/copy.js'
   align-items: center;
   gap: 6px;
   margin-left: 12px;
-  
+
 }
 
 .dot {
@@ -146,13 +163,14 @@ import { copyToClipboard } from '@/utils/copy.js'
 
 /* 活动标签描述文字 - 深色 */
 .label-desc {
- color: #414A65;
-font-family: "PingFang SC";
-font-size: 12px;
-font-style: normal;
-font-weight: 600;
-line-height: 16px; /* 133.333% */
-letter-spacing: 1.2px;
+  color: #414A65;
+  font-family: "PingFang SC";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px;
+  /* 133.333% */
+  letter-spacing: 1.2px;
 }
 
 .act-line {
@@ -192,35 +210,50 @@ letter-spacing: 1.2px;
 /* 底部联系 + 人物 */
 .contact-row {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   margin-top: 6px;
+  position: relative;
+  height: 120px;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .act-contact {
   font-size: 16px;
   font-weight: 500;
-  margin: 0 0 14px;
-  line-height: 16px;
+  margin: 0 0 8px;
+  line-height: 22px;
+  word-break: break-all;
 }
 
 .contact-label {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 16px;
-  font-style: normal;
+  font-family: PingFang SC;
   font-weight: 500;
-  line-height: 16px;
+  font-style: Medium;
+  font-size: 14px;
+  leading-trim: NONE;
+  line-height: 20px;
+  letter-spacing: 0%;
+
   color: #8826FF;
 }
 
 .contact-handle {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 16px;
-  font-style: normal;
+  font-family: PingFang SC;
   font-weight: 500;
-  line-height: 16px;
+  font-style: Medium;
+  font-size: 14px;
+  leading-trim: NONE;
+  line-height: 20px;
+  letter-spacing: 0%;
   color: #4676FF;
-  -webkit-tap-highlight-color: transparent;
+  display: flex;
+
+
 }
 
 .contact-handle:active {
@@ -228,10 +261,25 @@ letter-spacing: 1.2px;
 }
 
 .person-img {
-  width: 48%;
-  max-width: 200px;
-  object-fit: contain;
-  object-position: bottom;
-  flex-shrink: 0;
+  width: 148px;
+  height: 148px;
+  opacity: 1;
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+}
+
+.copy-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  margin-top: 2px;
+  vertical-align: middle;
+  opacity: 0.7;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.copy-icon:active {
+  opacity: 0.4;
 }
 </style>

@@ -16,6 +16,12 @@ export const BUSINESS_CONTACT = {
   url: 'https://t.me/hx_zs888',
 }
 
+// ✅ TG招商群
+export const TG_RECRUIT_GROUP = {
+  label: 'TG招商群',
+  url: 'https://t.me/hexing_zs663',
+}
+
 // ✅ 联系客服 / 投诉建议浮球跳转
 export const CUSTOMER_SERVICE = {
   handle: '@hx_zs888',

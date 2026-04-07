@@ -33,7 +33,7 @@
 
           <div class="act-block">
             <p class="act-label">【活动三】引荐资源红包</p>
-            <p class="act-line">1，合作伙伴推荐靠谱机房</p> 
+            <p class="act-line">1，合作伙伴推荐靠谱机房</p>
             <p class="act-line">2，深度合作机房，TG签名添加：<span class="highlight red">【合兴】优秀合作伙伴，指定官网：663.com</span></p>
             <p class="act-line">3，频道发布信息成功引荐真实机房</p>
           </div>
@@ -53,6 +53,16 @@
             <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)" title="点击复制">
               {{ BUSINESS_CONTACT.handle }}
             </span>
+            <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制"
+              @click="copyToClipboard(BUSINESS_CONTACT.handle)" width="20" height="20" />
+          </p>
+          <p class="act-contact">
+            <span class="contact-label">TG招商群：</span>
+            <span class="contact-handle" @click="copyToClipboard(TG_RECRUIT_GROUP.url)" title="点击复制">
+              {{ TG_RECRUIT_GROUP.url }}
+            </span>
+            <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制"
+              @click="copyToClipboard(TG_RECRUIT_GROUP.url)" width="20" height="20" />
           </p>
         </div>
 
@@ -68,7 +78,7 @@
 
 <script setup>
 import actBg from '@/assets/images/webp/activity-content-bg-pc.webp'
-import { BUSINESS_CONTACT } from '@/config/contacts.js'
+import { BUSINESS_CONTACT, TG_RECRUIT_GROUP } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 </script>
 
@@ -163,7 +173,7 @@ import { copyToClipboard } from '@/utils/copy.js'
 }
 
 .act-footer {
-   font-family: "PingFang SC";
+  font-family: "PingFang SC";
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -174,7 +184,8 @@ import { copyToClipboard } from '@/utils/copy.js'
 .act-contact {
   font-size: 14px;
   font-weight: 700;
-  margin: 0;
+  margin-top: 10px;
+  display: flex;
 }
 
 .contact-label {
@@ -195,10 +206,27 @@ import { copyToClipboard } from '@/utils/copy.js'
   color: #4676FF;
   cursor: pointer;
   transition: opacity 0.2s;
+
+
 }
 
 .contact-handle:hover {
   opacity: 0.8;
   text-decoration: underline;
+}
+
+.copy-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+  margin-top: 3px;
+  cursor: pointer;
+  vertical-align: middle;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.copy-icon:hover {
+  opacity: 1;
 }
 </style>
