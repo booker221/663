@@ -214,7 +214,8 @@ import { copyToClipboard } from '@/utils/copy.js'
   justify-content: space-between;
   margin-top: 6px;
   position: relative;
-  height: 120px;
+  min-height: 150px;
+  padding-bottom: 10px;
 }
 
 .contact-info {

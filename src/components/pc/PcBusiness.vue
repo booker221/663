@@ -37,9 +37,9 @@
 
       
 
-      <!-- 三方招商部 -->
+      <!-- 支付通道招商部 -->
       <div class="dept-block">
-        <div class="dept-label">三方招商部</div>
+        <div class="dept-label">支付通道招商部</div>
         <div class="partner-list">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <div class="partner-left">
@@ -74,7 +74,7 @@ const thirdPartners = THIRD_PARTNERS
 const activeTab = ref('promote')
 const tabs = [
   { key: 'promote', label: '推广招商部' },
-  { key: 'third', label: '三方招商部' },
+  { key: 'third', label: '支付通道招商部' },
 ]
 
 function copy(text) {

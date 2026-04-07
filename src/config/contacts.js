@@ -43,7 +43,7 @@ export const PROMOTE_PARTNERS = [
   { name: '河马', handle: '@hm777321', url: 'https://t.me/hm777321', avatar: avatarHema },
 ]
 
-// ✅ 三方招商部人员列表
+// ✅ 支付通道招商部人员列表
 export const THIRD_PARTNERS = [
   { name: '小熊', handle: '@xiiiong', url: 'https://t.me/xiiiong', avatar: avatarXiaoxiong },
   { name: '荷花', handle: '@newhexing', url: 'https://t.me/newhexing', avatar: avatarHehua },
