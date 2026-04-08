@@ -128,14 +128,14 @@ onUnmounted(() => {
   width: var(--fab-w, 80px);
   height: var(--fab-h, 77.333px);
   border-radius: var(--fab-r, 43.5px);
-  background: linear-gradient(180deg, #FA4F24 0%, #D90D0D 50%, #FA4F24 100%);
+  background: linear-gradient(180deg, #FFB676 0%, #FF4D00 59.67%, #FF9C45 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
   z-index: 999;
-  box-shadow: 0 6px 24px rgba(217, 13, 13, 0.4);
+  box-shadow: 0 6px 24px rgba(255, 77, 0, 0.4);
   cursor: grab;
   user-select: none;
   touch-action: none;

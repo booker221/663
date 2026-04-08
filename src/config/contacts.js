@@ -22,7 +22,7 @@ export const TG_RECRUIT_GROUP = {
   url: 'https://t.me/hexing_zs663',
 }
 
-// ✅ 联系客服 / 投诉建议浮球跳转
+// ✅ 联系客服 / 福利客服浮球跳转
 export const CUSTOMER_SERVICE = {
   handle: '@hx_zs888',
   url: 'https://t.me/hx_zs888',
@@ -73,7 +73,7 @@ export const GUARANTEE_ACCOUNTS = [
   '@pk9888888',
   '@lan52085',
   '@ksf6158',
-  '@hx_zs663',  
+  '@hx_zs663',
   '@kafei128',
   '@kunkun156688',
   '@pTmT9998',

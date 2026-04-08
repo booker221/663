@@ -5,15 +5,17 @@
     <H5Values />
     <H5Business />
     <H5Guarantee />
-    <img class="collab-banner-h5" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" loading="lazy" width="646" height="176" />
+    <img class="collab-banner-h5" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" loading="lazy"
+      width="646" height="176" />
     <H5Activity />
     <H5Service />
     <H5Complaint />
   </div>
   <!-- 可拖拽浮球 -->
-  <DraggableFab :href="CUSTOMER_SERVICE.url" :default-right="16" :default-bottom="80" :fab-width="48" :fab-height="46.4">
+  <DraggableFab :href="CUSTOMER_SERVICE.url" :default-right="16" :default-bottom="80" :fab-width="48"
+    :fab-height="46.4">
     <img class="fab-icon" :src="complaintIcon" alt="" />
-    <span class="fab-label">投诉建议</span>
+    <span class="fab-label">福利客服</span>
   </DraggableFab>
 </template>
 

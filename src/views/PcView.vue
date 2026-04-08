@@ -5,14 +5,15 @@
     <PcValues />
     <PcBusiness />
     <PcGuarantee />
-    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy" width="2320" height="192" />
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy"
+      width="2320" height="192" />
     <PcActivity />
     <PcService />
     <PcComplaint />
     <!-- 可拖拽浮球 -->
     <DraggableFab :href="CUSTOMER_SERVICE.url">
       <img class="fab-icon" :src="complaintIcon" alt="" />
-      <span class="fab-label">投诉建议</span>
+      <span class="fab-label">福利客服</span>
     </DraggableFab>
   </div>
 </template>
