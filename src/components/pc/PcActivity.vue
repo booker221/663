@@ -75,7 +75,7 @@ import titleDotIcon from '@/assets/images/webp/icon-title-dot.webp'
 
 const numIcons = [num1, num2, num3, num4, num5, num6]
 
-const activeIndex = ref(0)
+const activeIndex = ref(-1)
 const toggleActivity = (index) => {
   activeIndex.value = activeIndex.value === index ? -1 : index
 }
