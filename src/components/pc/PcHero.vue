@@ -38,7 +38,7 @@ import bannerUrl from '@/assets/images/webp/hero-banner-pc.webp'
 
 .about-overlay {
   position: absolute;
-  bottom: 25px;
+  bottom: 10px;
   left: 0;
   right: 0;
 }
@@ -49,17 +49,22 @@ import bannerUrl from '@/assets/images/webp/hero-banner-pc.webp'
 }
 
 .about-title {
-  font-size: 14px;
+  color: #414A65;
+
+  font-family: Alibaba PuHuiTi 3.0;
   font-weight: 700;
-  color: var(--text);
-  margin: 0 0 8px;
+  font-size: 22px;
+  line-height: 30px;
+  letter-spacing: 0%;
 }
 
 .about-text {
-  font-size: 13px;
-  line-height: 2;
-  color: #4a5568;
-  margin: 0;
+  color: #414A65;
+  font-family: Alibaba PuHuiTi 3.0;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 30px;
+  letter-spacing: 0%;
 }
 
 .hl {
