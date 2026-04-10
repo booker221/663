@@ -22,6 +22,13 @@ export const TG_RECRUIT_GROUP = {
   url: 'https://t.me/hexing_zs663',
 }
 
+// ✅ TG官方频道（活动区按钮跳转）
+export const TG_OFFICIAL_CHANNEL = {
+  label: 'TG官方频道',
+  handle: '@hexing',
+  url: 'https://t.me/hexing',
+}
+
 // ✅ 联系客服 / 福利客服浮球跳转
 export const CUSTOMER_SERVICE = {
   handle: '@hx_zs888',

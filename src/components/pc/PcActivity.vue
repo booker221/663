@@ -30,7 +30,9 @@
               <div class="accordion-content" v-show="activeIndex === index" v-html="item.content"></div>
             </div>
           </div>
-
+          <a :href="TG_OFFICIAL_CHANNEL.url" target="_blank" rel="noopener noreferrer" class="tg-button-link">
+            <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="192" height="48" />
+          </a>
           <p class="act-contact">
             <span class="contact-label">商务合作：</span>
             <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)" title="点击复制">
@@ -61,7 +63,7 @@
 <script setup>
 import { ref } from 'vue'
 import actBg from '@/assets/images/webp/activity-content-bg-pc.webp'
-import { BUSINESS_CONTACT, TG_RECRUIT_GROUP } from '@/config/contacts.js'
+import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
 import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
@@ -463,5 +465,22 @@ const activities = ref([
 
 .copy-icon:hover {
   opacity: 1;
+}
+
+.tg-button-link {
+  display: inline-block;
+  margin-bottom: 10px;
+  transition: opacity 0.2s;
+}
+
+.tg-button-link:hover {
+  opacity: 0.85;
+}
+
+.tg-button-img {
+  width: 192px;
+  height: 48px;
+  display: block;
+  object-fit: contain;
 }
 </style>

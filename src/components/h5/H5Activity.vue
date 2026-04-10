@@ -32,6 +32,9 @@
         <!-- 底部人物 + 联系方式 -->
         <div class="contact-row">
           <div class="contact-info">
+            <a :href="TG_OFFICIAL_CHANNEL.url" target="_blank" rel="noopener noreferrer" class="tg-button-link">
+              <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="128" height="32" />
+            </a>
             <p class="act-contact">
               <span class="contact-label">商务合作：</span>
               <br>
@@ -59,7 +62,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { BUSINESS_CONTACT, TG_RECRUIT_GROUP } from '@/config/contacts.js'
+import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
 import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
@@ -477,5 +480,22 @@ const activities = ref([
 
 .copy-icon:active {
   opacity: 0.4;
+}
+
+.tg-button-link {
+  display: inline-block;
+  margin-bottom: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tg-button-link:active {
+  opacity: 0.7;
+}
+
+.tg-button-img {
+  width: 128px;
+  height: 32px;
+  display: block;
+  object-fit: contain;
 }
 </style>
