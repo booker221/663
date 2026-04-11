@@ -85,6 +85,10 @@ export const GUARANTEE_ACCOUNTS = [
   '@kunkun156688',
   '@pTmT9998',
   '@xiaotian3749',
+  '@hx_dm888',
+  '@sangbiao888',
+  '@Xiangfeng88889999',
+  '@Laok918888'
 ]
 
 
