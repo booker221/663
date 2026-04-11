@@ -63,6 +63,7 @@
 <script setup>
 import { ref } from 'vue'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
+import { activities } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
 import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
@@ -80,95 +81,8 @@ const activeIndex = ref(-1)
 const toggleActivity = (index) => {
   activeIndex.value = activeIndex.value === index ? -1 : index
 }
-
-const activities = ref([
-  {
-    title: '首单奖励',
-    content: `
-      <p class="act-line bold">新、老合作方每月完成首次真实跑量（量+成本）</p>
-      <p class="act-line bold">三网实卡/虚卡/IM首单奖励:</p>
-      <div class="act-flex-between"><span class="label">5W:</span> <span class="amount">188$</span></div>
-      <div class="act-flex-between"><span class="label">10W:</span> <span class="amount">288$</span></div>
-      <div class="act-flex-between"><span class="label">20W:</span> <span class="amount">388$</span></div>
-      <div class="act-flex-between"><span class="label">50W:</span> <span class="amount">688$</span></div>
-      <div class="act-flex-between"><span class="label">100W:</span> <span class="amount">1888$</span></div>
-      <p class="act-line red mt-2">达标奖励:</p>
-      <p class="act-line red">满足条件，奖金翻倍！！</p>
-    `
-  },
-  {
-    title: '拉新奖励',
-    content: `
-      <p class="act-line bold">成功引入有效合作渠道并完成对接</p>
-      <div class="act-flex-between mt-2"><span class="label">首个有效渠道奖励:</span> <span class="amount">188$</span></div>
-      <p class="act-line bold mt-2">连续拉新奖励:</p>
-      <div class="act-flex-three"><span class="col-left">3个渠道:</span><span class="col-mid">额外</span><span class="amount">588$</span></div>
-      <div class="act-flex-three"><span class="col-left">5个渠道:</span><span class="col-mid">额外</span><span class="amount">688$</span></div>
-      <div class="act-flex-three"><span class="col-left">10个渠道:</span><span class="col-mid">额外</span><span class="amount">1888$</span></div>
-      <p class="act-line bold mt-2">高质量实卡渠道:</p>
-      <p class="act-line">额外加奖 <span class="amount">888$-1888$</span></p>
-    `
-  },
-  {
-    title: '冲刺奖励',
-    content: `
-      <p class="act-line bold">短周期爆发（3天/7天）</p>
-      <p class="act-line red mt-2 flex-center-y"><img src="${titleDotIcon}" class="inline-dot" alt="" /> 3天冲刺</p>
-      <div class="act-flex-between"><span class="label">100W:</span> <span class="amount">1888$</span></div>
-      <div class="act-flex-between"><span class="label">300W:</span> <span class="amount">3888$</span></div>
-      <div class="act-flex-between"><span class="label">超额冲刺:</span> <span class="amount">888$</span></div>
-      <p class="act-line red mt-2 flex-center-y"><img src="${titleDotIcon}" class="inline-dot" alt="" /> 7天冲刺:</p>
-      <div class="act-flex-between"><span class="label">800W:</span> <span class="amount">1888$</span></div>
-      <div class="act-flex-between"><span class="label">1000W:</span> <span class="amount">18888$</span></div>
-      <p class="act-line red mt-2 flex-center-y"><img src="${titleDotIcon}" class="inline-dot" alt="" /> 106渠道高质量冲刺:</p>
-      <div class="act-flex-between"><span class="label">3天300W:</span> <span class="amount">888$</span></div>
-      <div class="act-flex-between"><span class="label">7天800W:</span> <span class="amount">1888$</span></div>
-      <p class="act-line mt-2">计算方式:</p>
-      <p class="act-line">实卡/虚卡/106/IM/通道</p>
-      <p class="act-line">量+成本+稳定性</p>
-    `
-  },
-  {
-    title: '流水提成奖励',
-    content: `
-      <p class="act-line bold">按打款流水阶梯提成</p>
-      <div class="act-flex-between mt-2"><span class="label">10万:</span> <span class="amount">1888$</span></div>
-      <div class="act-flex-between"><span class="label">30万:</span> <span class="amount">3888$</span></div>
-      <div class="act-flex-between"><span class="label">50万:</span> <span class="amount">6888$</span></div>
-      <div class="act-flex-between"><span class="label">100万:</span> <span class="amount">18888$</span></div>
-      <div class="act-flex-between"><span class="label">200万+:</span> <span class="red-text">额外返点+高额奖金！</span></div>
-      <p class="act-line mt-2">附加奖励:</p>
-      <div class="act-flex"><span class="label">稳定流水:</span> <span class="red-text">+10%奖励</span></div>
-    `
-  },
-  {
-    title: '排行榜奖励',
-    content: `
-      <p class="act-line bold">拉新/流水/投量排名</p>
-      <div class="act-flex-between mt-2"><span class="label">第1名:</span> <span class="amount">3888$</span></div>
-      <div class="act-flex-between"><span class="label">第2名:</span> <span class="amount">2888$</span></div>
-      <div class="act-flex-between"><span class="label">第3名:</span> <span class="amount">1888$</span></div>
-      <div class="act-flex-between"><span class="label">第4-10名:</span> <span class="amount">588$-888$</span></div>
-      <div class="act-flex-between"><span class="label">额外奖励:</span> <span class="red-text">全球空降嫩模3天</span></div>
-      <div class="act-flex-between"><span class="label">连续上榜:</span> <span class="amount">18888$</span></div>
-      <div class="act-flex-between"><span class="label">黑马奖:</span> <span class="amount">6888$</span></div>
-    `
-  },
-  {
-    title: '优质通道每月奖励',
-    content: `
-      <p class="act-line bold">提供稳定高质量通道资源</p>
-      <div class="act-flex-between mt-2"><span class="label">稳定奖励:</span> <span class="amount">888$</span></div>
-      <div class="act-flex-between"><span class="label">高质量稳定通道:</span> <span class="amount">8888$</span></div>
-      <p class="act-line red mt-2">长期收益·分红机制·持续提成（躺赚）</p>
-      <div class="act-flex-between"><span class="label red-text">第4-10名:</span> <span class="amount">588$-888$</span></div>
-      <p class="act-line mt-2">附加奖励:</p>
-      <div class="act-flex-between"><span class="label">独家资源:</span> <span class="amount">1288$</span></div>
-      <div class="act-flex-between"><span class="label">稀缺通道:</span> <span class="red-text">专项高额奖励！</span></div>
-    `
-  }
-])
 </script>
+
 
 <style scoped>
 .section {

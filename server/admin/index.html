@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>落地页管理系统 - 多站点版</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--sidebar-bg:#0f172a;--sidebar-hover:#1e293b;--sidebar-active:#3b82f6;--content-bg:#f1f5f9;--card-bg:#fff;--text:#1e293b;--text-muted:#64748b;--primary:#3b82f6;--primary-hover:#2563eb;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--border:#e2e8f0;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.1)}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--content-bg);color:var(--text);line-height:1.6}
+
+    /* Login */
+    .login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#1e3a5f,#0f172a);display:flex;align-items:center;justify-content:center;z-index:9999}
+    .login-card{background:rgba(255,255,255,.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:48px;width:420px;text-align:center}
+    .login-card h1{color:#fff;font-size:28px;margin-bottom:8px}
+    .login-card p{color:rgba(255,255,255,.6);margin-bottom:32px;font-size:14px}
+    .login-card input{width:100%;padding:14px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:16px;outline:none;margin-bottom:20px}
+    .login-card input:focus{border-color:var(--primary)}
+    .login-card input::placeholder{color:rgba(255,255,255,.35)}
+    .login-btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-size:16px;font-weight:600;cursor:pointer}
+    .login-btn:hover{box-shadow:0 8px 24px rgba(59,130,246,.4)}
+    .login-error{color:#f87171;font-size:13px;margin-top:12px}
+
+    /* Layout */
+    .app{display:flex;min-height:100vh}
+    .sidebar{width:260px;background:var(--sidebar-bg);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;z-index:100}
+    .sidebar-brand{padding:20px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand h2{font-size:16px;font-weight:700}
+    .sidebar-brand p{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+
+    /* Site selector */
+    .site-selector{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .site-selector label{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
+    .site-select{width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:13px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+    .site-select option{background:#1e293b;color:#fff}
+
+    .sidebar-nav{flex:1;padding:8px;overflow-y:auto}
+    .nav-section{font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1.5px;padding:12px 16px 4px;margin-top:4px}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);transition:all .15s;border:none;background:none;width:100%;text-align:left}
+    .nav-item:hover{background:var(--sidebar-hover);color:#fff}
+    .nav-item.active{background:var(--sidebar-active);color:#fff}
+    .nav-icon{width:20px;text-align:center;font-size:14px}
+    .sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08)}
+    .logout-btn{width:100%;padding:8px;border:1px solid rgba(255,255,255,.15);border-radius:8px;background:transparent;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer}
+    .logout-btn:hover{background:rgba(239,68,68,.15);color:#f87171}
+
+    .main{flex:1;margin-left:260px;padding:28px 32px}
+    .page-title{font-size:22px;font-weight:700;margin-bottom:6px}
+    .page-desc{color:var(--text-muted);font-size:13px;margin-bottom:20px}
+
+    /* Cards/Forms */
+    .card{background:var(--card-bg);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;border:1px solid var(--border)}
+    .card-title{font-size:15px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px}
+    .form-hint{font-size:11px;color:var(--text-muted);margin-top:3px}
+    .form-input,.form-textarea,.form-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:#fff;color:var(--text);transition:border-color .2s;outline:none;font-family:inherit}
+    .form-input:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+    .form-textarea{resize:vertical;min-height:80px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .form-row-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+
+    .btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;display:inline-flex;align-items:center;gap:5px}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-hover)}
+    .btn-success{background:var(--success);color:#fff}
+    .btn-danger{background:var(--danger);color:#fff}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+    .btn-outline:hover{background:#f8fafc}
+    .btn-sm{padding:5px 10px;font-size:11px}
+    .btn-block{width:100%;justify-content:center}
+
+    /* List items */
+    .list-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;background:#fafbfc}
+    .list-item:hover{border-color:#cbd5e1;background:#fff}
+    .list-item-content{flex:1}
+    .inline-form{display:grid;grid-template-columns:1fr 1fr 2fr;gap:8px}
+    .inline-form .form-input{padding:7px 10px;font-size:12px}
+
+    /* Tags */
+    .tag-list{display:flex;flex-wrap:wrap;gap:6px}
+    .tag{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:500}
+    .tag-remove{cursor:pointer;width:14px;height:14px;border-radius:50%;background:rgba(67,56,202,.15);display:flex;align-items:center;justify-content:center;font-size:10px}
+    .tag-remove:hover{background:var(--danger);color:#fff}
+
+    /* Image upload */
+    .image-upload-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#fafbfc}
+    .image-upload-area:hover{border-color:var(--primary)}
+    .image-upload-area.has-image{padding:6px}
+    .image-upload-area img{max-width:100%;max-height:160px;border-radius:8px;object-fit:contain}
+    .upload-text{color:var(--text-muted);font-size:12px;margin-top:6px}
+    .image-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+    /* Activity */
+    .activity-item{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .activity-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8fafc;border-bottom:1px solid var(--border)}
+    .activity-header h4{font-size:13px;font-weight:600}
+    .activity-body{padding:14px}
+    .activity-body textarea{min-height:160px;font-family:'Menlo',monospace;font-size:12px}
+
+    /* Site cards in site management */
+    .site-card{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;background:#fff;transition:all .15s}
+    .site-card:hover{border-color:#cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .site-card-info h4{font-size:14px;font-weight:600}
+    .site-card-info p{font-size:12px;color:var(--text-muted)}
+    .site-card-info .site-id{font-size:11px;color:var(--primary);font-family:monospace;background:rgba(59,130,246,.08);padding:2px 8px;border-radius:4px;margin-left:8px}
+    .site-card-actions{display:flex;gap:6px}
+
+    /* Save bar */
+    .save-bar{position:sticky;bottom:0;background:var(--card-bg);border-top:1px solid var(--border);padding:14px 24px;display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(--radius) var(--radius);box-shadow:0 -2px 8px rgba(0,0,0,.04)}
+
+    /* Toast */
+    .toast-container{position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:6px}
+    .toast{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;color:#fff;box-shadow:var(--shadow);animation:slideIn .3s ease;display:flex;align-items:center;gap:6px}
+    .toast-success{background:var(--success)}.toast-error{background:var(--danger)}.toast-warning{background:var(--warning);color:#1e293b}
+    @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+    .section-panel{display:none}.section-panel.active{display:block}
+
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:5000;display:none}
+    .modal-overlay.show{display:flex}
+    .modal-danger h3{color:var(--danger)}
+    .modal{background:#fff;border-radius:16px;padding:32px;width:480px;max-width:90vw}
+    .modal h3{font-size:18px;font-weight:700;margin-bottom:16px}
+
+    /* Current site indicator */
+    .current-site-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:rgba(59,130,246,.1);color:var(--primary);font-size:11px;font-weight:600;margin-left:8px}
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <h1>🔐 落地页管理系统</h1>
+    <p>多站点内容配置管理平台</p>
+    <input type="password" id="loginPassword" placeholder="请输入管理员密码" onkeyup="if(event.key==='Enter')doLogin()" autofocus />
+    <button class="login-btn" onclick="doLogin()">登 录</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="app" id="app" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>落地页管理系统</h2>
+      <p>多站点配置平台</p>
+    </div>
+
+    <!-- Site Selector -->
+    <div class="site-selector">
+      <label>当前站点</label>
+      <select class="site-select" id="siteSelector" onchange="switchSite(this.value)"></select>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">站点管理</div>
+      <button class="nav-item active" onclick="switchSection('sites',this)">
+        <span class="nav-icon">🏢</span><span>站点列表</span>
+      </button>
+
+      <div class="nav-section">内容配置</div>
+      <button class="nav-item" onclick="switchSection('site',this)">
+        <span class="nav-icon">📝</span><span>基本信息</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('contacts',this)">
+        <span class="nav-icon">👥</span><span>联系方式</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('partners',this)">
+        <span class="nav-icon">🤝</span><span>商务人员</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('activities',this)">
+        <span class="nav-icon">🎯</span><span>活动专栏</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('service',this)">
+        <span class="nav-icon">🛎️</span><span>服务体系</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('guarantee',this)">
+        <span class="nav-icon">✅</span><span>担保认证</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('search',this)">
+        <span class="nav-icon">🔍</span><span>搜索配置</span>
+      </button>
+      <button class="nav-item" onclick="switchSection('images',this)">
+        <span class="nav-icon">🖼️</span><span>图片管理</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">退出登录</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- ===== 站点管理 ===== -->
+    <div class="section-panel active" id="section-sites">
+      <h1 class="page-title">站点管理</h1>
+      <p class="page-desc">管理所有落地页站点，每个站点拥有独立的内容配置</p>
+      <div class="card">
+        <div class="card-title">🏢 所有站点 <button class="btn btn-sm btn-primary" onclick="showCreateSite()">+ 新建站点</button></div>
+        <div id="sitesList"></div>
+      </div>
+
+      <!-- 新建站点表单 -->
+      <div class="card" id="createSiteForm" style="display:none">
+        <div class="card-title">✨ 新建站点</div>
+        <div class="form-row-4">
+          <div class="form-group">
+            <label class="form-label">站点ID (英文)</label>
+            <input class="form-input" id="newSiteId" placeholder="如: mysite" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">站点名称</label>
+            <input class="form-input" id="newSiteName" placeholder="如: 我的落地页" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">域名 (可选)</label>
+            <input class="form-input" id="newSiteDomain" placeholder="如: mysite.com" />
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end">
+            <button class="btn btn-success" onclick="doCreateSite()">创建</button>
+            <button class="btn btn-outline" onclick="hideCreateSite()" style="margin-left:6px">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 基本信息 ===== -->
+    <div class="section-panel" id="section-site">
+      <h1 class="page-title">基本信息 <span class="current-site-badge" id="badge-site"></span></h1>
+      <p class="page-desc">管理网站标题、SEO描述和公司简介</p>
+      <div class="card">
+        <div class="card-title">🌐 SEO 配置</div>
+        <div class="form-group"><label class="form-label">网站标题</label><input class="form-input" id="site_title" /></div>
+        <div class="form-group"><label class="form-label">网站描述</label><textarea class="form-textarea" id="site_description" rows="3"></textarea></div>
+        <div class="form-group"><label class="form-label">关键词</label><input class="form-input" id="site_keywords" /></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏢 关于我们</div>
+        <div class="form-group"><label class="form-label">标题</label><input class="form-input" id="about_title" /></div>
+        <div class="form-group"><label class="form-label">内容 (支持HTML)</label><textarea class="form-textarea" id="about_text" rows="5"></textarea></div>
+      </div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="saveSiteConfig()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 联系方式 ===== -->
+    <div class="section-panel" id="section-contacts">
+      <h1 class="page-title">联系方式 <span class="current-site-badge" id="badge-contacts"></span></h1>
+      <p class="page-desc">管理商务合作、客服、投诉等联系方式</p>
+      <div class="card">
+        <div class="card-title">💼 商务合作</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="business_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="business_url" /></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📢 TG招商群</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_recruit_label" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_recruit_url" /></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📡 TG官方频道</div>
+        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_channel_label" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="tg_channel_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_channel_url" /></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎧 福利客服</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="customer_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="customer_url" /></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📮 投诉接受</div>
+        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="complaint_name" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="complaint_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="complaint_url" /></div></div>
+      </div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="saveContacts()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 商务人员 ===== -->
+    <div class="section-panel" id="section-partners">
+      <h1 class="page-title">商务人员 <span class="current-site-badge" id="badge-partners"></span></h1>
+      <p class="page-desc">管理推广招商部和支付通道招商部人员</p>
+      <div class="card"><div class="card-title">📣 推广招商部 <button class="btn btn-sm btn-outline" onclick="addPartner('promote')">+ 添加</button></div><div id="promote-list"></div></div>
+      <div class="card"><div class="card-title">💳 支付通道招商部 <button class="btn btn-sm btn-outline" onclick="addPartner('third')">+ 添加</button></div><div id="third-list"></div></div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="savePartners()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 活动专栏 ===== -->
+    <div class="section-panel" id="section-activities">
+      <h1 class="page-title">活动专栏 <span class="current-site-badge" id="badge-activities"></span></h1>
+      <p class="page-desc">管理活动奖励内容（支持HTML）</p>
+      <div class="card"><div class="card-title">🎯 活动列表 <button class="btn btn-sm btn-outline" onclick="addActivity()">+ 添加</button></div><div id="activities-list"></div></div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="saveActivities()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 服务体系 ===== -->
+    <div class="section-panel" id="section-service">
+      <h1 class="page-title">服务体系 <span class="current-site-badge" id="badge-service"></span></h1>
+      <div class="card">
+        <div class="form-group"><label class="form-label">标题</label><input class="form-input" id="service_title" /></div>
+        <div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" id="service_desc" rows="4"></textarea></div>
+      </div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="saveService()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 担保认证 ===== -->
+    <div class="section-panel" id="section-guarantee">
+      <h1 class="page-title">担保认证 <span class="current-site-badge" id="badge-guarantee"></span></h1>
+      <div class="card">
+        <div class="card-title">✅ 认证账户</div>
+        <div id="guarantee-tags" class="tag-list"></div>
+        <div style="margin-top:10px;display:flex;gap:6px">
+          <input class="form-input" id="newGuaranteeAccount" placeholder="@handle" style="width:180px" onkeyup="if(event.key==='Enter')addGuarantee()" />
+          <button class="btn btn-sm btn-outline" onclick="addGuarantee()">添加</button>
+        </div>
+      </div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="saveGuarantee()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 搜索配置 ===== -->
+    <div class="section-panel" id="section-search">
+      <h1 class="page-title">搜索配置 <span class="current-site-badge" id="badge-search"></span></h1>
+      <div class="card">
+        <div class="form-row"><div class="form-group"><label class="form-label">占位文字</label><input class="form-input" id="search_placeholder" /></div><div class="form-group"><label class="form-label">默认值</label><input class="form-input" id="search_defaultValue" /></div></div>
+        <div class="form-group"><label class="form-label">成功提示</label><input class="form-input" id="search_successText" /></div>
+        <div class="form-group"><label class="form-label">失败提示</label><input class="form-input" id="search_failText" /></div>
+      </div>
+      <div class="save-bar"><button class="btn btn-primary" onclick="saveSearch()">💾 保存</button></div>
+    </div>
+
+    <!-- ===== 图片管理 ===== -->
+    <div class="section-panel" id="section-images">
+      <h1 class="page-title">图片管理 <span class="current-site-badge" id="badge-images"></span></h1>
+      <div class="card">
+        <div class="card-title">🎨 Banner</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_pc',this)" id="upload-hero_banner_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_h5',this)" id="upload-hero_banner_h5"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 核心价值观</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('values_pc',this)" id="upload-values_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('values_h5',this)" id="upload-values_h5"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🤝 合作横幅</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('collab_banner_pc',this)" id="upload-collab_banner_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('collab_banner_h5',this)" id="upload-collab_banner_h5"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Clone Modal -->
+<div class="modal-overlay" id="cloneModal">
+  <div class="modal">
+    <h3>📋 克隆站点配置</h3>
+    <p class="page-desc">将选中站点的所有配置复制到一个新站点</p>
+    <input type="hidden" id="cloneSourceId" />
+    <div class="form-group"><label class="form-label">新站点ID (英文)</label><input class="form-input" id="cloneNewId" placeholder="new-site" /></div>
+    <div class="form-group"><label class="form-label">新站点名称</label><input class="form-input" id="cloneNewName" placeholder="新站点" /></div>
+    <div class="form-group"><label class="form-label">域名 (可选)</label><input class="form-input" id="cloneNewDomain" /></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
+      <button class="btn btn-outline" onclick="hideCloneModal()">取消</button>
+      <button class="btn btn-primary" onclick="doCloneSite()">克隆</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal modal-danger">
+    <h3>⚠️ 确认删除站点</h3>
+    <p style="margin:12px 0;color:var(--text-muted)">此操作将永久删除该站点的<strong>所有配置数据</strong>，且无法恢复！</p>
+    <p style="margin-bottom:20px;font-weight:600" id="deleteModalSiteName"></p>
+    <input type="hidden" id="deleteSiteId" />
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="hideDeleteModal()">取消</button>
+      <button class="btn btn-danger" onclick="confirmDeleteSite()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" style="display:none" />
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+let configData = {}, currentSite = '', sites = []
+let currentUploadKey = null, currentUploadTarget = null
+const API = window.location.origin
+
+function showToast(msg, type='success') {
+  const c = document.getElementById('toastContainer')
+  const t = document.createElement('div')
+  t.className = `toast toast-${type}`
+  t.innerHTML = `${type==='success'?'✅':type==='error'?'❌':'⚠️'} ${msg}`
+  c.appendChild(t)
+  setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 300) }, 3000)
+}
+
+async function apiGet(u){return(await fetch(`${API}${u}`,{credentials:'include'})).json()}
+async function apiPut(u,d){return(await fetch(`${API}${u}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),credentials:'include'})).json()}
+async function apiPost(u,d){return(await fetch(`${API}${u}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),credentials:'include'})).json()}
+async function apiDelete(u){return(await fetch(`${API}${u}`,{method:'DELETE',credentials:'include'})).json()}
+
+// Auth
+async function checkAuth(){try{const r=await apiGet('/api/auth/check');if(r.authenticated){document.getElementById('loginOverlay').style.display='none';document.getElementById('app').style.display='flex';await loadSites()}}catch(e){}}
+async function doLogin(){const p=document.getElementById('loginPassword').value;if(!p)return;try{const r=await apiPost('/api/auth/login',{password:p});if(r.success){document.getElementById('loginOverlay').style.display='none';document.getElementById('app').style.display='flex';await loadSites();showToast('登录成功')}else{document.getElementById('loginError').textContent=r.error||'密码错误'}}catch(e){document.getElementById('loginError').textContent='连接失败'}}
+function doLogout(){apiPost('/api/auth/logout',{});document.getElementById('loginOverlay').style.display='flex';document.getElementById('app').style.display='none'}
+
+// Sites
+async function loadSites() {
+  const r = await apiGet('/api/admin/sites')
+  if (r.success) {
+    sites = r.data
+    renderSiteSelector()
+    renderSitesList()
+    if (sites.length > 0 && !currentSite) {
+      currentSite = sites[0].id
+      document.getElementById('siteSelector').value = currentSite
+      await loadSiteConfig()
+    }
+  }
+}
+
+function renderSiteSelector() {
+  const sel = document.getElementById('siteSelector')
+  sel.innerHTML = sites.map(s => `<option value="${s.id}" ${s.id===currentSite?'selected':''}>${s.name} (${s.id})</option>`).join('')
+}
+
+function renderSitesList() {
+  document.getElementById('sitesList').innerHTML = sites.length === 0
+    ? '<p style="color:var(--text-muted);text-align:center;padding:20px">暂无站点，点击上方按钮创建</p>'
+    : sites.map(s => `
+    <div class="site-card">
+      <div class="site-card-info">
+        <h4>${esc(s.name)} <span class="site-id">${s.id}</span></h4>
+        <p>${s.domain || '未设置域名'} · ${s.description || ''}</p>
+      </div>
+      <div class="site-card-actions">
+        <button class="btn btn-sm btn-outline" onclick="showCloneModal('${s.id}','${esc(s.name)}')">📋 克隆</button>
+        <button class="btn btn-sm btn-outline" onclick="switchSite('${s.id}');switchSection('site',document.querySelectorAll('.nav-item')[2])">⚙️ 配置</button>
+        ${sites.length > 1 ? `<button class="btn btn-sm btn-danger" onclick="doDeleteSite('${s.id}','${esc(s.name)}')">删除</button>` : ''}
+      </div>
+    </div>
+  `).join('')
+}
+
+async function switchSite(id) {
+  currentSite = id
+  document.getElementById('siteSelector').value = id
+  await loadSiteConfig()
+  // Update all badges
+  document.querySelectorAll('.current-site-badge').forEach(b => {
+    const s = sites.find(x => x.id === id)
+    b.textContent = s ? s.name : id
+  })
+}
+
+function showCreateSite(){document.getElementById('createSiteForm').style.display='block'}
+function hideCreateSite(){document.getElementById('createSiteForm').style.display='none'}
+
+async function doCreateSite() {
+  const id = document.getElementById('newSiteId').value.trim()
+  const name = document.getElementById('newSiteName').value.trim()
+  const domain = document.getElementById('newSiteDomain').value.trim()
+  if (!id || !name) return showToast('ID和名称不能为空','warning')
+  const r = await apiPost('/api/admin/sites', { id, name, domain })
+  if (r.success) {
+    showToast(`站点 [${name}] 创建成功`)
+    hideCreateSite()
+    document.getElementById('newSiteId').value = ''
+    document.getElementById('newSiteName').value = ''
+    document.getElementById('newSiteDomain').value = ''
+    await loadSites()
+    switchSite(id)
+  } else {
+    showToast(r.error, 'error')
+  }
+}
+
+function doDeleteSite(id, name) {
+  document.getElementById('deleteSiteId').value = id
+  document.getElementById('deleteModalSiteName').textContent = `站点: ${name} (${id})`
+  document.getElementById('deleteModal').classList.add('show')
+}
+function hideDeleteModal() { document.getElementById('deleteModal').classList.remove('show') }
+async function confirmDeleteSite() {
+  const id = document.getElementById('deleteSiteId').value
+  hideDeleteModal()
+  try {
+    const r = await apiDelete(`/api/admin/sites/${id}`)
+    if (r.success) {
+      showToast('站点已删除')
+      if (currentSite === id) currentSite = ''
+      await loadSites()
+    } else { showToast(r.error || '删除失败', 'error') }
+  } catch(e) { showToast('请求失败: ' + e.message, 'error') }
+}
+
+// Clone
+function showCloneModal(id) { document.getElementById('cloneSourceId').value = id; document.getElementById('cloneModal').classList.add('show') }
+function hideCloneModal() { document.getElementById('cloneModal').classList.remove('show') }
+async function doCloneSite() {
+  const sourceId = document.getElementById('cloneSourceId').value
+  const newId = document.getElementById('cloneNewId').value.trim()
+  const newName = document.getElementById('cloneNewName').value.trim()
+  const newDomain = document.getElementById('cloneNewDomain').value.trim()
+  if (!newId || !newName) return showToast('请填写ID和名称','warning')
+  const r = await apiPost(`/api/admin/sites/${sourceId}/clone`, { newId, newName, newDomain })
+  if (r.success) {
+    showToast(`站点克隆成功 → ${newName}`)
+    hideCloneModal()
+    document.getElementById('cloneNewId').value = ''
+    document.getElementById('cloneNewName').value = ''
+    document.getElementById('cloneNewDomain').value = ''
+    await loadSites()
+    switchSite(newId)
+  } else { showToast(r.error, 'error') }
+}
+
+// Load config for current site
+async function loadSiteConfig() {
+  if (!currentSite) return
+  try {
+    const r = await apiGet(`/api/config?site=${currentSite}`)
+    if (r.success) { configData = r.data; populateAllForms() }
+  } catch (e) { showToast('加载失败','error') }
+}
+
+function populateAllForms() {
+  const c = configData
+  setVal('site_title',c.site_title||'');setVal('site_description',c.site_description||'');setVal('site_keywords',c.site_keywords||'')
+  setVal('about_title',c.about_title||'');setVal('about_text',c.about_text||'')
+  const bc=c.business_contact||{};setVal('business_handle',bc.handle||'');setVal('business_url',bc.url||'')
+  const tg=c.tg_recruit_group||{};setVal('tg_recruit_label',tg.label||'');setVal('tg_recruit_url',tg.url||'')
+  const ch=c.tg_official_channel||{};setVal('tg_channel_label',ch.label||'');setVal('tg_channel_handle',ch.handle||'');setVal('tg_channel_url',ch.url||'')
+  const cs=c.customer_service||{};setVal('customer_handle',cs.handle||'');setVal('customer_url',cs.url||'')
+  const co=c.complaint_contact||{};setVal('complaint_name',co.name||'');setVal('complaint_handle',co.handle||'');setVal('complaint_url',co.url||'')
+  renderPartnerList('promote',c.promote_partners||[]);renderPartnerList('third',c.third_partners||[])
+  renderActivities(c.activities||[])
+  setVal('service_title',c.service_title||'');setVal('service_desc',c.service_desc||'')
+  renderGuaranteeTags(c.guarantee_accounts||[])
+  const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
+  const imgKeys=['hero_banner_pc','hero_banner_h5','values_pc','values_h5','collab_banner_pc','collab_banner_h5']
+  imgKeys.forEach(k=>{const el=document.getElementById(`upload-${k}`);if(el){if(c[k]){el.innerHTML=`<img src="${c[k]}" /><div class="upload-text">点击更换</div>`;el.classList.add('has-image')}else{el.innerHTML='<div class="upload-text">📤 点击上传</div>';el.classList.remove('has-image')}}})
+  // Update badges
+  document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
+}
+
+function setVal(id,v){const e=document.getElementById(id);if(e)e.value=v}
+function getVal(id){const e=document.getElementById(id);return e?e.value:''}
+function switchSection(name,btn){document.querySelectorAll('.section-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById(`section-${name}`).classList.add('active');if(btn)btn.classList.add('active')}
+
+// Save functions (all scoped to currentSite)
+const siteQ = () => `?site=${currentSite}`
+async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveContacts(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'business_contact',value:{handle:getVal('business_handle'),url:getVal('business_url')},category:'contacts'},{key:'tg_recruit_group',value:{label:getVal('tg_recruit_label'),url:getVal('tg_recruit_url')},category:'contacts'},{key:'tg_official_channel',value:{label:getVal('tg_channel_label'),handle:getVal('tg_channel_handle'),url:getVal('tg_channel_url')},category:'contacts'},{key:'customer_service',value:{handle:getVal('customer_handle'),url:getVal('customer_url')},category:'contacts'},{key:'complaint_contact',value:{name:getVal('complaint_name'),handle:getVal('complaint_handle'),url:getVal('complaint_url'),avatar:configData.complaint_contact?.avatar||''},category:'contacts'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+
+// Partners
+let promotePartners=[],thirdPartners=[]
+function renderPartnerList(type,data){if(type==='promote')promotePartners=[...data];else thirdPartners=[...data];const list=type==='promote'?promotePartners:thirdPartners;document.getElementById(`${type}-list`).innerHTML=list.map((p,i)=>`<div class="list-item"><div class="list-item-content"><div class="inline-form"><div><label class="form-label">名称</label><input class="form-input" value="${esc(p.name)}" onchange="updatePartner('${type}',${i},'name',this.value)" /></div><div><label class="form-label">Handle</label><input class="form-input" value="${esc(p.handle)}" onchange="updatePartner('${type}',${i},'handle',this.value)" /></div><div><label class="form-label">链接</label><input class="form-input" value="${esc(p.url)}" onchange="updatePartner('${type}',${i},'url',this.value)" /></div></div></div><button class="btn btn-sm btn-danger" onclick="removePartner('${type}',${i})">删除</button></div>`).join('')}
+function addPartner(t){(t==='promote'?promotePartners:thirdPartners).push({name:'',handle:'',url:'',avatar:''});renderPartnerList(t,t==='promote'?promotePartners:thirdPartners)}
+function removePartner(t,i){(t==='promote'?promotePartners:thirdPartners).splice(i,1);renderPartnerList(t,t==='promote'?promotePartners:thirdPartners)}
+function updatePartner(t,i,f,v){(t==='promote'?promotePartners:thirdPartners)[i][f]=v}
+async function savePartners(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'promote_partners',value:promotePartners,category:'partners'},{key:'third_partners',value:thirdPartners,category:'partners'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+
+// Activities
+let activities=[]
+function renderActivities(data){activities=[...data];document.getElementById('activities-list').innerHTML=activities.map((a,i)=>`<div class="activity-item"><div class="activity-header"><h4>${i+1}. ${esc(a.title)}</h4><button class="btn btn-sm btn-danger" onclick="removeActivity(${i})">删除</button></div><div class="activity-body"><div class="form-group"><label class="form-label">标题</label><input class="form-input" value="${esc(a.title)}" onchange="activities[${i}].title=this.value;renderActivities(activities)" /></div><div class="form-group"><label class="form-label">内容 (HTML)</label><textarea class="form-textarea" rows="6" onchange="activities[${i}].content=this.value">${esc(a.content)}</textarea></div></div></div>`).join('')}
+function addActivity(){activities.push({title:'新活动',content:'<p class="act-line">内容</p>'});renderActivities(activities)}
+function removeActivity(i){activities.splice(i,1);renderActivities(activities)}
+async function saveActivities(){const r=await apiPut(`/api/admin/config/activities${siteQ()}`,{value:activities,category:'activities'});r.success?showToast('已保存'):showToast(r.error,'error')}
+
+// Service
+async function saveService(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'service_title',value:getVal('service_title'),category:'service'},{key:'service_desc',value:getVal('service_desc'),category:'service'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+
+// Guarantee
+let guaranteeAccounts=[]
+function renderGuaranteeTags(d){guaranteeAccounts=[...d];document.getElementById('guarantee-tags').innerHTML=guaranteeAccounts.map((a,i)=>`<span class="tag">${esc(a)}<span class="tag-remove" onclick="removeGuarantee(${i})">✕</span></span>`).join('')}
+function addGuarantee(){const v=document.getElementById('newGuaranteeAccount').value.trim();if(!v)return;const h=v.startsWith('@')?v:`@${v}`;if(guaranteeAccounts.includes(h))return showToast('已存在','warning');guaranteeAccounts.push(h);renderGuaranteeTags(guaranteeAccounts);document.getElementById('newGuaranteeAccount').value=''}
+function removeGuarantee(i){guaranteeAccounts.splice(i,1);renderGuaranteeTags(guaranteeAccounts)}
+async function saveGuarantee(){const r=await apiPut(`/api/admin/config/guarantee_accounts${siteQ()}`,{value:guaranteeAccounts,category:'guarantee'});r.success?showToast('已保存'):showToast(r.error,'error')}
+
+// Search
+async function saveSearch(){const r=await apiPut(`/api/admin/config/search_config${siteQ()}`,{value:{placeholder:getVal('search_placeholder'),defaultValue:getVal('search_defaultValue'),successText:getVal('search_successText'),failText:getVal('search_failText')},category:'search'});r.success?showToast('已保存'):showToast(r.error,'error')}
+
+// Images
+function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('fileInput').addEventListener('change',async(e)=>{
+    const f=e.target.files[0];if(!f||!currentUploadKey)return
+    const fd=new FormData();fd.append('image',f)
+    try{const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});const d=await r.json()
+    if(d.success){if(currentUploadTarget){currentUploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;currentUploadTarget.classList.add('has-image')}
+    await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
+    e.target.value=''
+  })
+})
+
+function esc(s){if(typeof s!=='string')return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+checkAuth()
+</script>
+</body>
+</html>

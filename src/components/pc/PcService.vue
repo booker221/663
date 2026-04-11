@@ -14,11 +14,8 @@
       <!-- 一对一专员卡片 -->
       <div class="specialist-card" :style="{ backgroundImage: `url(${cardBg})` }">
         <div class="specialist-left">
-          <h3 class="specialist-name">一对一专员</h3>
-          <p class="specialist-desc">
-            除指派专员进行日常业务对接外，另委派项目负责人履行监督职能。该负责人统筹项目全局，具备快速决策与纠偏响应能力，
-            旨在最大限度降低沟通成本，保障项目高质量交付，共创双赢局面。
-          </p>
+          <h3 class="specialist-name">{{ serviceInfo.title }}</h3>
+          <p class="specialist-desc">{{ serviceInfo.desc }}</p>
         </div>
         <div class="specialist-right">
           <img class="specialist-photo" src="@/assets/images/webp/service-person-pc.webp" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
@@ -30,6 +27,7 @@
 
 <script setup>
 import cardBg from '@/assets/images/webp/service-card-bg-pc.webp'
+import { serviceInfo } from '@/stores/siteConfig.js'
 </script>
 
 <style scoped>

@@ -1,14 +1,10 @@
 <template>
   <section class="hero">
-    <div class="hero-banner-wrap" :style="{ backgroundImage: `url(${bannerUrl})` }">
+    <div class="hero-banner-wrap" :style="{ backgroundImage: `url(${bannerImage})` }">
       <div class="about-overlay">
         <div class="about-inner">
-          <h3 class="about-title">关于合兴：</h3>
-          <p class="about-text">
-            合兴集团自成立以来，秉承"<span class="hl">合于信，兴于行</span>"的理念，我们始终坚信，信任是合作关系的基石，卓越的执行力则是可持续发展的引擎。在过去的发展历程中，我们始终坚守"<span
-              class="hl">诚信为本、合作共赢、追求卓越</span>"三大核心价值观，将其作为企业立身与发展的根本。合兴的使命：持续创造价值，驱动行业变革。合兴的愿景：铸就百年品牌，成为您"<span
-              class="hl">百年大业</span>"最信赖的合作伙伴。
-          </p>
+          <h3 class="about-title">{{ siteInfo.aboutTitle }}</h3>
+          <p class="about-text" v-html="siteInfo.aboutText"></p>
         </div>
       </div>
     </div>
@@ -16,7 +12,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import bannerUrl from '@/assets/images/webp/hero-banner-pc.webp'
+import { siteInfo, images } from '@/stores/siteConfig.js'
+
+// 优先使用后台上传的图片，否则使用默认打包图片
+const bannerImage = computed(() => images.hero_banner_pc || bannerUrl)
 </script>
 
 <style scoped>

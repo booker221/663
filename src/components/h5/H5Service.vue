@@ -6,15 +6,12 @@
         <h2 class="section-title"><span class="dot">◆</span> 服务体系</h2>
       </div>
 
-      <p class="intro-text">
-        除指派专员进行日常业务对接外，另委派项目负责人履行监督职能。该负责人统筹项目全局，具备快速决策与纠偏响应能力，
-        旨在最大限度降低沟通成本，保障项目高质量交付，共创双赢局面。
-      </p>
+      <p class="intro-text">{{ serviceInfo.desc }}</p>
 
       <!-- 一对一专员卡片 -->
       <div class="specialist-card" :style="{ backgroundImage: `url(${cardBg})` }">
         <div class="specialist-left">
-          <h3 class="specialist-name">一对一专员</h3>
+          <h3 class="specialist-name">{{ serviceInfo.title }}</h3>
           <p class="specialist-sub">全程跟进对接，沟通无障碍</p>
         </div>
         <div class="specialist-right">
@@ -27,6 +24,7 @@
 
 <script setup>
 import cardBg from '@/assets/images/webp/service-card-bg-h5.webp'
+import { serviceInfo } from '@/stores/siteConfig.js'
 </script>
 
 <style scoped>
