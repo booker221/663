@@ -12,13 +12,13 @@
       </div>
 
       <!-- 一对一专员卡片 -->
-      <div class="specialist-card" :style="{ backgroundImage: `url(${cardBg})` }">
+      <div class="specialist-card" :style="{ backgroundImage: `url(${cardBgImage})` }">
         <div class="specialist-left">
           <h3 class="specialist-name">{{ serviceInfo.title }}</h3>
           <p class="specialist-desc">{{ serviceInfo.desc }}</p>
         </div>
         <div class="specialist-right">
-          <img class="specialist-photo" src="@/assets/images/webp/service-person-pc.webp" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
+          <img class="specialist-photo" :src="servicePersonImage" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
         </div>
       </div>
     </section>
@@ -26,8 +26,13 @@
 </template>
 
 <script setup>
-import cardBg from '@/assets/images/webp/service-card-bg-pc.webp'
-import { serviceInfo } from '@/stores/siteConfig.js'
+import { computed } from 'vue'
+import defaultCardBg from '@/assets/images/webp/service-card-bg-pc.webp'
+import defaultServicePerson from '@/assets/images/webp/service-person-pc.webp'
+import { serviceInfo, images } from '@/stores/siteConfig.js'
+
+const cardBgImage = computed(() => images.service_card_bg_pc || defaultCardBg)
+const servicePersonImage = computed(() => images.service_person_pc || defaultServicePerson)
 </script>
 
 <style scoped>

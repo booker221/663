@@ -5,8 +5,15 @@
     <H5Values />
     <H5Business />
     <H5Guarantee />
-    <img class="collab-banner-h5" src="@/assets/images/webp/collab-banner-h5.webp" alt="寻求代投资源" loading="lazy"
-      width="646" height="176" />
+    <DynamicImage
+      :remote-src="images.collab_banner_h5"
+      :fallback-src="defaultCollabBanner"
+      alt="寻求代投资源"
+      img-class="collab-banner-h5"
+      label="合作横幅图片"
+      aspect-ratio="646 / 176"
+      border-radius="0"
+    />
     <H5Activity />
     <H5Service />
     <H5Complaint />
@@ -40,8 +47,11 @@
 <script setup>
 import complaintIcon from '../assets/images/webp/icon-complaint.webp'
 import complaintFabIcon from '../assets/images/webp/icon-complaint-fab.webp'
+import defaultCollabBanner from '../assets/images/webp/collab-banner-h5.webp'
 import { BUSINESS_CONTACT, CUSTOMER_SERVICE, COMPLAINT_CONTACT } from '../config/contacts.js'
+import { images } from '../stores/siteConfig.js'
 import DraggableFab from '../components/common/DraggableFab.vue'
+import DynamicImage from '../components/common/DynamicImage.vue'
 import H5Topbar from '../components/h5/H5Topbar.vue'
 import H5Hero from '../components/h5/H5Hero.vue'
 import H5Values from '../components/h5/H5Values.vue'

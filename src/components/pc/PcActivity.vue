@@ -11,7 +11,7 @@
 
     <div class="activity-card">
       <!-- 内容区（背景图通过 :style 设置）-->
-      <div class="card-content" :style="{ backgroundImage: `url(${actBg})` }">
+      <div class="card-content" :style="{ backgroundImage: `url(${actBgImage})` }">
         <!-- 绝对定位的装饰图 -->
         <img class="reward-title-img absolute-top-left" src="@/assets/images/icon/reward-label.webp" alt="合作奖励" />
         <img class="coin-icon absolute-bottom-left" src="@/assets/images/icon/coin-left.webp" alt="coin" />
@@ -53,7 +53,7 @@
 
         <!-- 右侧人物图 -->
         <div class="content-right">
-          <img class="person-img" src="@/assets/images/webp/activity-person-new-pc.png" alt="活动商务负责人" loading="lazy" />
+          <img class="person-img" :src="activityPersonImage" alt="活动商务负责人" loading="lazy" />
         </div>
       </div>
     </div>
@@ -61,10 +61,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import actBg from '@/assets/images/webp/activity-content-bg-pc.webp'
+import { ref, computed } from 'vue'
+import defaultActBg from '@/assets/images/webp/activity-content-bg-pc.webp'
+import defaultActPerson from '@/assets/images/webp/activity-person-new-pc.png'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
-import { activities } from '@/stores/siteConfig.js'
+import { activities, images } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
 import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
@@ -77,6 +78,9 @@ import num6 from '@/assets/images/icon/num-6.webp'
 import titleDotIcon from '@/assets/images/webp/icon-title-dot.webp'
 
 const numIcons = [num1, num2, num3, num4, num5, num6]
+
+const actBgImage = computed(() => images.activity_bg_pc || defaultActBg)
+const activityPersonImage = computed(() => images.activity_person_pc || defaultActPerson)
 
 const activeIndex = ref(-1)
 const toggleActivity = (index) => {

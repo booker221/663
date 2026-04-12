@@ -6,8 +6,7 @@
 
     <div class="activity-card">
       <!-- 背景图 -->
-      <img class="card-bg" src="@/assets/images/webp/activity-bg-h5.webp" alt="" loading="lazy" width="734"
-        height="1444" />
+      <img class="card-bg" :src="actBgImage" alt="" loading="lazy" width="734" height="1444" />
 
       <!-- 内容 -->
       <div class="card-content">
@@ -33,7 +32,8 @@
         <div class="contact-row">
           <div class="contact-info">
             <a :href="TG_OFFICIAL_CHANNEL.url" target="_blank" rel="noopener noreferrer" class="tg-button-link">
-              <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="128" height="32" />
+              <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="128"
+                height="32" />
             </a>
             <p class="act-contact">
               <span class="contact-label">商务合作：</span>
@@ -52,8 +52,7 @@
               </span>
             </p>
           </div>
-          <img class="person-img" src="@/assets/images/webp/activity-person-h5-new.webp" alt="活动商务专员" loading="lazy"
-            width="312" height="312" />
+          <img class="person-img" :src="activityPersonImage" alt="活动商务专员" loading="lazy" width="312" height="312" />
         </div>
       </div>
     </div>
@@ -61,9 +60,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import defaultActBg from '@/assets/images/webp/activity-bg-h5.webp'
+import defaultActPerson from '@/assets/images/webp/activity-person-h5-new.webp'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
-import { activities } from '@/stores/siteConfig.js'
+import { activities, images } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
 import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
@@ -76,6 +77,9 @@ import num6 from '@/assets/images/icon/num-6.webp'
 import titleDotIcon from '@/assets/images/webp/icon-title-dot.webp'
 
 const numIcons = [num1, num2, num3, num4, num5, num6]
+
+const actBgImage = computed(() => images.activity_bg_h5 || defaultActBg)
+const activityPersonImage = computed(() => images.activity_person_h5 || defaultActPerson)
 
 const activeIndex = ref(-1)
 const toggleActivity = (index) => {
@@ -336,7 +340,7 @@ const toggleActivity = (index) => {
   margin-top: 30px;
   position: relative;
   min-height: 150px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 .contact-info {

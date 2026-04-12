@@ -7,11 +7,21 @@
         <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
       </h2>
     </div>
-    <img class="values-img" src="@/assets/images/webp/values-pc.webp" alt="核心价值观" loading="lazy" width="2449" height="564" />
+    <DynamicImage
+      :remote-src="images.values_pc"
+      :fallback-src="defaultValuesImg"
+      alt="核心价值观"
+      img-class="values-img"
+      label="核心价值观图片"
+      aspect-ratio="2449 / 564"
+    />
   </section>
 </template>
 
 <script setup>
+import DynamicImage from '@/components/common/DynamicImage.vue'
+import defaultValuesImg from '@/assets/images/webp/values-pc.webp'
+import { images } from '@/stores/siteConfig.js'
 </script>
 
 <style scoped>

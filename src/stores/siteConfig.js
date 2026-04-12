@@ -138,6 +138,14 @@ export const images = reactive({
   values_h5: '',
   collab_banner_pc: '',
   collab_banner_h5: '',
+  activity_person_pc: '',
+  activity_person_h5: '',
+  activity_bg_h5: '',
+  activity_bg_pc: '',
+  service_person_pc: '',
+  service_person_h5: '',
+  service_card_bg_pc: '',
+  service_card_bg_h5: '',
 })
 
 // ========== 配置加载状态 ==========
@@ -205,12 +213,9 @@ export async function loadRemoteConfig() {
   if (data.service_title) serviceInfo.title = data.service_title
   if (data.service_desc) serviceInfo.desc = data.service_desc
 
-  // 合并图片
-  const imageKeys = ['hero_banner_pc', 'hero_banner_h5', 'values_pc', 'values_h5', 'collab_banner_pc', 'collab_banner_h5']
-  imageKeys.forEach(key => {
+  // 合并图片（所有可配置的图片 key）
+  Object.keys(images).forEach(key => {
     if (data[key]) images[key] = data[key]
   })
-
   configLoaded.value = true
-  console.log('[Config] 远程配置加载完成')
 }
