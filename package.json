@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "./deploy.sh",
+    "deploy:Vue": "./deploy.sh --frontend",
+    "deploy:Node": "./deploy.sh --backend"
   },
   "dependencies": {
     "vue": "^3.5.30",
