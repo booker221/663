@@ -153,9 +153,7 @@ deploy_backend() {
     # 安装依赖（激活新版 GCC 编译原生模块）
     echo "📦 安装 Node 依赖..."
     source /opt/rh/devtoolset-11/enable
-    echo "   使用 GCC: $(gcc --version | head -1)"
-    # 清理可能残留的不完整安装，确保重新编译
-    rm -rf node_modules/better-sqlite3 2>/dev/null || true
+    gcc --version | head -1
     npm install --production
 
     # 初始化数据库（仅首次需要）
