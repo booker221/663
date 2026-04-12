@@ -24,10 +24,18 @@ db.exec(`
     name TEXT NOT NULL,
     domain TEXT DEFAULT '',
     description TEXT DEFAULT '',
+    password TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `)
+
+// 兼容旧表：如果 password 列不存在则添加
+try {
+  db.prepare("SELECT password FROM sites LIMIT 1").get()
+} catch {
+  db.exec("ALTER TABLE sites ADD COLUMN password TEXT DEFAULT ''")
+}
 
 // 配置表（以 site_id + key 为联合主键）
 // SQLite 不支持 ALTER PRIMARY KEY，所以检查并重建
@@ -99,6 +107,22 @@ export function deleteSite(id) {
   // 先删除该站点的所有配置
   db.prepare('DELETE FROM config WHERE site_id = ?').run(id)
   db.prepare('DELETE FROM sites WHERE id = ?').run(id)
+}
+
+/**
+ * 更新站点密码
+ */
+export function updateSitePassword(id, password) {
+  db.prepare(`UPDATE sites SET password = ?, updated_at = datetime('now') WHERE id = ?`).run(password, id)
+}
+
+/**
+ * 通过密码查找匹配的站点（用于站点管理员登录）
+ * 返回第一个匹配的站点，密码不能为空
+ */
+export function getSiteByPassword(password) {
+  if (!password) return null
+  return db.prepare("SELECT * FROM sites WHERE password = ? AND password != ''").get(password)
 }
 
 /**

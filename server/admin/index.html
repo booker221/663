@@ -136,8 +136,8 @@
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card">
     <h1>🔐 落地页管理系统</h1>
-    <p>多站点内容配置管理平台</p>
-    <input type="password" id="loginPassword" placeholder="请输入管理员密码" onkeyup="if(event.key==='Enter')doLogin()" autofocus />
+    <p>超管密码登录管理所有站点 · 站点密码登录管理指定站点</p>
+    <input type="password" id="loginPassword" placeholder="请输入密码" onkeyup="if(event.key==='Enter')doLogin()" autofocus />
     <button class="login-btn" onclick="doLogin()">登 录</button>
     <div class="login-error" id="loginError"></div>
   </div>
@@ -148,20 +148,23 @@
   <aside class="sidebar">
     <div class="sidebar-brand">
       <h2>落地页管理系统</h2>
-      <p>多站点配置平台</p>
+      <p id="roleBadge">多站点配置平台</p>
     </div>
 
-    <!-- Site Selector -->
-    <div class="site-selector">
+    <!-- Site Selector (only for superadmin) -->
+    <div class="site-selector" id="siteSelectorWrap">
       <label>当前站点</label>
       <select class="site-select" id="siteSelector" onchange="switchSite(this.value)"></select>
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-section">站点管理</div>
-      <button class="nav-item active" onclick="switchSection('sites',this)">
-        <span class="nav-icon">🏢</span><span>站点列表</span>
-      </button>
+      <!-- 站点管理（仅超管可见） -->
+      <div id="navSiteManagement">
+        <div class="nav-section">站点管理</div>
+        <button class="nav-item active" onclick="switchSection('sites',this)">
+          <span class="nav-icon">🏢</span><span>站点列表</span>
+        </button>
+      </div>
 
       <div class="nav-section">内容配置</div>
       <button class="nav-item" onclick="switchSection('site',this)">
@@ -224,6 +227,10 @@
             <button class="btn btn-success" onclick="doCreateSite()">创建</button>
             <button class="btn btn-outline" onclick="hideCreateSite()" style="margin-left:6px">取消</button>
           </div>
+        </div>
+        <div class="form-group" style="margin-top:8px">
+          <label class="form-label">站点管理密码 (可选，设置后该站点管理员可用此密码登录)</label>
+          <input class="form-input" id="newSitePassword" placeholder="留空则只有超管能管理" style="width:300px" />
         </div>
       </div>
     </div>
@@ -383,12 +390,31 @@
   </div>
 </div>
 
+<!-- Password Modal -->
+<div class="modal-overlay" id="passwordModal">
+  <div class="modal">
+    <h3>🔑 设置站点密码</h3>
+    <p style="margin:8px 0 16px;color:var(--text-muted);font-size:13px">设置密码后，该站点的管理员可以用此密码登录，只能管理该站点的内容。</p>
+    <input type="hidden" id="passwordSiteId" />
+    <div class="form-group">
+      <label class="form-label">站点管理密码</label>
+      <input class="form-input" id="sitePasswordInput" placeholder="留空则清除密码" />
+      <div class="form-hint">⚠️ 不要与超管密码相同</div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-outline" onclick="hidePasswordModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveSitePassword()">保存</button>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="fileInput" accept="image/*" style="display:none" />
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
 let configData = {}, currentSite = '', sites = []
 let currentUploadKey = null, currentUploadTarget = null
+let currentRole = '' // 'superadmin' or 'siteadmin'
 const API = window.location.origin
 
 function showToast(msg, type='success') {
@@ -405,12 +431,82 @@ async function apiPut(u,d){return(await fetch(`${API}${u}`,{method:'PUT',headers
 async function apiPost(u,d){return(await fetch(`${API}${u}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),credentials:'include'})).json()}
 async function apiDelete(u){return(await fetch(`${API}${u}`,{method:'DELETE',credentials:'include'})).json()}
 
-// Auth
-async function checkAuth(){try{const r=await apiGet('/api/auth/check');if(r.authenticated){document.getElementById('loginOverlay').style.display='none';document.getElementById('app').style.display='flex';await loadSites()}}catch(e){}}
-async function doLogin(){const p=document.getElementById('loginPassword').value;if(!p)return;try{const r=await apiPost('/api/auth/login',{password:p});if(r.success){document.getElementById('loginOverlay').style.display='none';document.getElementById('app').style.display='flex';await loadSites();showToast('登录成功')}else{document.getElementById('loginError').textContent=r.error||'密码错误'}}catch(e){document.getElementById('loginError').textContent='连接失败'}}
-function doLogout(){apiPost('/api/auth/logout',{});document.getElementById('loginOverlay').style.display='flex';document.getElementById('app').style.display='none'}
+// ==================== Auth ====================
+async function checkAuth() {
+  try {
+    const r = await apiGet('/api/auth/check')
+    if (r.authenticated) {
+      currentRole = r.role
+      document.getElementById('loginOverlay').style.display = 'none'
+      document.getElementById('app').style.display = 'flex'
+      applyRoleUI(r.role, r.siteId)
+      await loadSites()
+      // 站点管理员直接跳到内容配置
+      if (r.role === 'siteadmin' && r.siteId) {
+        currentSite = r.siteId
+        await loadSiteConfig()
+        switchSection('site', document.querySelectorAll('.nav-item')[1])
+      }
+    }
+  } catch(e) {}
+}
 
-// Sites
+async function doLogin() {
+  const p = document.getElementById('loginPassword').value
+  if (!p) return
+  try {
+    const r = await apiPost('/api/auth/login', { password: p })
+    if (r.success) {
+      currentRole = r.role
+      document.getElementById('loginOverlay').style.display = 'none'
+      document.getElementById('app').style.display = 'flex'
+      applyRoleUI(r.role, r.siteId)
+      await loadSites()
+      if (r.role === 'siteadmin') {
+        showToast(`欢迎，${r.siteName} 管理员`)
+        currentSite = r.siteId
+        document.getElementById('siteSelector').value = currentSite
+        await loadSiteConfig()
+        switchSection('site', document.querySelectorAll('.nav-item')[1])
+      } else {
+        showToast('超级管理员登录成功')
+      }
+    } else {
+      document.getElementById('loginError').textContent = r.error || '密码错误'
+    }
+  } catch(e) { document.getElementById('loginError').textContent = '连接失败' }
+}
+
+function doLogout() {
+  apiPost('/api/auth/logout', {})
+  currentRole = ''
+  document.getElementById('loginOverlay').style.display = 'flex'
+  document.getElementById('app').style.display = 'none'
+  document.getElementById('loginPassword').value = ''
+  document.getElementById('loginError').textContent = ''
+}
+
+// ==================== Role-based UI ====================
+function applyRoleUI(role, siteId) {
+  const navMgmt = document.getElementById('navSiteManagement')
+  const siteSelWrap = document.getElementById('siteSelectorWrap')
+  const roleBadge = document.getElementById('roleBadge')
+
+  if (role === 'superadmin') {
+    navMgmt.style.display = ''
+    siteSelWrap.style.display = ''
+    roleBadge.textContent = '🛡️ 超级管理员'
+    roleBadge.style.color = '#fbbf24'
+  } else {
+    // 站点管理员：隐藏站点管理和站点切换
+    navMgmt.style.display = 'none'
+    siteSelWrap.style.display = 'none'
+    roleBadge.textContent = '👤 站点管理员'
+    roleBadge.style.color = 'rgba(255,255,255,.5)'
+  }
+}
+
+// ==================== Sites ====================
 async function loadSites() {
   const r = await apiGet('/api/admin/sites')
   if (r.success) {
@@ -431,18 +527,20 @@ function renderSiteSelector() {
 }
 
 function renderSitesList() {
+  const isSuperAdmin = currentRole === 'superadmin'
   document.getElementById('sitesList').innerHTML = sites.length === 0
     ? '<p style="color:var(--text-muted);text-align:center;padding:20px">暂无站点，点击上方按钮创建</p>'
     : sites.map(s => `
     <div class="site-card">
       <div class="site-card-info">
-        <h4>${esc(s.name)} <span class="site-id">${s.id}</span></h4>
+        <h4>${esc(s.name)} <span class="site-id">${s.id}</span>${s.password ? ' <span style="font-size:10px;color:var(--success)">🔑 已设密码</span>' : ' <span style="font-size:10px;color:var(--text-muted)">未设密码</span>'}</h4>
         <p>${s.domain || '未设置域名'} · ${s.description || ''}</p>
       </div>
       <div class="site-card-actions">
-        <button class="btn btn-sm btn-outline" onclick="showCloneModal('${s.id}','${esc(s.name)}')">📋 克隆</button>
-        <button class="btn btn-sm btn-outline" onclick="switchSite('${s.id}');switchSection('site',document.querySelectorAll('.nav-item')[2])">⚙️ 配置</button>
-        ${sites.length > 1 ? `<button class="btn btn-sm btn-danger" onclick="doDeleteSite('${s.id}','${esc(s.name)}')">删除</button>` : ''}
+        ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showPasswordModal('${s.id}','${esc(s.password||'')}')">🔑 密码</button>` : ''}
+        ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showCloneModal('${s.id}','${esc(s.name)}')">📋 克隆</button>` : ''}
+        <button class="btn btn-sm btn-outline" onclick="switchSite('${s.id}');switchSection('site',document.querySelectorAll('.nav-item')[${isSuperAdmin?2:0}])">⚙️ 配置</button>
+        ${isSuperAdmin && sites.length > 1 ? `<button class="btn btn-sm btn-danger" onclick="doDeleteSite('${s.id}','${esc(s.name)}')">删除</button>` : ''}
       </div>
     </div>
   `).join('')
@@ -452,7 +550,6 @@ async function switchSite(id) {
   currentSite = id
   document.getElementById('siteSelector').value = id
   await loadSiteConfig()
-  // Update all badges
   document.querySelectorAll('.current-site-badge').forEach(b => {
     const s = sites.find(x => x.id === id)
     b.textContent = s ? s.name : id
@@ -466,14 +563,16 @@ async function doCreateSite() {
   const id = document.getElementById('newSiteId').value.trim()
   const name = document.getElementById('newSiteName').value.trim()
   const domain = document.getElementById('newSiteDomain').value.trim()
+  const password = document.getElementById('newSitePassword').value.trim()
   if (!id || !name) return showToast('ID和名称不能为空','warning')
-  const r = await apiPost('/api/admin/sites', { id, name, domain })
+  const r = await apiPost('/api/admin/sites', { id, name, domain, password })
   if (r.success) {
     showToast(`站点 [${name}] 创建成功`)
     hideCreateSite()
     document.getElementById('newSiteId').value = ''
     document.getElementById('newSiteName').value = ''
     document.getElementById('newSiteDomain').value = ''
+    document.getElementById('newSitePassword').value = ''
     await loadSites()
     switchSite(id)
   } else {
@@ -500,6 +599,24 @@ async function confirmDeleteSite() {
   } catch(e) { showToast('请求失败: ' + e.message, 'error') }
 }
 
+// Password Modal
+function showPasswordModal(id, pw) {
+  document.getElementById('passwordSiteId').value = id
+  document.getElementById('sitePasswordInput').value = pw || ''
+  document.getElementById('passwordModal').classList.add('show')
+}
+function hidePasswordModal() { document.getElementById('passwordModal').classList.remove('show') }
+async function saveSitePassword() {
+  const id = document.getElementById('passwordSiteId').value
+  const password = document.getElementById('sitePasswordInput').value.trim()
+  const r = await apiPut(`/api/admin/sites/${id}/password`, { password })
+  if (r.success) {
+    showToast(r.message)
+    hidePasswordModal()
+    await loadSites()
+  } else { showToast(r.error, 'error') }
+}
+
 // Clone
 function showCloneModal(id) { document.getElementById('cloneSourceId').value = id; document.getElementById('cloneModal').classList.add('show') }
 function hideCloneModal() { document.getElementById('cloneModal').classList.remove('show') }
@@ -521,7 +638,7 @@ async function doCloneSite() {
   } else { showToast(r.error, 'error') }
 }
 
-// Load config for current site
+// ==================== Config ====================
 async function loadSiteConfig() {
   if (!currentSite) return
   try {
@@ -546,7 +663,6 @@ function populateAllForms() {
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
   const imgKeys=['hero_banner_pc','hero_banner_h5','values_pc','values_h5','collab_banner_pc','collab_banner_h5']
   imgKeys.forEach(k=>{const el=document.getElementById(`upload-${k}`);if(el){if(c[k]){el.innerHTML=`<img src="${c[k]}" /><div class="upload-text">点击更换</div>`;el.classList.add('has-image')}else{el.innerHTML='<div class="upload-text">📤 点击上传</div>';el.classList.remove('has-image')}}})
-  // Update badges
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }
 
@@ -554,7 +670,7 @@ function setVal(id,v){const e=document.getElementById(id);if(e)e.value=v}
 function getVal(id){const e=document.getElementById(id);return e?e.value:''}
 function switchSection(name,btn){document.querySelectorAll('.section-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById(`section-${name}`).classList.add('active');if(btn)btn.classList.add('active')}
 
-// Save functions (all scoped to currentSite)
+// Save functions
 const siteQ = () => `?site=${currentSite}`
 async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
 async function saveContacts(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'business_contact',value:{handle:getVal('business_handle'),url:getVal('business_url')},category:'contacts'},{key:'tg_recruit_group',value:{label:getVal('tg_recruit_label'),url:getVal('tg_recruit_url')},category:'contacts'},{key:'tg_official_channel',value:{label:getVal('tg_channel_label'),handle:getVal('tg_channel_handle'),url:getVal('tg_channel_url')},category:'contacts'},{key:'customer_service',value:{handle:getVal('customer_handle'),url:getVal('customer_url')},category:'contacts'},{key:'complaint_contact',value:{name:getVal('complaint_name'),handle:getVal('complaint_handle'),url:getVal('complaint_url'),avatar:configData.complaint_contact?.avatar||''},category:'contacts'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
