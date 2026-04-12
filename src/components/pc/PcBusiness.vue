@@ -14,7 +14,7 @@
     <div class="section-card">
       <!-- 推广招商部 -->
       <div class="dept-block">
-        <div class="dept-label">推广招商部</div>
+        <div class="dept-label">{{ promoteDeptLabel }}</div>
         <div class="partner-list">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <div class="partner-left">
@@ -39,7 +39,7 @@
 
       <!-- 支付通道招商部 -->
       <div class="dept-block">
-        <div class="dept-label">支付通道招商部</div>
+        <div class="dept-label">{{ thirdDeptLabel }}</div>
         <div class="partner-list">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <div class="partner-left">
@@ -64,18 +64,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
+import { TG_RECRUIT_GROUP } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS
 
+// 部门标签：从后台配置读取，默认值作为 fallback
+const promoteDeptLabel = computed(() => TG_RECRUIT_GROUP.label || '推广招商部')
+const thirdDeptLabel = ref('支付通道招商部')
+
 const activeTab = ref('promote')
-const tabs = [
-  { key: 'promote', label: '推广招商部' },
-  { key: 'third', label: '支付通道招商部' },
-]
+const tabs = computed(() => [
+  { key: 'promote', label: promoteDeptLabel.value },
+  { key: 'third', label: thirdDeptLabel.value },
+])
 
 function copy(text) {
   copyToClipboard(text)

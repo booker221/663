@@ -38,12 +38,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { SEARCH_CONFIG } from '@/config/contacts.js'
 import { verifyOfficialHandle } from '@/utils/verify.js'
 import { showToast } from '@/utils/toast.js'
 
 const searchHandle = ref(SEARCH_CONFIG.defaultValue || '')
+
+// API 数据加载后自动更新搜索框默认值
+watchEffect(() => {
+  if (SEARCH_CONFIG.defaultValue) {
+    searchHandle.value = SEARCH_CONFIG.defaultValue
+  }
+})
 
 const onInput = (e) => {
   searchHandle.value = searchHandle.value.replace(/[^a-zA-Z0-9@]/g, '')

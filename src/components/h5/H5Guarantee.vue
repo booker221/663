@@ -49,15 +49,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { GUARANTEE_ACCOUNTS, PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { showToast } from '@/utils/toast.js'
 
 const inputId = ref('')
 const verifyResult = ref(null)
 
-// 收集所有官方 handles（包含相关部门的 handle）
-const allOfficialHandles = (() => {
+// 响应式计算所有官方 handles（API 更新后自动变化）
+const allOfficialHandles = computed(() => {
   const handles = [...GUARANTEE_ACCOUNTS]
   ;[...PROMOTE_PARTNERS, ...THIRD_PARTNERS].forEach(p => {
     if (p.handle && !handles.includes(p.handle)) {
@@ -65,7 +65,7 @@ const allOfficialHandles = (() => {
     }
   })
   return handles.map(h => h.replace(/^@/, '').toLowerCase().trim())
-})()
+})
 
 const onInput = () => {
   verifyResult.value = null
@@ -95,7 +95,7 @@ const handleVerify = () => {
   if (!query) return
 
   const normalized = query.replace(/^@/, '').toLowerCase().trim()
-  verifyResult.value = allOfficialHandles.includes(normalized)
+  verifyResult.value = allOfficialHandles.value.includes(normalized)
 }
 </script>
 
