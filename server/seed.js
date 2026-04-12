@@ -55,12 +55,72 @@ const seedData = [
   {
     key: 'activities', label: '活动列表', category: 'activities',
     value: [
-      { title: '首单奖励', content: '<p class="act-line">新、老合作方每月完成首次真实跑量（量+成本）</p><p class="act-line">三网实卡/虚卡/IM首单奖励:</p><div class="act-flex"><span class="label">5W:</span> <span class="amount">188$</span></div><div class="act-flex"><span class="label">10W:</span> <span class="amount">288$</span></div><div class="act-flex"><span class="label">20W:</span> <span class="amount">388$</span></div><div class="act-flex"><span class="label">50W:</span> <span class="amount">688$</span></div><div class="act-flex"><span class="label">100W:</span> <span class="amount">1888$</span></div><p class="act-line mt-2">达标奖励:</p><p class="act-line">满足条件，奖金翻倍！！</p>' },
-      { title: '拉新奖励', content: '<p class="act-line">成功引入有效合作渠道并完成对接</p><div class="act-flex mt-2"><span class="label lg">首个有效渠道奖励:</span> <span class="amount">188$</span></div><p class="act-line mt-2">连续拉新奖励:</p><div class="act-flex"><span class="label">3个渠道:</span> <span class="value">额外 <span class="amount">588$</span></span></div><div class="act-flex"><span class="label">5个渠道:</span> <span class="value">额外 <span class="amount">688$</span></span></div><div class="act-flex"><span class="label">10个渠道:</span> <span class="value">额外 <span class="amount">1888$</span></span></div>' },
-      { title: '冲刺奖励', content: '<p class="act-line">短周期爆发（3天/7天）</p><p class="act-line red mt-2 flex-center-y">🔸 3天冲刺</p><div class="act-flex"><span class="label">100W:</span> <span class="amount">1888$</span></div><div class="act-flex"><span class="label">300W:</span> <span class="amount">3888$</span></div>' },
-      { title: '流水提成奖励', content: '<p class="act-line">按打款流水阶梯提成</p><div class="act-flex mt-2"><span class="label">10万:</span> <span class="amount">1888$</span></div><div class="act-flex"><span class="label">30万:</span> <span class="amount">3888$</span></div><div class="act-flex"><span class="label">50万:</span> <span class="amount">6888$</span></div><div class="act-flex"><span class="label">100万:</span> <span class="amount">18888$</span></div>' },
-      { title: '排行榜奖励', content: '<p class="act-line">拉新/流水/投量排名</p><div class="act-flex mt-2"><span class="label rank-label">第1名:</span> <span class="amount rank-amount">3888$</span></div><div class="act-flex"><span class="label rank-label">第2名:</span> <span class="amount rank-amount">2888$</span></div><div class="act-flex"><span class="label rank-label">第3名:</span> <span class="amount rank-amount">1888$</span></div>' },
-      { title: '优质通道每月奖励', content: '<p class="act-line">提供稳定高质量通道资源</p><div class="act-flex mt-2"><span class="label lg">稳定奖励:</span> <span class="amount">888$</span></div><div class="act-flex"><span class="label lg">高质量稳定通道:</span> <span class="amount">8888$</span></div>' }
+      {
+        title: '首单奖励',
+        sections: [
+          { type: 'text', value: '新、老合作方每月完成首次真实跑量（量+成本）' },
+          { type: 'text', value: '三网实卡/虚卡/IM首单奖励:' },
+          { type: 'tiers', items: [
+            { label: '5W:', amount: '188$' }, { label: '10W:', amount: '288$' },
+            { label: '20W:', amount: '388$' }, { label: '50W:', amount: '688$' },
+            { label: '100W:', amount: '1888$' },
+          ]},
+          { type: 'text', value: '达标奖励:' },
+          { type: 'highlight', value: '满足条件，奖金翻倍！！' },
+        ]
+      },
+      {
+        title: '拉新奖励',
+        sections: [
+          { type: 'text', value: '成功引入有效合作渠道并完成对接' },
+          { type: 'tiers', items: [{ label: '首个有效渠道奖励:', amount: '188$' }] },
+          { type: 'text', value: '连续拉新奖励:' },
+          { type: 'tiers', items: [
+            { label: '3个渠道:', amount: '额外 588$' },
+            { label: '5个渠道:', amount: '额外 688$' },
+            { label: '10个渠道:', amount: '额外 1888$' },
+          ]},
+        ]
+      },
+      {
+        title: '冲刺奖励',
+        sections: [
+          { type: 'text', value: '短周期爆发（3天/7天）' },
+          { type: 'highlight', value: '🔸 3天冲刺' },
+          { type: 'tiers', items: [
+            { label: '100W:', amount: '1888$' }, { label: '300W:', amount: '3888$' },
+          ]},
+        ]
+      },
+      {
+        title: '流水提成奖励',
+        sections: [
+          { type: 'text', value: '按打款流水阶梯提成' },
+          { type: 'tiers', items: [
+            { label: '10万:', amount: '1888$' }, { label: '30万:', amount: '3888$' },
+            { label: '50万:', amount: '6888$' }, { label: '100万:', amount: '18888$' },
+          ]},
+        ]
+      },
+      {
+        title: '排行榜奖励',
+        sections: [
+          { type: 'text', value: '拉新/流水/投量排名' },
+          { type: 'tiers', items: [
+            { label: '第1名:', amount: '3888$' }, { label: '第2名:', amount: '2888$' },
+            { label: '第3名:', amount: '1888$' },
+          ]},
+        ]
+      },
+      {
+        title: '优质通道每月奖励',
+        sections: [
+          { type: 'text', value: '提供稳定高质量通道资源' },
+          { type: 'tiers', items: [
+            { label: '稳定奖励:', amount: '888$' }, { label: '高质量稳定通道:', amount: '8888$' },
+          ]},
+        ]
+      }
     ]
   },
 

@@ -24,7 +24,7 @@
               </div>
               <img class="arrow-img" :src="activeIndex === index ? arrowUpIcon : arrowDownIcon" alt="toggle" />
             </div>
-            <div class="accordion-content" v-show="activeIndex === index" v-html="item.content"></div>
+            <div class="accordion-content" v-show="activeIndex === index" v-html="getActivityContent(item)"></div>
           </div>
         </div>
 
@@ -64,7 +64,7 @@ import { ref, computed } from 'vue'
 import defaultActBg from '@/assets/images/webp/activity-bg-h5.webp'
 import defaultActPerson from '@/assets/images/webp/activity-person-h5-new.webp'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
-import { activities, images } from '@/stores/siteConfig.js'
+import { activities, images, activityToHtml } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
 import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
@@ -80,6 +80,13 @@ const numIcons = [num1, num2, num3, num4, num5, num6]
 
 const actBgImage = computed(() => images.activity_bg_h5 || defaultActBg)
 const activityPersonImage = computed(() => images.activity_person_h5 || defaultActPerson)
+
+// 兼容旧数据（content 字符串）和新数据（sections 结构化）
+function getActivityContent(item) {
+  if (item.content && typeof item.content === 'string') return item.content
+  if (item.sections) return activityToHtml(item.sections)
+  return ''
+}
 
 const activeIndex = ref(-1)
 const toggleActivity = (index) => {

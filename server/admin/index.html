@@ -100,6 +100,36 @@
     .activity-body{padding:14px}
     .activity-body textarea{min-height:160px;font-family:'Menlo',monospace;font-size:12px}
 
+    /* Structured activity editor */
+    .section-row{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fafbfc;position:relative}
+    .section-row:hover{border-color:#cbd5e1;background:#fff}
+    .section-type-select{width:100px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:11px;background:#fff;flex-shrink:0}
+    .section-content{flex:1;min-width:0}
+    .section-text-input{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff}
+    .section-text-input:focus{border-color:var(--primary);outline:none}
+    .tier-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:4px;align-items:center}
+    .tier-input{padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff;width:100%}
+    .tier-input:focus{border-color:var(--primary);outline:none}
+    .tier-remove{width:22px;height:22px;border:none;background:rgba(239,68,68,.1);color:var(--danger);border-radius:50%;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+    .tier-remove:hover{background:var(--danger);color:#fff}
+    .section-remove{width:24px;height:24px;border:none;background:rgba(239,68,68,.08);color:var(--danger);border-radius:6px;cursor:pointer;font-size:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+    .section-remove:hover{background:var(--danger);color:#fff}
+    .add-section-bar{display:flex;gap:4px;margin-top:6px}
+    .add-section-btn{padding:4px 10px;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--text-muted);font-size:11px;cursor:pointer}
+    .add-section-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(59,130,246,.04)}
+    .add-tier-btn{padding:3px 8px;border:1px dashed var(--border);border-radius:4px;background:transparent;color:var(--text-muted);font-size:10px;cursor:pointer;margin-top:4px}
+    .add-tier-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .section-type-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;margin-right:4px}
+    .section-type-badge.text{background:rgba(59,130,246,.1);color:var(--primary)}
+    .section-type-badge.tiers{background:rgba(16,185,129,.1);color:var(--success)}
+    .section-type-badge.highlight{background:rgba(245,158,11,.1);color:var(--warning)}
+    .activity-preview{margin-top:8px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:12px}
+    .activity-preview .preview-label{font-size:10px;color:var(--text-muted);margin-bottom:4px;font-weight:600}
+    .activity-preview .act-line{font-size:12px;color:#414A65;margin:0 0 4px;line-height:1.4}
+    .activity-preview .act-line.red{color:#FF4A4A;font-weight:600}
+    .activity-preview .act-flex{display:flex;gap:8px;font-size:12px;color:#414A65;margin-bottom:3px}
+    .activity-preview .amount{color:#FF4A4A;font-weight:600}
+
     /* Site cards in site management */
     .site-card{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;background:#fff;transition:all .15s}
     .site-card:hover{border-color:#cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,.05)}
@@ -292,8 +322,8 @@
     <!-- ===== 活动专栏 ===== -->
     <div class="section-panel" id="section-activities">
       <h1 class="page-title">活动专栏 <span class="current-site-badge" id="badge-activities"></span></h1>
-      <p class="page-desc">管理活动奖励内容（支持HTML）</p>
-      <div class="card"><div class="card-title">🎯 活动列表 <button class="btn btn-sm btn-outline" onclick="addActivity()">+ 添加</button></div><div id="activities-list"></div></div>
+      <p class="page-desc">管理活动奖励内容，操作员只需填写纯文本即可</p>
+      <div class="card"><div class="card-title">🎯 活动列表 <button class="btn btn-sm btn-outline" onclick="addActivity()">+ 添加活动</button></div><div id="activities-list"></div></div>
       <div class="save-bar"><button class="btn btn-primary" onclick="saveActivities()">💾 保存</button></div>
     </div>
 
@@ -683,12 +713,168 @@ function removePartner(t,i){(t==='promote'?promotePartners:thirdPartners).splice
 function updatePartner(t,i,f,v){(t==='promote'?promotePartners:thirdPartners)[i][f]=v}
 async function savePartners(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'promote_partners',value:promotePartners,category:'partners'},{key:'third_partners',value:thirdPartners,category:'partners'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
 
-// Activities
-let activities=[]
-function renderActivities(data){activities=[...data];document.getElementById('activities-list').innerHTML=activities.map((a,i)=>`<div class="activity-item"><div class="activity-header"><h4>${i+1}. ${esc(a.title)}</h4><button class="btn btn-sm btn-danger" onclick="removeActivity(${i})">删除</button></div><div class="activity-body"><div class="form-group"><label class="form-label">标题</label><input class="form-input" value="${esc(a.title)}" onchange="activities[${i}].title=this.value;renderActivities(activities)" /></div><div class="form-group"><label class="form-label">内容 (HTML)</label><textarea class="form-textarea" rows="6" onchange="activities[${i}].content=this.value">${esc(a.content)}</textarea></div></div></div>`).join('')}
-function addActivity(){activities.push({title:'新活动',content:'<p class="act-line">内容</p>'});renderActivities(activities)}
-function removeActivity(i){activities.splice(i,1);renderActivities(activities)}
-async function saveActivities(){const r=await apiPut(`/api/admin/config/activities${siteQ()}`,{value:activities,category:'activities'});r.success?showToast('已保存'):showToast(r.error,'error')}
+// Activities — Structured Editor
+let activities = []
+
+/**
+ * 将旧的 HTML content 迁移为结构化 sections（尽力解析）
+ */
+function migrateHtmlToSections(html) {
+  if (!html || typeof html !== 'string') return [{ type: 'text', value: '请编辑内容' }]
+  const sections = []
+  // 简易解析：提取 act-line 和 act-flex 内容
+  const tmp = document.createElement('div')
+  tmp.innerHTML = html
+  for (const child of tmp.children) {
+    if (child.classList.contains('act-line')) {
+      const isRed = child.classList.contains('red')
+      sections.push({ type: isRed ? 'highlight' : 'text', value: child.textContent.trim() })
+    } else if (child.classList.contains('act-flex')) {
+      const label = child.querySelector('.label')
+      const amount = child.querySelector('.amount') || child.querySelector('.red-text') || child.querySelector('.value')
+      // 检查上一个 section 是否也是 tiers，如果是则合并
+      const last = sections[sections.length - 1]
+      if (last && last.type === 'tiers') {
+        last.items.push({ label: label?.textContent?.trim() || '', amount: amount?.textContent?.trim() || '' })
+      } else {
+        sections.push({ type: 'tiers', items: [{ label: label?.textContent?.trim() || '', amount: amount?.textContent?.trim() || '' }] })
+      }
+    }
+  }
+  return sections.length > 0 ? sections : [{ type: 'text', value: html.replace(/<[^>]+>/g, ' ').trim() }]
+}
+
+/**
+ * 确保活动数据使用结构化 sections 格式
+ */
+function normalizeActivity(a) {
+  if (a.sections && Array.isArray(a.sections)) return a
+  // 旧格式：有 content 字段（HTML字符串）
+  return { title: a.title, sections: migrateHtmlToSections(a.content) }
+}
+
+/**
+ * 将结构化 sections 转 HTML（用于预览）
+ */
+function sectionsToHtml(sections) {
+  if (!Array.isArray(sections)) return ''
+  return sections.map(s => {
+    if (s.type === 'text') return `<p class="act-line">${esc(s.value)}</p>`
+    if (s.type === 'highlight') return `<p class="act-line red">${esc(s.value)}</p>`
+    if (s.type === 'tiers') return (s.items||[]).map(t => `<div class="act-flex"><span class="label">${esc(t.label)}</span> <span class="amount">${esc(t.amount)}</span></div>`).join('')
+    return ''
+  }).join('')
+}
+
+function renderActivities(data) {
+  activities = data.map(normalizeActivity)
+  const list = document.getElementById('activities-list')
+  list.innerHTML = activities.map((a, i) => `
+    <div class="activity-item">
+      <div class="activity-header">
+        <h4>${i+1}. ${esc(a.title)}</h4>
+        <button class="btn btn-sm btn-danger" onclick="removeActivity(${i})">删除</button>
+      </div>
+      <div class="activity-body">
+        <div class="form-group">
+          <label class="form-label">活动标题</label>
+          <input class="form-input" value="${esc(a.title)}" onchange="activities[${i}].title=this.value;renderActivities(activities)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">内容块 <span style="font-weight:400;color:var(--text-muted)">(每个块是一行内容，可按需添加)</span></label>
+          <div id="sections-${i}">${renderSections(i, a.sections)}</div>
+          <div class="add-section-bar">
+            <button class="add-section-btn" onclick="addSection(${i},'text')">+ 文字描述</button>
+            <button class="add-section-btn" onclick="addSection(${i},'tiers')">+ 奖励阶梯</button>
+            <button class="add-section-btn" onclick="addSection(${i},'highlight')">+ 高亮备注</button>
+          </div>
+        </div>
+        <div class="activity-preview">
+          <div class="preview-label">👁️ 效果预览</div>
+          ${sectionsToHtml(a.sections)}
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+function renderSections(actIdx, sections) {
+  return (sections || []).map((s, si) => {
+    const typeLabels = { text: '文字', tiers: '阶梯', highlight: '高亮' }
+    let content = ''
+    if (s.type === 'text' || s.type === 'highlight') {
+      content = `<input class="section-text-input" value="${esc(s.value)}" 
+        onchange="updateSection(${actIdx},${si},'value',this.value)" 
+        placeholder="${s.type === 'highlight' ? '高亮文字（红色显示）' : '描述文字'}" />`
+    } else if (s.type === 'tiers') {
+      const tiersHtml = (s.items || []).map((t, ti) => `
+        <div class="tier-grid">
+          <input class="tier-input" value="${esc(t.label)}" placeholder="等级 (如: 5W:)" onchange="updateTier(${actIdx},${si},${ti},'label',this.value)" />
+          <input class="tier-input" value="${esc(t.amount)}" placeholder="奖励 (如: 188$)" onchange="updateTier(${actIdx},${si},${ti},'amount',this.value)" />
+          <button class="tier-remove" onclick="removeTier(${actIdx},${si},${ti})">✕</button>
+        </div>
+      `).join('')
+      content = `${tiersHtml}<button class="add-tier-btn" onclick="addTier(${actIdx},${si})">+ 添加一行</button>`
+    }
+    return `
+      <div class="section-row">
+        <span class="section-type-badge ${s.type}">${typeLabels[s.type] || s.type}</span>
+        <div class="section-content">${content}</div>
+        <button class="section-remove" onclick="removeSection(${actIdx},${si})">✕</button>
+      </div>`
+  }).join('')
+}
+
+function addActivity() {
+  activities.push({ title: '新活动', sections: [{ type: 'text', value: '' }] })
+  renderActivities(activities)
+}
+function removeActivity(i) { activities.splice(i, 1); renderActivities(activities) }
+
+function addSection(actIdx, type) {
+  if (type === 'tiers') {
+    activities[actIdx].sections.push({ type: 'tiers', items: [{ label: '', amount: '' }] })
+  } else {
+    activities[actIdx].sections.push({ type, value: '' })
+  }
+  renderActivities(activities)
+}
+function removeSection(actIdx, secIdx) {
+  activities[actIdx].sections.splice(secIdx, 1)
+  renderActivities(activities)
+}
+function updateSection(actIdx, secIdx, field, value) {
+  activities[actIdx].sections[secIdx][field] = value
+  // 只刷新对应活动的预览区（不要重绘整个表单，否则丢失光标）
+  refreshPreview(actIdx)
+}
+function addTier(actIdx, secIdx) {
+  activities[actIdx].sections[secIdx].items.push({ label: '', amount: '' })
+  renderActivities(activities)
+}
+function removeTier(actIdx, secIdx, tierIdx) {
+  activities[actIdx].sections[secIdx].items.splice(tierIdx, 1)
+  renderActivities(activities)
+}
+function updateTier(actIdx, secIdx, tierIdx, field, value) {
+  activities[actIdx].sections[secIdx].items[tierIdx][field] = value
+  // 只刷新预览
+  refreshPreview(actIdx)
+}
+
+function refreshPreview(actIdx) {
+  const previews = document.querySelectorAll('.activity-preview')
+  if (previews[actIdx]) {
+    previews[actIdx].innerHTML = `<div class="preview-label">👁️ 效果预览</div>${sectionsToHtml(activities[actIdx].sections)}`
+  }
+}
+
+async function saveActivities() {
+  // 保存时只存 title + sections（不再存 content HTML）
+  const cleanData = activities.map(a => ({ title: a.title, sections: a.sections }))
+  const r = await apiPut(`/api/admin/config/activities${siteQ()}`, { value: cleanData, category: 'activities' })
+  r.success ? showToast('已保存') : showToast(r.error, 'error')
+}
 
 // Service
 async function saveService(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'service_title',value:getVal('service_title'),category:'service'},{key:'service_desc',value:getVal('service_desc'),category:'service'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
