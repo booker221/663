@@ -53,8 +53,9 @@
     .card{background:var(--card-bg);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:16px;border:1px solid var(--border)}
     .card-title{font-size:15px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
     .form-group{margin-bottom:16px}
-    .form-label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px}
-    .form-hint{font-size:11px;color:var(--text-muted);margin-top:3px}
+    .form-label{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block}
+    .form-hint{font-size:11px;color:var(--text-muted);font-weight:400;margin-top:4px}
+    .form-hint-inline{font-size:10px;color:#94a3b8;font-weight:400}
     .form-input,.form-textarea,.form-select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:#fff;color:var(--text);transition:border-color .2s;outline:none;font-family:inherit}
     .form-input:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
     .form-textarea{resize:vertical;min-height:80px}
@@ -158,6 +159,32 @@
 
     /* Current site indicator */
     .current-site-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:rgba(59,130,246,.1);color:var(--primary);font-size:11px;font-weight:600;margin-left:8px}
+
+    /* Preview Panel */
+    .preview-fab{position:fixed;bottom:28px;right:28px;z-index:200;width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(59,130,246,.4);display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .preview-fab:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(59,130,246,.5)}
+    .preview-fab.active{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,.4)}
+    .preview-panel{position:fixed;top:0;right:-520px;width:520px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.12);z-index:190;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+    .preview-panel.open{right:0}
+    .preview-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0}
+    .preview-toolbar-left{display:flex;align-items:center;gap:8px}
+    .preview-toolbar-title{font-size:14px;font-weight:700;color:var(--text)}
+    .preview-toolbar-right{display:flex;align-items:center;gap:6px}
+    .preview-device-btn{padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .15s}
+    .preview-device-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .preview-device-btn:hover:not(.active){background:#f1f5f9}
+    .preview-refresh-btn{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:13px;cursor:pointer;color:var(--text-muted);transition:all .15s}
+    .preview-refresh-btn:hover{background:#f1f5f9;color:var(--primary)}
+    .preview-close-btn{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:13px;cursor:pointer;color:var(--text-muted)}
+    .preview-close-btn:hover{background:rgba(239,68,68,.08);color:var(--danger)}
+    .preview-iframe-wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:12px;background:#e2e8f0;overflow:auto}
+    .preview-iframe-wrap.mode-pc .preview-iframe{width:100%;height:100%;border-radius:8px}
+    .preview-iframe-wrap.mode-h5 .preview-iframe{width:375px;height:812px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+    .preview-iframe{border:none;background:#fff;transition:all .3s ease}
+    .preview-status{display:flex;align-items:center;gap:6px;padding:8px 16px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);background:#f8fafc;flex-shrink:0}
+    .preview-dot{width:6px;height:6px;border-radius:50%;background:var(--success);flex-shrink:0}
+    .preview-dot.loading{background:var(--warning);animation:pulse 1s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
   </style>
 </head>
 <body>
@@ -271,14 +298,14 @@
       <p class="page-desc">管理网站标题、SEO描述和公司简介</p>
       <div class="card">
         <div class="card-title">🌐 SEO 配置</div>
-        <div class="form-group"><label class="form-label">网站标题</label><input class="form-input" id="site_title" /></div>
-        <div class="form-group"><label class="form-label">网站描述</label><textarea class="form-textarea" id="site_description" rows="3"></textarea></div>
-        <div class="form-group"><label class="form-label">关键词</label><input class="form-input" id="site_keywords" /></div>
+        <div class="form-group"><label class="form-label">网站标题 <span class="form-hint-inline">（最多50字）</span></label><input class="form-input" id="site_title" maxlength="50" /></div>
+        <div class="form-group"><label class="form-label">网站描述 <span class="form-hint-inline">（最多200字）</span></label><textarea class="form-textarea" id="site_description" rows="3" maxlength="200"></textarea></div>
+        <div class="form-group"><label class="form-label">关键词 <span class="form-hint-inline">（最多100字）</span></label><input class="form-input" id="site_keywords" maxlength="100" /></div>
       </div>
       <div class="card">
         <div class="card-title">🏢 关于我们</div>
-        <div class="form-group"><label class="form-label">标题</label><input class="form-input" id="about_title" /></div>
-        <div class="form-group"><label class="form-label">内容 (支持HTML)</label><textarea class="form-textarea" id="about_text" rows="5"></textarea></div>
+        <div class="form-group"><label class="form-label">标题 <span class="form-hint-inline">（最多20字）</span></label><input class="form-input" id="about_title" maxlength="20" /></div>
+        <div class="form-group"><label class="form-label">内容 (支持HTML) <span class="form-hint-inline">（最多500字）</span></label><textarea class="form-textarea" id="about_text" rows="5" maxlength="500"></textarea></div>
       </div>
       <div class="save-bar"><button class="btn btn-primary" onclick="saveSiteConfig()">💾 保存</button></div>
     </div>
@@ -289,23 +316,23 @@
       <p class="page-desc">管理商务合作、客服、投诉等联系方式</p>
       <div class="card">
         <div class="card-title">💼 商务合作</div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="business_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="business_url" /></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="business_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="business_url" maxlength="200" /></div></div>
       </div>
       <div class="card">
         <div class="card-title">📢 TG招商群</div>
-        <div class="form-row"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_recruit_label" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_recruit_url" /></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_recruit_label" maxlength="20" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_recruit_url" maxlength="200" /></div></div>
       </div>
       <div class="card">
         <div class="card-title">📡 TG官方频道</div>
-        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_channel_label" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="tg_channel_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_channel_url" /></div></div>
+        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_channel_label" maxlength="20" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="tg_channel_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_channel_url" maxlength="200" /></div></div>
       </div>
       <div class="card">
         <div class="card-title">🎧 福利客服</div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="customer_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="customer_url" /></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="customer_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="customer_url" maxlength="200" /></div></div>
       </div>
       <div class="card">
         <div class="card-title">📮 投诉接受</div>
-        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="complaint_name" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="complaint_handle" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="complaint_url" /></div></div>
+        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="complaint_name" maxlength="10" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="complaint_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="complaint_url" maxlength="200" /></div></div>
       </div>
       <div class="save-bar"><button class="btn btn-primary" onclick="saveContacts()">💾 保存</button></div>
     </div>
@@ -331,8 +358,8 @@
     <div class="section-panel" id="section-service">
       <h1 class="page-title">服务体系 <span class="current-site-badge" id="badge-service"></span></h1>
       <div class="card">
-        <div class="form-group"><label class="form-label">标题</label><input class="form-input" id="service_title" /></div>
-        <div class="form-group"><label class="form-label">描述</label><textarea class="form-textarea" id="service_desc" rows="4"></textarea></div>
+        <div class="form-group"><label class="form-label">标题 <span class="form-hint-inline">（最多20字）</span></label><input class="form-input" id="service_title" maxlength="20" /></div>
+        <div class="form-group"><label class="form-label">描述 <span class="form-hint-inline">（最多300字）</span></label><textarea class="form-textarea" id="service_desc" rows="4" maxlength="300"></textarea></div>
       </div>
       <div class="save-bar"><button class="btn btn-primary" onclick="saveService()">💾 保存</button></div>
     </div>
@@ -344,7 +371,7 @@
         <div class="card-title">✅ 认证账户</div>
         <div id="guarantee-tags" class="tag-list"></div>
         <div style="margin-top:10px;display:flex;gap:6px">
-          <input class="form-input" id="newGuaranteeAccount" placeholder="@handle" style="width:180px" onkeyup="if(event.key==='Enter')addGuarantee()" />
+          <input class="form-input" id="newGuaranteeAccount" placeholder="@handle" style="width:180px" maxlength="30" onkeyup="if(event.key==='Enter')addGuarantee()" />
           <button class="btn btn-sm btn-outline" onclick="addGuarantee()">添加</button>
         </div>
       </div>
@@ -355,9 +382,9 @@
     <div class="section-panel" id="section-search">
       <h1 class="page-title">搜索配置 <span class="current-site-badge" id="badge-search"></span></h1>
       <div class="card">
-        <div class="form-row"><div class="form-group"><label class="form-label">占位文字</label><input class="form-input" id="search_placeholder" /></div><div class="form-group"><label class="form-label">默认值</label><input class="form-input" id="search_defaultValue" /></div></div>
-        <div class="form-group"><label class="form-label">成功提示</label><input class="form-input" id="search_successText" /></div>
-        <div class="form-group"><label class="form-label">失败提示</label><input class="form-input" id="search_failText" /></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">占位文字</label><input class="form-input" id="search_placeholder" maxlength="30" /></div><div class="form-group"><label class="form-label">默认值</label><input class="form-input" id="search_defaultValue" maxlength="30" /></div></div>
+        <div class="form-group"><label class="form-label">成功提示 <span class="form-hint-inline">（最多50字）</span></label><input class="form-input" id="search_successText" maxlength="50" /></div>
+        <div class="form-group"><label class="form-label">失败提示 <span class="form-hint-inline">（最多50字）</span></label><input class="form-input" id="search_failText" maxlength="50" /></div>
       </div>
       <div class="save-bar"><button class="btn btn-primary" onclick="saveSearch()">💾 保存</button></div>
     </div>
@@ -469,6 +496,7 @@ async function checkAuth() {
       currentRole = r.role
       document.getElementById('loginOverlay').style.display = 'none'
       document.getElementById('app').style.display = 'flex'
+      document.getElementById('previewFab').style.display = 'flex'
       applyRoleUI(r.role, r.siteId)
       await loadSites()
       // 站点管理员直接跳到内容配置
@@ -490,6 +518,7 @@ async function doLogin() {
       currentRole = r.role
       document.getElementById('loginOverlay').style.display = 'none'
       document.getElementById('app').style.display = 'flex'
+      document.getElementById('previewFab').style.display = 'flex'
       applyRoleUI(r.role, r.siteId)
       await loadSites()
       if (r.role === 'siteadmin') {
@@ -512,6 +541,8 @@ function doLogout() {
   currentRole = ''
   document.getElementById('loginOverlay').style.display = 'flex'
   document.getElementById('app').style.display = 'none'
+  document.getElementById('previewFab').style.display = 'none'
+  closePreview()
   document.getElementById('loginPassword').value = ''
   document.getElementById('loginError').textContent = ''
 }
@@ -707,7 +738,7 @@ async function saveContacts(){const r=await apiPut('/api/admin/config'+siteQ(),{
 
 // Partners
 let promotePartners=[],thirdPartners=[]
-function renderPartnerList(type,data){if(type==='promote')promotePartners=[...data];else thirdPartners=[...data];const list=type==='promote'?promotePartners:thirdPartners;document.getElementById(`${type}-list`).innerHTML=list.map((p,i)=>`<div class="list-item"><div class="list-item-content"><div class="inline-form"><div><label class="form-label">名称</label><input class="form-input" value="${esc(p.name)}" onchange="updatePartner('${type}',${i},'name',this.value)" /></div><div><label class="form-label">Handle</label><input class="form-input" value="${esc(p.handle)}" onchange="updatePartner('${type}',${i},'handle',this.value)" /></div><div><label class="form-label">链接</label><input class="form-input" value="${esc(p.url)}" onchange="updatePartner('${type}',${i},'url',this.value)" /></div></div></div><button class="btn btn-sm btn-danger" onclick="removePartner('${type}',${i})">删除</button></div>`).join('')}
+function renderPartnerList(type,data){if(type==='promote')promotePartners=[...data];else thirdPartners=[...data];const list=type==='promote'?promotePartners:thirdPartners;document.getElementById(`${type}-list`).innerHTML=list.map((p,i)=>`<div class="list-item"><div class="list-item-content"><div class="inline-form"><div><label class="form-label">名称</label><input class="form-input" value="${esc(p.name)}" maxlength="10" onchange="updatePartner('${type}',${i},'name',this.value)" /></div><div><label class="form-label">Handle</label><input class="form-input" value="${esc(p.handle)}" maxlength="30" onchange="updatePartner('${type}',${i},'handle',this.value)" /></div><div><label class="form-label">链接</label><input class="form-input" value="${esc(p.url)}" maxlength="200" onchange="updatePartner('${type}',${i},'url',this.value)" /></div></div></div><button class="btn btn-sm btn-danger" onclick="removePartner('${type}',${i})">删除</button></div>`).join('')}
 function addPartner(t){(t==='promote'?promotePartners:thirdPartners).push({name:'',handle:'',url:'',avatar:''});renderPartnerList(t,t==='promote'?promotePartners:thirdPartners)}
 function removePartner(t,i){(t==='promote'?promotePartners:thirdPartners).splice(i,1);renderPartnerList(t,t==='promote'?promotePartners:thirdPartners)}
 function updatePartner(t,i,f,v){(t==='promote'?promotePartners:thirdPartners)[i][f]=v}
@@ -778,7 +809,7 @@ function renderActivities(data) {
       <div class="activity-body">
         <div class="form-group">
           <label class="form-label">活动标题</label>
-          <input class="form-input" value="${esc(a.title)}" onchange="activities[${i}].title=this.value;renderActivities(activities)" />
+          <input class="form-input" value="${esc(a.title)}" maxlength="15" onchange="activities[${i}].title=this.value;renderActivities(activities)" />
         </div>
         <div class="form-group">
           <label class="form-label">内容块 <span style="font-weight:400;color:var(--text-muted)">(每个块是一行内容，可按需添加)</span></label>
@@ -803,14 +834,14 @@ function renderSections(actIdx, sections) {
     const typeLabels = { text: '文字', tiers: '阶梯', highlight: '高亮' }
     let content = ''
     if (s.type === 'text' || s.type === 'highlight') {
-      content = `<input class="section-text-input" value="${esc(s.value)}" 
+      content = `<input class="section-text-input" value="${esc(s.value)}" maxlength="50"
         onchange="updateSection(${actIdx},${si},'value',this.value)" 
         placeholder="${s.type === 'highlight' ? '高亮文字（红色显示）' : '描述文字'}" />`
     } else if (s.type === 'tiers') {
       const tiersHtml = (s.items || []).map((t, ti) => `
         <div class="tier-grid">
-          <input class="tier-input" value="${esc(t.label)}" placeholder="等级 (如: 5W:)" onchange="updateTier(${actIdx},${si},${ti},'label',this.value)" />
-          <input class="tier-input" value="${esc(t.amount)}" placeholder="奖励 (如: 188$)" onchange="updateTier(${actIdx},${si},${ti},'amount',this.value)" />
+          <input class="tier-input" value="${esc(t.label)}" placeholder="等级 (如: 5W:)" maxlength="15" onchange="updateTier(${actIdx},${si},${ti},'label',this.value)" />
+          <input class="tier-input" value="${esc(t.amount)}" placeholder="奖励 (如: 188$)" maxlength="20" onchange="updateTier(${actIdx},${si},${ti},'amount',this.value)" />
           <button class="tier-remove" onclick="removeTier(${actIdx},${si},${ti})">✕</button>
         </div>
       `).join('')
@@ -903,7 +934,118 @@ document.addEventListener('DOMContentLoaded',()=>{
 })
 
 function esc(s){if(typeof s!=='string')return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// ==================== 预览面板 ====================
+let previewOpen = false
+let previewMode = 'h5' // 'pc' | 'h5'
+
+function getPreviewUrl() {
+  // 自动检测前端地址：同域名端口 5173（开发）或当前域名（生产）
+  const hostname = location.hostname
+  // 开发环境：Vite dev server
+  const devUrl = `${location.protocol}//${hostname}:5173`
+  return devUrl
+}
+
+function togglePreview() {
+  previewOpen = !previewOpen
+  const panel = document.getElementById('previewPanel')
+  const fab = document.getElementById('previewFab')
+  if (previewOpen) {
+    panel.classList.add('open')
+    fab.classList.add('active')
+    fab.innerHTML = '✕'
+    loadPreviewIframe()
+  } else {
+    panel.classList.remove('open')
+    fab.classList.remove('active')
+    fab.innerHTML = '👁'
+  }
+}
+
+function closePreview() {
+  previewOpen = false
+  document.getElementById('previewPanel').classList.remove('open')
+  document.getElementById('previewFab').classList.remove('active')
+  document.getElementById('previewFab').innerHTML = '👁'
+}
+
+function switchPreviewMode(mode) {
+  previewMode = mode
+  document.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'))
+  document.querySelector(`.preview-device-btn[data-mode="${mode}"]`).classList.add('active')
+  const wrap = document.getElementById('previewIframeWrap')
+  wrap.className = `preview-iframe-wrap mode-${mode}`
+  // 切换时刷新以匹配尺寸
+  loadPreviewIframe()
+}
+
+function loadPreviewIframe() {
+  const iframe = document.getElementById('previewIframe')
+  const statusDot = document.getElementById('previewDot')
+  const statusText = document.getElementById('previewStatusText')
+  
+  statusDot.className = 'preview-dot loading'
+  statusText.textContent = '正在加载预览...'
+  
+  const url = getPreviewUrl()
+  // 加 timestamp 强制刷新
+  iframe.src = url + '?_t=' + Date.now()
+  
+  iframe.onload = () => {
+    statusDot.className = 'preview-dot'
+    statusText.textContent = `预览已就绪 · ${previewMode === 'pc' ? 'PC端' : 'H5端'} · ${new Date().toLocaleTimeString()}`
+  }
+  iframe.onerror = () => {
+    statusDot.className = 'preview-dot'
+    statusDot.style.background = 'var(--danger)'
+    statusText.textContent = '加载失败 · 请确保前端开发服务在运行'
+  }
+}
+
+function refreshPreviewIframe() {
+  if (previewOpen) {
+    loadPreviewIframe()
+  }
+}
+
+// Hook: 所有保存成功后自动刷新预览
+const _origShowToast = showToast
+showToast = function(msg, type) {
+  _origShowToast(msg, type)
+  if (msg === '已保存' || msg === '上传成功') {
+    // 延迟 500ms 等后端更新完成后刷新
+    setTimeout(refreshPreviewIframe, 500)
+  }
+}
+
 checkAuth()
 </script>
+
+<!-- Preview FAB -->
+<button class="preview-fab" id="previewFab" onclick="togglePreview()" title="预览站点" style="display:none">👁</button>
+
+<!-- Preview Slide Panel -->
+<div class="preview-panel" id="previewPanel">
+  <div class="preview-toolbar">
+    <div class="preview-toolbar-left">
+      <span class="preview-toolbar-title">📱 站点预览</span>
+    </div>
+    <div class="preview-toolbar-right">
+      <button class="preview-device-btn active" data-mode="h5" onclick="switchPreviewMode('h5')">📱 H5</button>
+      <button class="preview-device-btn" data-mode="pc" onclick="switchPreviewMode('pc')">🖥 PC</button>
+      <button class="preview-refresh-btn" onclick="refreshPreviewIframe()" title="刷新预览">🔄</button>
+      <button class="preview-close-btn" onclick="closePreview()" title="关闭预览">✕</button>
+    </div>
+  </div>
+  <div class="preview-iframe-wrap mode-h5" id="previewIframeWrap">
+    <iframe class="preview-iframe" id="previewIframe"></iframe>
+  </div>
+  <div class="preview-status">
+    <span class="preview-dot" id="previewDot"></span>
+    <span id="previewStatusText">点击预览按钮加载</span>
+  </div>
+</div>
+
 </body>
 </html>

@@ -93,14 +93,17 @@ const servicePersonImage = computed(() => images.service_person_h5 || defaultSer
   font-weight: 700;
   color: var(--text);
   margin: 0 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .specialist-sub {
-  display: inline-flex;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   padding: 4px 12px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
   border-radius: 32px;
   background: linear-gradient(180deg, #FFF 0%, #E9F7FF 49.81%, #FFF 100%);
   font-family: "PingFang SC", sans-serif;

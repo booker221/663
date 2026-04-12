@@ -217,6 +217,10 @@ const toggleActivity = (index) => {
   letter-spacing: 0;
   color: #414A65;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
 }
 
 .arrow-img {

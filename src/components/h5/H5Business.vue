@@ -205,6 +205,8 @@ function copy(text) {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
+  min-width: 0;
 }
 
 .avatar-link {
@@ -230,6 +232,9 @@ function copy(text) {
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50px;
 }
 
 .divider {
@@ -253,6 +258,9 @@ function copy(text) {
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .partner-copy {

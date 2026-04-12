@@ -20,7 +20,7 @@ const app = express()
 const PORT = process.env.PORT || 3456
 
 // 超级管理员密码
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hx663admin'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
 // ==================== 中间件 ====================
 app.use(cors({ origin: true, credentials: true }))
@@ -313,7 +313,6 @@ app.listen(PORT, () => {
   console.log('║    落地页管理系统 - 多站点版 已启动             ║')
   console.log('╠════════════════════════════════════════════════╣')
   console.log(`║  🌐 管理后台:  http://localhost:${PORT}/admin       ║`)
-  console.log(`║  📡 API 地址:  http://localhost:${PORT}/api         ║`)
   console.log(`║  🔑 默认密码:  ${ADMIN_PASSWORD.padEnd(30)}  ║`)
   console.log(`║  🏢 站点数量:  ${String(sites.length).padEnd(30)}  ║`)
   console.log('╚════════════════════════════════════════════════╝')

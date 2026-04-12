@@ -81,6 +81,9 @@ const servicePersonImage = computed(() => images.service_person_pc || defaultSer
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .specialist-desc {
@@ -90,7 +93,10 @@ const servicePersonImage = computed(() => images.service_person_pc || defaultSer
   font-style: normal;
   font-weight: 500;
   line-height: 28px;
-  /* 155.556% */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .specialist-right {

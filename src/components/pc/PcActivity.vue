@@ -180,6 +180,10 @@ const toggleActivity = (index) => {
   font-weight: 600;
   color: #414A65;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
 .accordion-container {

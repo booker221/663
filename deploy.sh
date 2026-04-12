@@ -21,7 +21,7 @@ SITE_DIR="/www/wwwroot/hxldy"              # 宝塔网站根目录（前端 dist
 SERVER_DEPLOY_DIR="/www/wwwroot/hxldy-server"  # 后端代码目录
 
 NODE_PORT="3456"                            # Express 监听端口
-ADMIN_PASSWORD="hx663admin"                 # 管理后台密码
+ADMIN_PASSWORD="admin"                 # 管理后台密码
 # ============================================================
 
 # 颜色
