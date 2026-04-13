@@ -8,11 +8,11 @@ import { createSite, getSite, setConfigBatch } from './db.js'
 console.log('🌱 开始初始化数据库...\n')
 
 // ==================== 创建默认站点 ====================
-const DEFAULT_SITE_ID = 'hxldy'
+const DEFAULT_SITE_ID = 'default_site'
 
 if (!getSite(DEFAULT_SITE_ID)) {
-  createSite(DEFAULT_SITE_ID, '合兴落地页', 'hxldy.com', '合兴集团官方落地页')
-  console.log(`✅ 创建站点: ${DEFAULT_SITE_ID} (合兴落地页)`)
+  createSite(DEFAULT_SITE_ID, '我的落地页', '', '默认系统生成的站点，请在后台编辑')
+  console.log(`✅ 创建站点: ${DEFAULT_SITE_ID} (我的落地页)`)
 } else {
   console.log(`ℹ️  站点 ${DEFAULT_SITE_ID} 已存在，跳过创建`)
 }

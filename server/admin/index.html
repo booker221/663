@@ -316,7 +316,7 @@
       <p class="page-desc">管理商务合作、客服、投诉等联系方式</p>
       <div class="card">
         <div class="card-title">💼 商务合作</div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="business_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="business_url" maxlength="200" /></div></div>
+        <div class="form-row-3"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="business_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="business_url" maxlength="200" /></div><div class="form-group"><label class="form-label">头像URL</label><div style="display:flex;gap:4px"><input class="form-input" id="business_avatar" placeholder="图片链接" style="flex:1" /><button class="btn btn-sm btn-outline" onclick="triggerAvatarUpload(document.getElementById('business_avatar'))">⬆️上传</button></div></div></div>
       </div>
       <div class="card">
         <div class="card-title">📢 TG招商群</div>
@@ -324,15 +324,20 @@
       </div>
       <div class="card">
         <div class="card-title">📡 TG官方频道</div>
-        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_channel_label" maxlength="20" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="tg_channel_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_channel_url" maxlength="200" /></div></div>
+        <div class="form-row-4"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="tg_channel_label" maxlength="20" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="tg_channel_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="tg_channel_url" maxlength="200" /></div><div class="form-group"><label class="form-label">头像URL</label><div style="display:flex;gap:4px"><input class="form-input" id="tg_channel_avatar" placeholder="图片链接" style="flex:1" /><button class="btn btn-sm btn-outline" onclick="triggerAvatarUpload(document.getElementById('tg_channel_avatar'))">⬆️上传</button></div></div></div>
       </div>
       <div class="card">
         <div class="card-title">🎧 福利客服</div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="customer_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="customer_url" maxlength="200" /></div></div>
+        <div class="form-row-3"><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="customer_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="customer_url" maxlength="200" /></div><div class="form-group"><label class="form-label">头像URL</label><div style="display:flex;gap:4px"><input class="form-input" id="customer_avatar" placeholder="图片链接" style="flex:1" /><button class="btn btn-sm btn-outline" onclick="triggerAvatarUpload(document.getElementById('customer_avatar'))">⬆️上传</button></div></div></div>
       </div>
       <div class="card">
         <div class="card-title">📮 投诉接受</div>
-        <div class="form-row-3"><div class="form-group"><label class="form-label">名称</label><input class="form-input" id="complaint_name" maxlength="10" /></div><div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="complaint_handle" maxlength="30" /></div><div class="form-group"><label class="form-label">链接</label><input class="form-input" id="complaint_url" maxlength="200" /></div></div>
+        <div class="form-row-4">
+          <div class="form-group"><label class="form-label">名称</label><input class="form-input" id="complaint_name" maxlength="10" /></div>
+          <div class="form-group"><label class="form-label">Handle</label><input class="form-input" id="complaint_handle" maxlength="30" /></div>
+          <div class="form-group"><label class="form-label">链接</label><input class="form-input" id="complaint_url" maxlength="200" /></div>
+          <div class="form-group"><label class="form-label">头像URL(必填)</label><div style="display:flex;gap:4px"><input class="form-input" id="complaint_avatar" placeholder="图片链接" style="flex:1" /><button class="btn btn-sm btn-outline" onclick="triggerAvatarUpload(document.getElementById('complaint_avatar'))">⬆️上传</button></div></div>
+        </div>
       </div>
       <div class="save-bar"><button class="btn btn-primary" onclick="saveContacts()">💾 保存</button></div>
     </div>
@@ -417,6 +422,23 @@
   </main>
 </div>
 
+<!-- Edit Site Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>✏️ 编辑站点信息</h3>
+    <p class="page-desc">修改站点信息（注意：修改站点ID后，相关的访问链接都会改变）</p>
+    <input type="hidden" id="editOriginalId" />
+    <div class="form-group"><label class="form-label">站点名称</label><input class="form-input" id="editSiteName" placeholder="新名称" /></div>
+    <div class="form-group"><label class="form-label">站点 ID</label><input class="form-input" id="editSiteId" placeholder="英文代号，如: site01" /></div>
+    <div class="form-group"><label class="form-label">展示域名 (可选)</label><input class="form-input" id="editSiteDomain" placeholder="例如: yourdomain.com" /></div>
+    <div class="form-group"><label class="form-label">描述备注 (可选)</label><input class="form-input" id="editSiteDesc" /></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
+      <button class="btn btn-outline" onclick="hideEditModal()">取消</button>
+      <button class="btn btn-primary" onclick="doEditSite()">保存修改</button>
+    </div>
+  </div>
+</div>
+
 <!-- Clone Modal -->
 <div class="modal-overlay" id="cloneModal">
   <div class="modal">
@@ -466,11 +488,12 @@
 </div>
 
 <input type="file" id="fileInput" accept="image/*" style="display:none" />
+<input type="file" id="avatarFileInput" accept="image/*" style="display:none" />
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
 let configData = {}, currentSite = '', sites = []
-let currentUploadKey = null, currentUploadTarget = null
+let currentUploadKey = null, currentUploadTarget = null, currentAvatarInput = null
 let currentRole = '' // 'superadmin' or 'siteadmin'
 const API = window.location.origin
 
@@ -587,6 +610,51 @@ function renderSiteSelector() {
   sel.innerHTML = sites.map(s => `<option value="${s.id}" ${s.id===currentSite?'selected':''}>${s.name} (${s.id})</option>`).join('')
 }
 
+async function doCreateSite() {
+  const id=getVal('newSiteId'), name=getVal('newSiteName'), domain=getVal('newSiteDomain'), password=getVal('newSitePassword')
+  if(!id||!name) return showToast('站点ID和名称不能为空','error')
+  const r=await apiPost('/api/admin/sites',{id,name,domain,password})
+  if(r.success){showToast('创建成功');getVal('newSiteId','');getVal('newSiteName','');getVal('newSiteDomain','');getVal('newSitePassword','');loadSites()}
+  else showToast(r.error,'error')
+}
+
+// ========== 站点信息编辑交互 ==========
+function showEditModal(id, name, domain, desc) {
+  document.getElementById('editOriginalId').value = id
+  document.getElementById('editSiteId').value = id
+  document.getElementById('editSiteName').value = name
+  document.getElementById('editSiteDomain').value = domain || ''
+  document.getElementById('editSiteDesc').value = desc || ''
+  document.getElementById('editModal').classList.add('show')
+}
+function hideEditModal() { document.getElementById('editModal').classList.remove('show') }
+async function doEditSite() {
+  const originalId = document.getElementById('editOriginalId').value
+  const newId = document.getElementById('editSiteId').value
+  const name = document.getElementById('editSiteName').value
+  const domain = document.getElementById('editSiteDomain').value
+  const description = document.getElementById('editSiteDesc').value
+  
+  if(!name) return showToast('名称不能为空', 'error')
+  if(!newId) return showToast('站点ID不能为空', 'error')
+  
+  // 使用 encodeURIComponent 编码 ID，防止用户输入含有特殊字符或斜杠导致 Express 路由 404 报错
+  const r = await apiPut(`/api/admin/sites/${encodeURIComponent(originalId)}`, { newId, name, domain, description })
+  if (r.success) {
+    showToast('更新成功')
+    hideEditModal()
+    
+    // 如果修改了当前正在配置的站点 ID，必须重新加载一下不然获取不到配置
+    if (currentSite === originalId && newId !== originalId) {
+      currentSite = newId
+    }
+    
+    loadSites()
+  } else {
+    showToast(r.error, 'error')
+  }
+}
+
 function renderSitesList() {
   const isSuperAdmin = currentRole === 'superadmin'
   document.getElementById('sitesList').innerHTML = sites.length === 0
@@ -600,6 +668,7 @@ function renderSitesList() {
       <div class="site-card-actions">
         ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showPasswordModal('${s.id}','${esc(s.password||'')}')">🔑 密码</button>` : ''}
         ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showCloneModal('${s.id}','${esc(s.name)}')">📋 克隆</button>` : ''}
+        ${isSuperAdmin || s.id === currentSite ? `<button class="btn btn-sm btn-outline" onclick="showEditModal('${s.id}', '${esc(s.name)}', '${esc(s.domain || '')}', '${esc(s.description || '')}')">✏️ 编辑</button>` : ''}
         <button class="btn btn-sm btn-outline" onclick="switchSite('${s.id}');switchSection('site',document.querySelectorAll('.nav-item')[${isSuperAdmin?2:0}])">⚙️ 配置</button>
         ${isSuperAdmin && sites.length > 1 ? `<button class="btn btn-sm btn-danger" onclick="doDeleteSite('${s.id}','${esc(s.name)}')">删除</button>` : ''}
       </div>
@@ -651,7 +720,7 @@ async function confirmDeleteSite() {
   const id = document.getElementById('deleteSiteId').value
   hideDeleteModal()
   try {
-    const r = await apiDelete(`/api/admin/sites/${id}`)
+    const r = await apiDelete(`/api/admin/sites/${encodeURIComponent(id)}`)
     if (r.success) {
       showToast('站点已删除')
       if (currentSite === id) currentSite = ''
@@ -670,7 +739,7 @@ function hidePasswordModal() { document.getElementById('passwordModal').classLis
 async function saveSitePassword() {
   const id = document.getElementById('passwordSiteId').value
   const password = document.getElementById('sitePasswordInput').value.trim()
-  const r = await apiPut(`/api/admin/sites/${id}/password`, { password })
+  const r = await apiPut(`/api/admin/sites/${encodeURIComponent(id)}/password`, { password })
   if (r.success) {
     showToast(r.message)
     hidePasswordModal()
@@ -712,11 +781,11 @@ function populateAllForms() {
   const c = configData
   setVal('site_title',c.site_title||'');setVal('site_description',c.site_description||'');setVal('site_keywords',c.site_keywords||'')
   setVal('about_title',c.about_title||'');setVal('about_text',c.about_text||'')
-  const bc=c.business_contact||{};setVal('business_handle',bc.handle||'');setVal('business_url',bc.url||'')
+  const bc=c.business_contact||{};setVal('business_handle',bc.handle||'');setVal('business_url',bc.url||'');setVal('business_avatar',bc.avatar||'')
   const tg=c.tg_recruit_group||{};setVal('tg_recruit_label',tg.label||'');setVal('tg_recruit_url',tg.url||'')
-  const ch=c.tg_official_channel||{};setVal('tg_channel_label',ch.label||'');setVal('tg_channel_handle',ch.handle||'');setVal('tg_channel_url',ch.url||'')
-  const cs=c.customer_service||{};setVal('customer_handle',cs.handle||'');setVal('customer_url',cs.url||'')
-  const co=c.complaint_contact||{};setVal('complaint_name',co.name||'');setVal('complaint_handle',co.handle||'');setVal('complaint_url',co.url||'')
+  const ch=c.tg_official_channel||{};setVal('tg_channel_label',ch.label||'');setVal('tg_channel_handle',ch.handle||'');setVal('tg_channel_url',ch.url||'');setVal('tg_channel_avatar',ch.avatar||'')
+  const cs=c.customer_service||{};setVal('customer_handle',cs.handle||'');setVal('customer_url',cs.url||'');setVal('customer_avatar',cs.avatar||'')
+  const co=c.complaint_contact||{};setVal('complaint_name',co.name||'');setVal('complaint_handle',co.handle||'');setVal('complaint_url',co.url||'');setVal('complaint_avatar',co.avatar||'')
   renderPartnerList('promote',c.promote_partners||[]);renderPartnerList('third',c.third_partners||[])
   renderActivities(c.activities||[])
   setVal('service_title',c.service_title||'');setVal('service_desc',c.service_desc||'')
@@ -734,15 +803,29 @@ function switchSection(name,btn){document.querySelectorAll('.section-panel').for
 // Save functions
 const siteQ = () => `?site=${currentSite}`
 async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
-async function saveContacts(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'business_contact',value:{handle:getVal('business_handle'),url:getVal('business_url')},category:'contacts'},{key:'tg_recruit_group',value:{label:getVal('tg_recruit_label'),url:getVal('tg_recruit_url')},category:'contacts'},{key:'tg_official_channel',value:{label:getVal('tg_channel_label'),handle:getVal('tg_channel_handle'),url:getVal('tg_channel_url')},category:'contacts'},{key:'customer_service',value:{handle:getVal('customer_handle'),url:getVal('customer_url')},category:'contacts'},{key:'complaint_contact',value:{name:getVal('complaint_name'),handle:getVal('complaint_handle'),url:getVal('complaint_url'),avatar:configData.complaint_contact?.avatar||''},category:'contacts'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveContacts(){
+  const ca = getVal('complaint_avatar') || ''
+  const cn = getVal('complaint_name') || ''
+  if(cn && !ca) {
+    return showToast('投诉接收人必填头像', 'error')
+  }
+  const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'business_contact',value:{handle:getVal('business_handle'),url:getVal('business_url'),avatar:getVal('business_avatar')},category:'contacts'},{key:'tg_recruit_group',value:{label:getVal('tg_recruit_label'),url:getVal('tg_recruit_url')},category:'contacts'},{key:'tg_official_channel',value:{label:getVal('tg_channel_label'),handle:getVal('tg_channel_handle'),url:getVal('tg_channel_url'),avatar:getVal('tg_channel_avatar')},category:'contacts'},{key:'customer_service',value:{handle:getVal('customer_handle'),url:getVal('customer_url'),avatar:getVal('customer_avatar')},category:'contacts'},{key:'complaint_contact',value:{name:cn,handle:getVal('complaint_handle'),url:getVal('complaint_url'),avatar:ca},category:'contacts'}]});r.success?showToast('已保存'):showToast(r.error,'error')
+}
 
 // Partners
 let promotePartners=[],thirdPartners=[]
-function renderPartnerList(type,data){if(type==='promote')promotePartners=[...data];else thirdPartners=[...data];const list=type==='promote'?promotePartners:thirdPartners;document.getElementById(`${type}-list`).innerHTML=list.map((p,i)=>`<div class="list-item"><div class="list-item-content"><div class="inline-form"><div><label class="form-label">名称</label><input class="form-input" value="${esc(p.name)}" maxlength="10" onchange="updatePartner('${type}',${i},'name',this.value)" /></div><div><label class="form-label">Handle</label><input class="form-input" value="${esc(p.handle)}" maxlength="30" onchange="updatePartner('${type}',${i},'handle',this.value)" /></div><div><label class="form-label">链接</label><input class="form-input" value="${esc(p.url)}" maxlength="200" onchange="updatePartner('${type}',${i},'url',this.value)" /></div></div></div><button class="btn btn-sm btn-danger" onclick="removePartner('${type}',${i})">删除</button></div>`).join('')}
+function renderPartnerList(type,data){if(type==='promote')promotePartners=[...data];else thirdPartners=[...data];const list=type==='promote'?promotePartners:thirdPartners;document.getElementById(`${type}-list`).innerHTML=list.map((p,i)=>`<div class="list-item"><div class="list-item-content"><div class="inline-form"><div><label class="form-label">名称</label><input class="form-input" value="${esc(p.name)}" maxlength="10" onchange="updatePartner('${type}',${i},'name',this.value)" /></div><div><label class="form-label">Handle</label><input class="form-input" value="${esc(p.handle)}" maxlength="30" onchange="updatePartner('${type}',${i},'handle',this.value)" /></div><div><label class="form-label">链接</label><input class="form-input" value="${esc(p.url)}" maxlength="200" onchange="updatePartner('${type}',${i},'url',this.value)" /></div><div style="flex:1.2;"><label class="form-label">头像URL(必填)</label><div style="display:flex;gap:4px;"><input class="form-input" id="avatar_input_${type}_${i}" value="${esc(p.avatar||'')}" placeholder="纯URL" onchange="updatePartner('${type}',${i},'avatar',this.value)" style="flex:1" /><button class="btn btn-sm btn-outline" onclick="triggerAvatarUpload(document.getElementById('avatar_input_${type}_${i}'))">⬆️上传</button></div></div></div></div><button class="btn btn-sm btn-danger" onclick="removePartner('${type}',${i})">删除</button></div>`).join('')}
 function addPartner(t){(t==='promote'?promotePartners:thirdPartners).push({name:'',handle:'',url:'',avatar:''});renderPartnerList(t,t==='promote'?promotePartners:thirdPartners)}
 function removePartner(t,i){(t==='promote'?promotePartners:thirdPartners).splice(i,1);renderPartnerList(t,t==='promote'?promotePartners:thirdPartners)}
 function updatePartner(t,i,f,v){(t==='promote'?promotePartners:thirdPartners)[i][f]=v}
-async function savePartners(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'promote_partners',value:promotePartners,category:'partners'},{key:'third_partners',value:thirdPartners,category:'partners'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function savePartners(){
+  for(let p of promotePartners.concat(thirdPartners)) {
+    if(!p.avatar || p.avatar.trim() === '') {
+      return showToast(`人员【${p.name || '未命名'}】缺少必填的头像URL`, 'error')
+    }
+  }
+  const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'promote_partners',value:promotePartners,category:'partners'},{key:'third_partners',value:thirdPartners,category:'partners'}]});r.success?showToast('已保存'):showToast(r.error,'error')
+}
 
 // Activities — Structured Editor
 let activities = []
@@ -922,6 +1005,8 @@ async function saveSearch(){const r=await apiPut(`/api/admin/config/search_confi
 
 // Images
 function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
+function triggerAvatarUpload(el){currentAvatarInput=el;document.getElementById('avatarFileInput').click()}
+
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('fileInput').addEventListener('change',async(e)=>{
     const f=e.target.files[0];if(!f||!currentUploadKey)return
@@ -929,6 +1014,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     try{const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});const d=await r.json()
     if(d.success){if(currentUploadTarget){currentUploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;currentUploadTarget.classList.add('has-image')}
     await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
+    e.target.value=''
+  })
+
+  document.getElementById('avatarFileInput').addEventListener('change',async(e)=>{
+    const f=e.target.files[0];if(!f||!currentAvatarInput)return
+    const fd=new FormData();fd.append('image',f)
+    try{
+      const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'})
+      const d=await r.json()
+      if(d.success){
+        currentAvatarInput.value = d.data.url
+        currentAvatarInput.dispatchEvent(new Event('change')) // emit change
+        showToast('头像已上传并填入')
+      }else{showToast(d.error,'error')}
+    }catch(err){showToast('头像上传失败','error')}
     e.target.value=''
   })
 })

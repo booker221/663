@@ -90,14 +90,33 @@ export function createSite(id, name, domain = '', description = '') {
 }
 
 /**
- * 更新站点信息
+ * 更新站点信息（支持修改ID）
  */
-export function updateSite(id, name, domain = '', description = '') {
-  db.prepare(`
-    UPDATE sites SET name = ?, domain = ?, description = ?, updated_at = datetime('now')
-    WHERE id = ?
-  `).run(name, domain, description, id)
-  return getSite(id)
+export function updateSite(id, newId, name, domain = '', description = '') {
+  if (id !== newId) {
+    const transaction = db.transaction(() => {
+      // 1. 创建新主键的完全一模一样的记录
+      const oldSite = getSite(id)
+      db.prepare(`
+        INSERT INTO sites (id, name, domain, description, password, created_at, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+      `).run(newId, name, domain, description, oldSite.password, oldSite.created_at)
+
+      // 2. 把对应 config 的外键转到新 ID 上
+      db.prepare(`UPDATE config SET site_id = ? WHERE site_id = ?`).run(newId, id)
+
+      // 3. 删除老的站点记录
+      db.prepare('DELETE FROM sites WHERE id = ?').run(id)
+    })
+    transaction()
+    return getSite(newId)
+  } else {
+    db.prepare(`
+      UPDATE sites SET name = ?, domain = ?, description = ?, updated_at = datetime('now')
+      WHERE id = ?
+    `).run(name, domain, description, id)
+    return getSite(id)
+  }
 }
 
 /**
@@ -150,6 +169,15 @@ export function cloneSite(sourceSiteId, newSiteId, newName, newDomain = '') {
 }
 
 // ==================== 配置 CRUD ====================
+
+/**
+ * 根据域名获取站点
+ */
+export function getSiteByDomain(domain) {
+  if (!domain) return null
+  // 匹配域名或者 ID（防止用户在本地开发时将 IP 填到了 ID 里导致死活匹配不上）
+  return db.prepare("SELECT * FROM sites WHERE (domain = ? AND domain != '') OR id = ?").get(domain, domain)
+}
 
 /**
  * 获取某站点的所有配置（前端使用）

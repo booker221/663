@@ -12,7 +12,7 @@ import { fileURLToPath } from 'url'
 import {
   getAllSites, getSite, createSite, updateSite, deleteSite, cloneSite,
   getAllConfig, getAllConfigDetailed, getConfig, setConfig, setConfigBatch,
-  updateSitePassword, getSiteByPassword
+  updateSitePassword, getSiteByPassword, getSiteByDomain
 } from './db.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -94,10 +94,40 @@ function requireSiteAccess(req, res, next) {
 // GET /api/config?site=hxldy
 app.get('/api/config', (req, res) => {
   try {
-    const siteId = req.query.site || 'hxldy'
-    const site = getSite(siteId)
-    if (!site) return res.status(404).json({ error: `站点 [${siteId}] 不存在` })
+    let siteId = req.query.site
+    let site = null
+    
+    if (siteId) {
+      site = getSite(siteId)
+    }
+    
+    // 依然找不到时（参数没传，或者参数传了却找不到对应ID），尝试回退为当前系统里拥有的第一个可用站点。
+    // 这样能最大程度地保证前台页面不死掉。
+    if (!site) {
+      const allSites = getAllSites()
+      if (allSites.length > 0) {
+        site = allSites[0]
+        siteId = site.id
+      }
+    }
+    
+    if (!site) return res.json({ success: false, error: `没有任何有效站点可用` })
     const config = getAllConfig(siteId)
+    res.json({ success: true, site: { id: site.id, name: site.name }, data: config })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// 根据域名获取站点配置（前端自动路由使用，不需要登录）
+// GET /api/config/by-domain?domain=foo.com
+app.get('/api/config/by-domain', (req, res) => {
+  try {
+    const domain = req.query.domain
+    if (!domain) return res.json({ success: false, error: '请提供 domain 参数' })
+    const site = getSiteByDomain(domain)
+    if (!site) return res.json({ success: false, error: `未找到域名 [${domain}] 对应的站点` })
+    const config = getAllConfig(site.id)
     res.json({ success: true, site: { id: site.id, name: site.name }, data: config })
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -198,9 +228,16 @@ app.post('/api/admin/sites', requireSuperAdmin, (req, res) => {
 // 更新站点信息（超管可更新所有，站点管理员只能更新自己的）
 app.put('/api/admin/sites/:id', requireSiteAccess, (req, res) => {
   try {
-    const { name, domain, description } = req.body
+    const { newId, name, domain, description } = req.body
     if (!getSite(req.params.id)) return res.status(404).json({ error: '站点不存在' })
-    const site = updateSite(req.params.id, name, domain || '', description || '')
+    const targetId = newId && newId.trim() !== '' ? newId.trim() : req.params.id
+    
+    // 如果修改了 ID，检查新 ID 是否冲突
+    if (targetId !== req.params.id && getSite(targetId)) {
+      return res.status(400).json({ error: `新站点 ID [${targetId}] 已被占用，请更换` })
+    }
+    
+    const site = updateSite(req.params.id, targetId, name, domain || '', description || '')
     res.json({ success: true, data: site })
   } catch (err) {
     res.status(500).json({ error: err.message })

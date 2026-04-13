@@ -5,11 +5,15 @@
 
 const API_BASE = import.meta.env.VITE_API_BASE || ''
 
-// 当前站点ID（通过环境变量或 URL 参数配置）
-function getSiteId() {
-  // 优先级：URL参数 > 环境变量 > 默认值
+// 从 URL 参数获取明确指定的站点ID
+function getUrlSiteId() {
   const urlParams = new URLSearchParams(window.location.search)
-  return urlParams.get('site') || import.meta.env.VITE_SITE_ID || 'hxldy'
+  return urlParams.get('site')
+}
+
+// 默认站点ID（从环境变量或为空）
+function getDefaultSiteId() {
+  return import.meta.env.VITE_SITE_ID || ''
 }
 
 /**
@@ -17,22 +21,39 @@ function getSiteId() {
  * @returns {Promise<Object>} 配置键值对
  */
 export async function fetchSiteConfig() {
-  const siteId = getSiteId()
+  let url = ''
+  let siteId = getUrlSiteId()
+  const domain = window.location.hostname
+
+  if (siteId) {
+    // 1. 如果 URL 中指定了 ?site=xx，强制使用该站点
+    url = `${API_BASE}/api/config?site=${siteId}`
+  } else {
+    // 2. 尝试按照当前访问的域名去后端匹配对应站点
+    url = `${API_BASE}/api/config/by-domain?domain=${encodeURIComponent(domain)}`
+  }
+
   try {
-    const res = await fetch(`${API_BASE}/api/config?site=${siteId}`, {
-      headers: { 'Accept': 'application/json' }
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const data = await res.json()
+    let res = await fetch(url, { headers: { 'Accept': 'application/json' } })
+    let data = await res.json()
+
+    // 3. 如果按域名匹配失败（例如开发环境 localhost），降级回退到系统内第一条数据
+    if (!siteId && !data.success) {
+      console.log(`[API] 域名 [${domain}] 未匹配到站点，尝试降级为系统的第一条数据...`)
+      url = `${API_BASE}/api/config`
+      res = await fetch(url, { headers: { 'Accept': 'application/json' } })
+      data = await res.json()
+    }
+
     if (data.success) {
-      console.log(`[API] 站点 [${siteId}] 配置加载成功`)
+      console.log(`[API] 站点 [${data.site.id}] (${data.site.name}) 配置加载成功`)
       return data.data
     }
     throw new Error(data.error || '获取配置失败')
   } catch (err) {
-    console.warn(`[API] 站点 [${siteId}] 配置获取失败，使用默认值:`, err.message)
+    console.warn(`[API] 配置获取失败，将使用本地硬编码默认值:`, err.message)
     return null
   }
 }
 
-export { getSiteId }
+export { getUrlSiteId as getSiteId }
