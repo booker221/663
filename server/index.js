@@ -135,7 +135,15 @@ app.get('/api/config/by-domain', (req, res) => {
 })
 
 // 静态文件（上传的图片）支持按站点路径
-app.use('/api/uploads', express.static(uploadsDir, { maxAge: '7d', immutable: true }))
+app.use('/api/uploads', (req, res, next) => {
+  // 记录请求路径，方便排查 404/500
+  const filePath = path.join(uploadsDir, req.path)
+  if (!fs.existsSync(filePath)) {
+    console.warn(`[uploads] 文件不存在: ${filePath}`)
+    return res.status(404).json({ error: '文件不存在' })
+  }
+  next()
+}, express.static(uploadsDir, { maxAge: '7d', immutable: true }))
 
 // ==================== 认证 API ====================
 
@@ -328,13 +336,23 @@ app.put('/api/admin/config', requireSiteAccess, (req, res) => {
 })
 
 // 上传图片（需要站点访问权限）
-app.post('/api/admin/upload', requireSiteAccess, upload.single('image'), (req, res) => {
+app.post('/api/admin/upload', requireSiteAccess, (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('[upload] multer 错误:', err)
+      return res.status(500).json({ error: `上传失败: ${err.message}` })
+    }
+    next()
+  })
+}, (req, res) => {
   try {
     const siteId = req.query.site || 'default'
     if (!req.file) return res.status(400).json({ error: '请选择图片' })
     const fileUrl = `/api/uploads/${siteId}/${req.file.filename}`
+    console.log(`[upload] 成功: ${fileUrl} (${req.file.size} bytes)`)
     res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size } })
   } catch (err) {
+    console.error('[upload] 处理错误:', err)
     res.status(500).json({ error: err.message })
   }
 })
