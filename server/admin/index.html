@@ -245,6 +245,9 @@
       <button class="nav-item" onclick="switchSection('search',this)">
         <span class="nav-icon">🔍</span><span>搜索配置</span>
       </button>
+      <button class="nav-item" onclick="switchSection('values',this)">
+        <span class="nav-icon">🎯</span><span>核心价值观</span>
+      </button>
       <button class="nav-item" onclick="switchSection('images',this)">
         <span class="nav-icon">🖼️</span><span>图片管理</span>
       </button>
@@ -394,6 +397,19 @@
       <div class="save-bar"><button class="btn btn-primary" onclick="saveSearch()">💾 保存</button></div>
     </div>
 
+    <!-- ===== 核心价值观 ===== -->
+    <div class="section-panel" id="section-values">
+      <h1 class="page-title">核心价值观 <span class="current-site-badge" id="badge-values"></span></h1>
+      <p class="page-desc">管理核心价值观展示图片，图片将自动更新并回显到页面</p>
+      <div class="card">
+        <div class="card-title">🎯 核心价值观展示图</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('values_pc',this)" id="upload-values_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('values_h5',this)" id="upload-values_h5"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ===== 图片管理 ===== -->
     <div class="section-panel" id="section-images">
       <h1 class="page-title">图片管理 <span class="current-site-badge" id="badge-images"></span></h1>
@@ -402,13 +418,6 @@
         <div class="image-grid">
           <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_pc',this)" id="upload-hero_banner_pc"><div class="upload-text">📤 点击上传</div></div></div>
           <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_h5',this)" id="upload-hero_banner_h5"><div class="upload-text">📤 点击上传</div></div></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">🎯 核心价值观</div>
-        <div class="image-grid">
-          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('values_pc',this)" id="upload-values_pc"><div class="upload-text">📤 点击上传</div></div></div>
-          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('values_h5',this)" id="upload-values_h5"><div class="upload-text">📤 点击上传</div></div></div>
         </div>
       </div>
       <div class="card">
