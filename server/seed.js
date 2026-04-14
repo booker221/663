@@ -150,7 +150,15 @@ const seedData = [
       successText: '此飞机号属于合兴一路向前招商人员',
       failText: '此飞机不属于合兴一路向前招商人员，请谨慎被骗'
     }
-  }
+  },
+
+  // =========== 图片配置 ===========
+  { key: 'hero_banner_pc', value: '', label: 'PC首屏Banner', category: 'images' },
+  { key: 'hero_banner_h5', value: '', label: 'H5首屏Banner', category: 'images' },
+  { key: 'values_pc', value: '', label: 'PC核心价值观图片', category: 'images' },
+  { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' },
+  { key: 'collab_banner_pc', value: '', label: 'PC合作横幅', category: 'images' },
+  { key: 'collab_banner_h5', value: '', label: 'H5合作横幅', category: 'images' }
 ]
 
 try {
