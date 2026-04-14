@@ -2,30 +2,16 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <img class="brand-logo" src="@/assets/images/webp/logo-hx.webp" alt="HX" width="96" height="96" />
-        <img class="brand-text" src="@/assets/images/webp/logo-text-hexing.webp" alt="合兴" width="141" height="56" />
-        <img class="brand-domain" src="@/assets/images/webp/logo-text-663.webp" alt="663.com" width="209" height="36" />
+        <img class="brand-logo" :src="images.logo_main" alt="Logo" width="96" height="96" />
+        <img class="brand-text" :src="images.logo_text" alt="Brand" height="56" />
+        <img class="brand-domain" :src="images.logo_domain" alt="Domain" height="36" />
       </div>
       <div class="topbar-actions">
         <div class="search-pill">
-          <input
-            type="text"
-            v-model="searchHandle"
-            class="search-input"
-            :placeholder="SEARCH_CONFIG.placeholder"
-            @input="onInput"
-            @keyup.enter="handleSearch"
-          />
-          <svg
-            class="search-icon"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            @click="handleSearch"
-          >
+          <input type="text" v-model="searchHandle" class="search-input" :placeholder="SEARCH_CONFIG.placeholder"
+            @input="onInput" @keyup.enter="handleSearch" />
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" @click="handleSearch">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
@@ -39,6 +25,7 @@
 
 <script setup>
 import { ref, watchEffect } from 'vue'
+import { images } from '@/stores/siteConfig.js'
 import { SEARCH_CONFIG } from '@/config/contacts.js'
 import { verifyOfficialHandle } from '@/utils/verify.js'
 import { showToast } from '@/utils/toast.js'

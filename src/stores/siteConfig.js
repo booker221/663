@@ -8,7 +8,9 @@
  */
 import { reactive, ref } from 'vue'
 import { fetchSiteConfig } from '@/api/config.js'
-import fallbackLogo from '@/assets/images/webp/logo-hx.webp'
+import logoMain from '@/assets/images/webp/logo-hx.webp'
+import logoText from '@/assets/images/webp/logo-text-hexing.webp'
+import logoDomain from '@/assets/images/webp/logo-text-663.webp'
 
 // ========== 站点基本信息 ==========
 export const siteInfo = reactive({
@@ -113,6 +115,10 @@ export const serviceInfo = reactive({
 
 // ========== 图片资源 ==========
 export const images = reactive({
+  site_favicon: logoMain,
+  logo_main: logoMain,
+  logo_text: logoText,
+  logo_domain: logoDomain,
   hero_banner_pc: '',
   hero_banner_h5: '',
   values_pc: '',
@@ -154,27 +160,27 @@ export async function loadRemoteConfig() {
   if (data.business_contact) {
     Object.assign(BUSINESS_CONTACT, {
       ...data.business_contact,
-      avatar: data.business_contact.avatar || fallbackLogo
+      avatar: data.business_contact.avatar || logoMain
     })
   }
   if (data.tg_recruit_group) Object.assign(TG_RECRUIT_GROUP, data.tg_recruit_group)
   if (data.tg_official_channel) {
     Object.assign(TG_OFFICIAL_CHANNEL, {
       ...data.tg_official_channel,
-      avatar: data.tg_official_channel.avatar || fallbackLogo
+      avatar: data.tg_official_channel.avatar || logoMain
     })
   }
   if (data.customer_service) {
     Object.assign(CUSTOMER_SERVICE, {
       ...data.customer_service,
-      avatar: data.customer_service.avatar || fallbackLogo
+      avatar: data.customer_service.avatar || logoMain
     })
   }
   if (data.complaint_contact) {
     const cc = data.complaint_contact
     Object.assign(COMPLAINT_CONTACT, {
       ...cc,
-      avatar: cc.avatar || fallbackLogo
+      avatar: cc.avatar || logoMain
     })
   }
 
@@ -182,13 +188,13 @@ export async function loadRemoteConfig() {
   if (data.promote_partners && Array.isArray(data.promote_partners)) {
     PROMOTE_PARTNERS.splice(0, PROMOTE_PARTNERS.length, ...data.promote_partners.map(p => ({
       ...p,
-      avatar: p.avatar || fallbackLogo
+      avatar: p.avatar || logoMain
     })))
   }
   if (data.third_partners && Array.isArray(data.third_partners)) {
     THIRD_PARTNERS.splice(0, THIRD_PARTNERS.length, ...data.third_partners.map(p => ({
       ...p,
-      avatar: p.avatar || fallbackLogo
+      avatar: p.avatar || logoMain
     })))
   }
 
@@ -213,5 +219,18 @@ export async function loadRemoteConfig() {
   Object.keys(images).forEach(key => {
     if (data[key]) images[key] = data[key]
   })
+
+  // 动态更新浏览器 Favicon
+  if (images.site_favicon) {
+    let link = document.querySelector("link[rel*='icon']")
+    if (!link) {
+      link = document.createElement('link')
+      link.type = 'image/x-icon'
+      link.rel = 'icon'
+      document.head.appendChild(link)
+    }
+    link.href = images.site_favicon
+  }
+
   configLoaded.value = true
 }

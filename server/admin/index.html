@@ -389,6 +389,15 @@
     <div class="section-panel" id="section-images">
       <h1 class="page-title">图片管理 <span class="current-site-badge" id="badge-images"></span></h1>
       <div class="card">
+        <div class="card-title">🛡️ 站点 Logo</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">网站图标 (Favicon)</label><div class="image-upload-area" onclick="triggerUpload('site_favicon',this)" id="upload-site_favicon"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">圆形 Logo (logo-hx)</label><div class="image-upload-area" onclick="triggerUpload('logo_main',this)" id="upload-logo_main"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">文字 Logo (logo-text-hexing)</label><div class="image-upload-area" onclick="triggerUpload('logo_text',this)" id="upload-logo_text"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">域名 Logo (logo-text-663)</label><div class="image-upload-area" onclick="triggerUpload('logo_domain',this)" id="upload-logo_domain"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
+      </div>
+      <div class="card">
         <div class="card-title">🎨 Banner</div>
         <div class="image-grid">
           <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_pc',this)" id="upload-hero_banner_pc"><div class="upload-text">📤 点击上传</div></div></div>
@@ -771,7 +780,7 @@ function populateAllForms() {
   setVal('service_title',c.service_title||'');setVal('service_desc',c.service_desc||'')
   renderGuaranteeTags(c.guarantee_accounts||[])
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
-  const imgKeys=['hero_banner_pc','hero_banner_h5','values_pc','values_h5','collab_banner_pc','collab_banner_h5']
+  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','values_pc','values_h5','collab_banner_pc','collab_banner_h5']
   imgKeys.forEach(k=>{const el=document.getElementById(`upload-${k}`);if(el){if(c[k]){el.innerHTML=`<img src="${c[k]}" /><div class="upload-text">点击更换</div>`;el.classList.add('has-image')}else{el.innerHTML='<div class="upload-text">📤 点击上传</div>';el.classList.remove('has-image')}}})
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }

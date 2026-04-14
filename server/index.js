@@ -133,16 +133,9 @@ app.get('/api/config/by-domain', (req, res) => {
   }
 })
 
-// 静态文件（上传的图片）支持按站点路径
-app.use('/api/uploads', (req, res, next) => {
-  // 记录请求路径，方便排查 404/500
-  const filePath = path.join(uploadsDir, req.path)
-  if (!fs.existsSync(filePath)) {
-    console.warn(`[uploads] 文件不存在: ${filePath}`)
-    return res.status(404).json({ error: '文件不存在' })
-  }
-  next()
-}, express.static(uploadsDir, { maxAge: '7d', immutable: true }))
+// 静态文件（上传的图片）
+app.use('/api/uploads', express.static(uploadsDir, { maxAge: '7d' }))
+app.use('/uploads', express.static(uploadsDir, { maxAge: '7d' })) // 兜底映射，防止 Nginx 剥离前缀
 
 // ==================== 认证 API ====================
 

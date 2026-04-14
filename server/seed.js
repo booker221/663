@@ -153,6 +153,10 @@ const seedData = [
   },
 
   // =========== 图片配置 ===========
+  { key: 'site_favicon', value: '', label: '网站图标(Favicon)', category: 'images' },
+  { key: 'logo_main', value: '', label: '站点Logo(圆形)', category: 'images' },
+  { key: 'logo_text', value: '', label: '站点文字Logo', category: 'images' },
+  { key: 'logo_domain', value: '', label: '站点域名Logo', category: 'images' },
   { key: 'hero_banner_pc', value: '', label: 'PC首屏Banner', category: 'images' },
   { key: 'hero_banner_h5', value: '', label: 'H5首屏Banner', category: 'images' },
   { key: 'values_pc', value: '', label: 'PC核心价值观图片', category: 'images' },

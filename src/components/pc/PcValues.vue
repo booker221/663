@@ -9,10 +9,9 @@
     </div>
     <DynamicImage
       :remote-src="images.values_pc"
-      :fallback-src="defaultValuesImg"
       alt="核心价值观"
       img-class="values-img"
-      label="核心价值观图片"
+      label="核心价值观配置效果图 (待上传)"
       aspect-ratio="2449 / 564"
     />
   </section>
@@ -20,7 +19,6 @@
 
 <script setup>
 import DynamicImage from '@/components/common/DynamicImage.vue'
-import defaultValuesImg from '@/assets/images/webp/values-pc.webp'
 import { images } from '@/stores/siteConfig.js'
 </script>
 

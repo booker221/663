@@ -1,30 +1,16 @@
 <template>
   <header class="h5-topbar">
     <div class="brand">
-      <img class="brand-logo" src="@/assets/images/webp/logo-hx.webp" alt="HX" width="96" height="96" />
-      <img class="brand-text" src="@/assets/images/webp/logo-text-hexing.webp" alt="合兴" width="141" height="56" />
-      <img class="brand-domain" src="@/assets/images/webp/logo-text-663.webp" alt="663.com" width="209" height="36" />
+      <img class="brand-logo" :src="images.logo_main" alt="Logo" width="96" height="96" />
+      <img class="brand-text" :src="images.logo_text" alt="Brand" height="56" />
+      <img class="brand-domain" :src="images.logo_domain" alt="Domain" height="36" />
     </div>
 
     <div class="search-pill">
-      <input
-        type="text"
-        v-model="searchHandle"
-        class="search-input"
-        :placeholder="SEARCH_CONFIG.placeholder"
-        @input="onInput"
-        @keyup.enter="handleSearch"
-      />
-      <svg
-        class="search-icon"
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        @click="handleSearch"
-      >
+      <input type="text" v-model="searchHandle" class="search-input" :placeholder="SEARCH_CONFIG.placeholder"
+        @input="onInput" @keyup.enter="handleSearch" />
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" @click="handleSearch">
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
@@ -33,10 +19,11 @@
     <div class="topbar-actions">
       <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
       <div class="menu-icon-wrap">
-        <svg class="menu-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="6" width="18" height="2" rx="1" fill="currentColor"/>
-          <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor"/>
-          <rect x="3" y="16" width="18" height="2" rx="1" fill="currentColor"/>
+        <svg class="menu-icon-svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="6" width="18" height="2" rx="1" fill="currentColor" />
+          <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor" />
+          <rect x="3" y="16" width="18" height="2" rx="1" fill="currentColor" />
         </svg>
       </div>
     </div>
@@ -45,6 +32,7 @@
 
 <script setup>
 import { ref, watchEffect } from 'vue'
+import { images } from '@/stores/siteConfig.js'
 import { SEARCH_CONFIG } from '@/config/contacts.js'
 import { verifyOfficialHandle } from '@/utils/verify.js'
 import { showToast } from '@/utils/toast.js'
@@ -118,7 +106,10 @@ const handleSearch = () => {
     height: 11px;
     width: auto;
   }
-  .brand { gap: 6px; }
+
+  .brand {
+    gap: 6px;
+  }
 }
 
 .search-pill {

@@ -5,7 +5,9 @@
     <PcValues />
     <PcBusiness />
     <PcGuarantee />
-    <DynamicImage
+    <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy"
+      width="2320" height="192" />
+    <!-- <DynamicImage
       :remote-src="images.collab_banner_pc"
       :fallback-src="defaultCollabBanner"
       alt="寻求代投资源合作背景"
@@ -13,17 +15,13 @@
       label="合作横幅图片"
       aspect-ratio="2320 / 192"
       border-radius="0"
-    />
+    /> -->
     <PcActivity />
     <PcService />
     <PcComplaint />
     <!-- 投诉建议浮球 - 红色 -->
-    <DraggableFab
-      :href="COMPLAINT_CONTACT.url"
-      :default-bottom="170"
-      bg="linear-gradient(180deg, #FA4F24 0%, #D90D0D 50%, #FA4F24 100%)"
-      shadow-color="rgba(217, 13, 13, 0.4)"
-    >
+    <DraggableFab :href="COMPLAINT_CONTACT.url" :default-bottom="170"
+      bg="linear-gradient(180deg, #FA4F24 0%, #D90D0D 50%, #FA4F24 100%)" shadow-color="rgba(217, 13, 13, 0.4)">
       <img class="fab-icon" :src="complaintFabIcon" alt="" />
       <span class="fab-label">投诉建议</span>
     </DraggableFab>
