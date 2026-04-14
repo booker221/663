@@ -160,31 +160,6 @@
     /* Current site indicator */
     .current-site-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:rgba(59,130,246,.1);color:var(--primary);font-size:11px;font-weight:600;margin-left:8px}
 
-    /* Preview Panel */
-    .preview-fab{position:fixed;bottom:28px;right:28px;z-index:200;width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(59,130,246,.4);display:flex;align-items:center;justify-content:center;transition:all .2s}
-    .preview-fab:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(59,130,246,.5)}
-    .preview-fab.active{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,.4)}
-    .preview-panel{position:fixed;top:0;right:-520px;width:520px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.12);z-index:190;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
-    .preview-panel.open{right:0}
-    .preview-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:#f8fafc;flex-shrink:0}
-    .preview-toolbar-left{display:flex;align-items:center;gap:8px}
-    .preview-toolbar-title{font-size:14px;font-weight:700;color:var(--text)}
-    .preview-toolbar-right{display:flex;align-items:center;gap:6px}
-    .preview-device-btn{padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all .15s}
-    .preview-device-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-    .preview-device-btn:hover:not(.active){background:#f1f5f9}
-    .preview-refresh-btn{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:13px;cursor:pointer;color:var(--text-muted);transition:all .15s}
-    .preview-refresh-btn:hover{background:#f1f5f9;color:var(--primary)}
-    .preview-close-btn{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:13px;cursor:pointer;color:var(--text-muted)}
-    .preview-close-btn:hover{background:rgba(239,68,68,.08);color:var(--danger)}
-    .preview-iframe-wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:12px;background:#e2e8f0;overflow:auto}
-    .preview-iframe-wrap.mode-pc .preview-iframe{width:100%;height:100%;border-radius:8px}
-    .preview-iframe-wrap.mode-h5 .preview-iframe{width:375px;height:812px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15)}
-    .preview-iframe{border:none;background:#fff;transition:all .3s ease}
-    .preview-status{display:flex;align-items:center;gap:6px;padding:8px 16px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border);background:#f8fafc;flex-shrink:0}
-    .preview-dot{width:6px;height:6px;border-radius:50%;background:var(--success);flex-shrink:0}
-    .preview-dot.loading{background:var(--warning);animation:pulse 1s infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
   </style>
 </head>
 <body>
@@ -528,7 +503,6 @@ async function checkAuth() {
       currentRole = r.role
       document.getElementById('loginOverlay').style.display = 'none'
       document.getElementById('app').style.display = 'flex'
-      document.getElementById('previewFab').style.display = 'flex'
       applyRoleUI(r.role, r.siteId)
       await loadSites()
       // 站点管理员直接跳到内容配置
@@ -550,7 +524,6 @@ async function doLogin() {
       currentRole = r.role
       document.getElementById('loginOverlay').style.display = 'none'
       document.getElementById('app').style.display = 'flex'
-      document.getElementById('previewFab').style.display = 'flex'
       applyRoleUI(r.role, r.siteId)
       await loadSites()
       if (r.role === 'siteadmin') {
@@ -573,8 +546,6 @@ function doLogout() {
   currentRole = ''
   document.getElementById('loginOverlay').style.display = 'flex'
   document.getElementById('app').style.display = 'none'
-  document.getElementById('previewFab').style.display = 'none'
-  closePreview()
   document.getElementById('loginPassword').value = ''
   document.getElementById('loginError').textContent = ''
 }
@@ -1044,117 +1015,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 function esc(s){if(typeof s!=='string')return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
-// ==================== 预览面板 ====================
-let previewOpen = false
-let previewMode = 'h5' // 'pc' | 'h5'
-
-function getPreviewUrl() {
-  // 自动检测前端地址：同域名端口 5173（开发）或当前域名（生产）
-  const hostname = location.hostname
-  // 开发环境：Vite dev server
-  const devUrl = `${location.protocol}//${hostname}:5173`
-  return devUrl
-}
-
-function togglePreview() {
-  previewOpen = !previewOpen
-  const panel = document.getElementById('previewPanel')
-  const fab = document.getElementById('previewFab')
-  if (previewOpen) {
-    panel.classList.add('open')
-    fab.classList.add('active')
-    fab.innerHTML = '✕'
-    loadPreviewIframe()
-  } else {
-    panel.classList.remove('open')
-    fab.classList.remove('active')
-    fab.innerHTML = '👁'
-  }
-}
-
-function closePreview() {
-  previewOpen = false
-  document.getElementById('previewPanel').classList.remove('open')
-  document.getElementById('previewFab').classList.remove('active')
-  document.getElementById('previewFab').innerHTML = '👁'
-}
-
-function switchPreviewMode(mode) {
-  previewMode = mode
-  document.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'))
-  document.querySelector(`.preview-device-btn[data-mode="${mode}"]`).classList.add('active')
-  const wrap = document.getElementById('previewIframeWrap')
-  wrap.className = `preview-iframe-wrap mode-${mode}`
-  // 切换时刷新以匹配尺寸
-  loadPreviewIframe()
-}
-
-function loadPreviewIframe() {
-  const iframe = document.getElementById('previewIframe')
-  const statusDot = document.getElementById('previewDot')
-  const statusText = document.getElementById('previewStatusText')
-  
-  statusDot.className = 'preview-dot loading'
-  statusText.textContent = '正在加载预览...'
-  
-  const url = getPreviewUrl()
-  // 加 timestamp 强制刷新
-  iframe.src = url + '?_t=' + Date.now()
-  
-  iframe.onload = () => {
-    statusDot.className = 'preview-dot'
-    statusText.textContent = `预览已就绪 · ${previewMode === 'pc' ? 'PC端' : 'H5端'} · ${new Date().toLocaleTimeString()}`
-  }
-  iframe.onerror = () => {
-    statusDot.className = 'preview-dot'
-    statusDot.style.background = 'var(--danger)'
-    statusText.textContent = '加载失败 · 请确保前端开发服务在运行'
-  }
-}
-
-function refreshPreviewIframe() {
-  if (previewOpen) {
-    loadPreviewIframe()
-  }
-}
-
-// Hook: 所有保存成功后自动刷新预览
-const _origShowToast = showToast
-showToast = function(msg, type) {
-  _origShowToast(msg, type)
-  if (msg === '已保存' || msg === '上传成功') {
-    // 延迟 500ms 等后端更新完成后刷新
-    setTimeout(refreshPreviewIframe, 500)
-  }
-}
-
 checkAuth()
 </script>
-
-<!-- Preview FAB -->
-<button class="preview-fab" id="previewFab" onclick="togglePreview()" title="预览站点" style="display:none">👁</button>
-
-<!-- Preview Slide Panel -->
-<div class="preview-panel" id="previewPanel">
-  <div class="preview-toolbar">
-    <div class="preview-toolbar-left">
-      <span class="preview-toolbar-title">📱 站点预览</span>
-    </div>
-    <div class="preview-toolbar-right">
-      <button class="preview-device-btn active" data-mode="h5" onclick="switchPreviewMode('h5')">📱 H5</button>
-      <button class="preview-device-btn" data-mode="pc" onclick="switchPreviewMode('pc')">🖥 PC</button>
-      <button class="preview-refresh-btn" onclick="refreshPreviewIframe()" title="刷新预览">🔄</button>
-      <button class="preview-close-btn" onclick="closePreview()" title="关闭预览">✕</button>
-    </div>
-  </div>
-  <div class="preview-iframe-wrap mode-h5" id="previewIframeWrap">
-    <iframe class="preview-iframe" id="previewIframe"></iframe>
-  </div>
-  <div class="preview-status">
-    <span class="preview-dot" id="previewDot"></span>
-    <span id="previewStatusText">点击预览按钮加载</span>
-  </div>
-</div>
 
 </body>
 </html>
