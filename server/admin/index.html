@@ -422,7 +422,7 @@
     <p class="page-desc">修改站点信息（注意：修改站点ID后，相关的访问链接都会改变）</p>
     <input type="hidden" id="editOriginalId" />
     <div class="form-group"><label class="form-label">站点名称</label><input class="form-input" id="editSiteName" placeholder="新名称" /></div>
-    <div class="form-group"><label class="form-label">站点 ID</label><input class="form-input" id="editSiteId" placeholder="英文代号，如: site01" /></div>
+    <div class="form-group"><label class="form-label">站点 ID</label><input class="form-input" id="editSiteId" placeholder="必填：网站地址，不需要带端口" /></div>
     <div class="form-group"><label class="form-label">展示域名 (可选)</label><input class="form-input" id="editSiteDomain" placeholder="例如: yourdomain.com" /></div>
     <div class="form-group"><label class="form-label">描述备注 (可选)</label><input class="form-input" id="editSiteDesc" /></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
@@ -437,6 +437,7 @@
   <div class="modal">
     <h3>📋 克隆站点配置</h3>
     <p class="page-desc">将选中站点的所有配置复制到一个新站点</p>
+    <p style="margin-bottom:12px;font-size:12px;color:var(--text-muted)">源站点：<strong id="cloneSourceName">-</strong></p>
     <input type="hidden" id="cloneSourceId" />
     <div class="form-group"><label class="form-label">新站点ID (英文)</label><input class="form-input" id="cloneNewId" placeholder="new-site" /></div>
     <div class="form-group"><label class="form-label">新站点名称</label><input class="form-input" id="cloneNewName" placeholder="新站点" /></div>
@@ -599,14 +600,6 @@ function renderSiteSelector() {
   sel.innerHTML = sites.map(s => `<option value="${s.id}" ${s.id===currentSite?'selected':''}>${s.name} (${s.id})</option>`).join('')
 }
 
-async function doCreateSite() {
-  const id=getVal('newSiteId'), name=getVal('newSiteName'), domain=getVal('newSiteDomain'), password=getVal('newSitePassword')
-  if(!id||!name) return showToast('站点ID和名称不能为空','error')
-  const r=await apiPost('/api/admin/sites',{id,name,domain,password})
-  if(r.success){showToast('创建成功');getVal('newSiteId','');getVal('newSiteName','');getVal('newSiteDomain','');getVal('newSitePassword','');loadSites()}
-  else showToast(r.error,'error')
-}
-
 // ========== 站点信息编辑交互 ==========
 function showEditModal(id, name, domain, desc) {
   document.getElementById('editOriginalId').value = id
@@ -652,7 +645,7 @@ function renderSitesList() {
     <div class="site-card">
       <div class="site-card-info">
         <h4>${esc(s.name)} <span class="site-id">${s.id}</span>${s.password ? ' <span style="font-size:10px;color:var(--success)">🔑 已设密码</span>' : ' <span style="font-size:10px;color:var(--text-muted)">未设密码</span>'}</h4>
-        <p>${s.domain || '未设置域名'} · ${s.description || ''}</p>
+        <p>${esc(s.domain || '未设置域名')} · ${esc(s.description || '')}</p>
       </div>
       <div class="site-card-actions">
         ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showPasswordModal('${s.id}','${esc(s.password||'')}')">🔑 密码</button>` : ''}
@@ -737,7 +730,11 @@ async function saveSitePassword() {
 }
 
 // Clone
-function showCloneModal(id) { document.getElementById('cloneSourceId').value = id; document.getElementById('cloneModal').classList.add('show') }
+function showCloneModal(id, name) {
+  document.getElementById('cloneSourceId').value = id
+  document.getElementById('cloneSourceName').textContent = name || id
+  document.getElementById('cloneModal').classList.add('show')
+}
 function hideCloneModal() { document.getElementById('cloneModal').classList.remove('show') }
 async function doCloneSite() {
   const sourceId = document.getElementById('cloneSourceId').value

@@ -12,16 +12,16 @@
 set -e
 
 # ==================== 配置区域（按需修改） ====================
-SERVER_USER="root"                          # 服务器用户名
-SERVER_HOST="8.217.16.180"                  # 服务器IP或域名（必填）
-SERVER_PORT="22"                         # SSH 端口
+SERVER_USER="${SERVER_USER:-root}"                # 服务器用户名（可通过环境变量覆盖）
+SERVER_HOST="${SERVER_HOST:-}"                    # 服务器IP或域名（必填，建议环境变量注入）
+SERVER_PORT="${SERVER_PORT:-22}"                  # SSH 端口
 
 # 宝塔面板路径
 SITE_DIR="/www/wwwroot/hxldy"              # 宝塔网站根目录（前端 dist）
 SERVER_DEPLOY_DIR="/www/wwwroot/hxldy-server"  # 后端代码目录
 
-NODE_PORT="3456"                            # Express 监听端口
-ADMIN_PASSWORD="admin"                 # 管理后台密码
+NODE_PORT="${NODE_PORT:-3456}"                    # Express 监听端口
+ADMIN_PASSWORD="${ADMIN_PASSWORD:-}"              # 管理后台密码（必填，禁止默认弱口令）
 # ============================================================
 
 # 颜色
@@ -62,6 +62,9 @@ done
 # ==================== 前置检查 ====================
 if [ -z "$SERVER_HOST" ]; then
   error "请先编辑 deploy.sh，填写 SERVER_HOST（服务器IP或域名）"
+fi
+if [ -z "$ADMIN_PASSWORD" ]; then
+  error "请设置 ADMIN_PASSWORD 环境变量，避免使用硬编码默认密码"
 fi
 
 # SSH 连接复用（只需输入一次密码）

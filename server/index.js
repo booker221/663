@@ -22,6 +22,16 @@ const PORT = process.env.PORT || 3456
 // 超级管理员密码
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
 
+// 清理参数：去除协议 http(s)://、端口号 :port 以及末尾斜杠，仅保留域名或主机部分
+const normalizeParam = (val) => {
+  if (!val) return ''
+  return val.toString()
+    .trim()
+    .replace(/^https?:\/\//, '') // 去协议
+    .replace(/\/.*$/, '')        // 去路径
+    .replace(/:.*$/, '')         // 去端口
+}
+
 // ==================== 中间件 ====================
 app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: '10mb' }))
@@ -93,7 +103,7 @@ function requireSiteAccess(req, res, next) {
 // GET /api/config?site=hxldy
 app.get('/api/config', (req, res) => {
   try {
-    let siteId = req.query.site
+    let siteId = normalizeParam(req.query.site)
     let site = null
     
     if (siteId) {
@@ -122,7 +132,7 @@ app.get('/api/config', (req, res) => {
 // GET /api/config/by-domain?domain=foo.com
 app.get('/api/config/by-domain', (req, res) => {
   try {
-    const domain = req.query.domain
+    const domain = normalizeParam(req.query.domain)
     if (!domain) return res.json({ success: false, error: '请提供 domain 参数' })
     const site = getSiteByDomain(domain)
     if (!site) return res.json({ success: false, error: `未找到域名 [${domain}] 对应的站点` })
@@ -212,7 +222,9 @@ app.get('/api/admin/sites', requireAuth, (req, res) => {
 // 创建新站点（仅超管）
 app.post('/api/admin/sites', requireSuperAdmin, (req, res) => {
   try {
-    const { id, name, domain, description, password } = req.body
+    let { id, name, domain, description, password } = req.body
+    id = normalizeParam(id)
+    domain = normalizeParam(domain)
     if (!id || !name) return res.status(400).json({ error: '站点ID和名称不能为空' })
     if (!/^[a-zA-Z0-9._-]+$/.test(id)) return res.status(400).json({ error: '站点ID只能包含字母、数字、下划线和连字符' })
     if (getSite(id)) return res.status(400).json({ error: `站点 [${id}] 已存在` })
@@ -228,7 +240,9 @@ app.post('/api/admin/sites', requireSuperAdmin, (req, res) => {
 // 更新站点信息（超管可更新所有，站点管理员只能更新自己的）
 app.put('/api/admin/sites/:id', requireSiteAccess, (req, res) => {
   try {
-    const { newId, name, domain, description } = req.body
+    let { newId, name, domain, description } = req.body
+    newId = normalizeParam(newId)
+    domain = normalizeParam(domain)
     if (!getSite(req.params.id)) return res.status(404).json({ error: '站点不存在' })
     const targetId = newId && newId.trim() !== '' ? newId.trim() : req.params.id
     
