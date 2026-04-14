@@ -38,11 +38,10 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true })
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // 按站点分目录存储上传文件
-    const siteId = req.query.site || 'default'
-    const siteDir = path.join(uploadsDir, siteId)
-    if (!fs.existsSync(siteDir)) fs.mkdirSync(siteDir, { recursive: true })
-    cb(null, siteDir)
+    // 所有上传文件统一存放到 uploads/img 目录
+    const imgDir = path.join(uploadsDir, 'img')
+    if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true })
+    cb(null, imgDir)
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname)
@@ -346,9 +345,8 @@ app.post('/api/admin/upload', requireSiteAccess, (req, res, next) => {
   })
 }, (req, res) => {
   try {
-    const siteId = req.query.site || 'default'
     if (!req.file) return res.status(400).json({ error: '请选择图片' })
-    const fileUrl = `/api/uploads/${siteId}/${req.file.filename}`
+    const fileUrl = `/api/uploads/img/${req.file.filename}`
     console.log(`[upload] 成功: ${fileUrl} (${req.file.size} bytes)`)
     res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size } })
   } catch (err) {
