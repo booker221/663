@@ -7,15 +7,6 @@
     <PcGuarantee />
     <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc.webp" alt="寻求代投资源合作背景" loading="lazy"
       width="2320" height="192" />
-    <!-- <DynamicImage
-      :remote-src="images.collab_banner_pc"
-      :fallback-src="defaultCollabBanner"
-      alt="寻求代投资源合作背景"
-      img-class="collab-banner"
-      label="合作横幅图片"
-      aspect-ratio="2320 / 192"
-      border-radius="0"
-    /> -->
     <PcActivity />
     <PcService />
     <PcComplaint />
@@ -36,11 +27,8 @@
 <script setup>
 import complaintIcon from '../assets/images/webp/icon-complaint.webp'
 import complaintFabIcon from '../assets/images/webp/icon-complaint-fab.webp'
-import defaultCollabBanner from '../assets/images/webp/collab-banner-pc.webp'
 import { BUSINESS_CONTACT, CUSTOMER_SERVICE, COMPLAINT_CONTACT } from '../config/contacts.js'
-import { images } from '../stores/siteConfig.js'
 import DraggableFab from '../components/common/DraggableFab.vue'
-import DynamicImage from '../components/common/DynamicImage.vue'
 import PcTopbar from '../components/pc/PcTopbar.vue'
 import PcHero from '../components/pc/PcHero.vue'
 import PcValues from '../components/pc/PcValues.vue'

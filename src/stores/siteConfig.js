@@ -17,9 +17,84 @@ export const siteInfo = reactive({
   title: '',
   description: '',
   keywords: '',
+  author: '',
   aboutTitle: '',
   aboutText: '',
 })
+
+/** 与 index.html 占位一致：后端不可用时页面 head 仍为此内容 */
+const SEO_FALLBACK = {
+  title: '企业官方落地页',
+  description: '官方企业展示系统落地页，提供业务对接、商务洽谈等一站式服务。',
+  keywords: '落地页,企业系统,商务合作,资源对接',
+  author: '企业官方',
+  ogSiteName: '企业落地页',
+}
+
+export const remoteSiteMeta = ref(null)
+
+function toAbsoluteUrl(href) {
+  if (!href || typeof href !== 'string') return ''
+  try {
+    return new URL(href, window.location.origin).href
+  } catch {
+    return href
+  }
+}
+
+function setMetaName(name, content) {
+  if (content == null || content === '') return
+  let el = document.querySelector(`meta[name="${name}"]`)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute('name', name)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('content', String(content))
+}
+
+function setMetaProperty(property, content) {
+  if (content == null || content === '') return
+  let el = document.querySelector(`meta[property="${property}"]`)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute('property', property)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('content', String(content))
+}
+
+/**
+ * 将后台 SEO 字段同步到 document.title、meta、OG/Twitter 与 JSON-LD（SPA 场景下社交爬虫若只抓首屏 HTML 仍可能看不到，需另做 SSR/预渲染）
+ */
+function applySeoToDocument({ title, description, keywords, author, ogSiteName, shareImageAbs, jsonLd }) {
+  document.title = title
+
+  setMetaName('description', description)
+  setMetaName('keywords', keywords)
+  setMetaName('author', author)
+
+  setMetaProperty('og:site_name', ogSiteName)
+  setMetaProperty('og:title', title)
+  setMetaProperty('og:description', description)
+  if (shareImageAbs) {
+    setMetaProperty('og:image', shareImageAbs)
+  }
+
+  setMetaName('twitter:title', title)
+  setMetaName('twitter:description', description)
+  if (shareImageAbs) {
+    setMetaName('twitter:image', shareImageAbs)
+  }
+
+  let ldEl = document.querySelector('script[type="application/ld+json"]')
+  if (!ldEl) {
+    ldEl = document.createElement('script')
+    ldEl.type = 'application/ld+json'
+    document.head.appendChild(ldEl)
+  }
+  ldEl.textContent = JSON.stringify(jsonLd)
+}
 
 // ========== 联系方式 ==========
 export const BUSINESS_CONTACT = reactive({
@@ -123,8 +198,6 @@ export const images = reactive({
   hero_banner_h5: '',
   values_pc: '',
   values_h5: '',
-  collab_banner_pc: '',
-  collab_banner_h5: '',
   activity_person_pc: '',
   activity_person_h5: '',
   activity_bg_h5: '',
@@ -143,16 +216,21 @@ export const configLoaded = ref(false)
  * 启动时调用一次即可
  */
 export async function loadRemoteConfig() {
-  const data = await fetchSiteConfig()
-  if (!data) {
+  const payload = await fetchSiteConfig()
+  if (!payload) {
+    remoteSiteMeta.value = null
     configLoaded.value = true
-    return // 后端不可用，使用默认值
+    return // 后端不可用，使用 index.html 占位与本地默认
   }
+
+  const data = payload.config
+  remoteSiteMeta.value = payload.site
 
   // 合并基本信息
   if (data.site_title) siteInfo.title = data.site_title
   if (data.site_description) siteInfo.description = data.site_description
   if (data.site_keywords) siteInfo.keywords = data.site_keywords
+  if ('site_author' in data && data.site_author != null) siteInfo.author = String(data.site_author)
   if (data.about_title) siteInfo.aboutTitle = data.about_title
   if (data.about_text) siteInfo.aboutText = data.about_text
 
@@ -231,6 +309,30 @@ export async function loadRemoteConfig() {
     }
     link.href = images.site_favicon
   }
+
+  const title = siteInfo.title || SEO_FALLBACK.title
+  const description = siteInfo.description || SEO_FALLBACK.description
+  const keywords = siteInfo.keywords || SEO_FALLBACK.keywords
+  const author = siteInfo.author || SEO_FALLBACK.author
+  const ogSiteName = (remoteSiteMeta.value && remoteSiteMeta.value.name) || SEO_FALLBACK.ogSiteName
+  const shareImageAbs = toAbsoluteUrl(images.logo_main || images.site_favicon)
+
+  applySeoToDocument({
+    title,
+    description,
+    keywords,
+    author,
+    ogSiteName,
+    shareImageAbs,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: title,
+      ...(remoteSiteMeta.value?.id ? { alternateName: remoteSiteMeta.value.id } : {}),
+      description,
+      ...(shareImageAbs ? { logo: shareImageAbs } : {}),
+    },
+  })
 
   configLoaded.value = true
 }

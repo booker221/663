@@ -18,7 +18,7 @@ function getDefaultSiteId() {
 
 /**
  * 获取指定站点的配置
- * @returns {Promise<Object>} 配置键值对
+ * @returns {Promise<{ config: Object, site: { id: string, name: string } | null } | null>}
  */
 export async function fetchSiteConfig() {
   let url = ''
@@ -47,7 +47,7 @@ export async function fetchSiteConfig() {
 
     if (data.success) {
       console.log(`[API] 站点 [${data.site.id}] (${data.site.name}) 配置加载成功`)
-      return data.data
+      return { config: data.data, site: data.site || null }
     }
     throw new Error(data.error || '获取配置失败')
   } catch (err) {

@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
-    <!-- ===== 性能优化：首屏预加载 & 设备检测 ===== -->
-    <link rel="preload" as="image" href="/src/assets/images/webp/hero-banner-pc.webp" media="(min-width: 769px)" />
-    <link rel="preload" as="image" href="/src/assets/images/webp/hero-banner-h5.webp" media="(max-width: 768px)" />
+    <!-- ===== 设备检测 ===== -->
     
     <script>
       (function() {
@@ -32,7 +30,7 @@
       @media (max-width: 768px) { .hero-banner-wrap { aspect-ratio: 750 / 420; } }
     </style>
 
-    <!-- ===== 基础 SEO ===== -->
+    <!-- ===== 基础 SEO（首屏占位；有后端时由 src/stores/siteConfig.js 在加载配置后覆盖） ===== -->
     <title>企业官方落地页</title>
     <meta name="description" content="官方企业展示系统落地页，提供业务对接、商务洽谈等一站式服务。" />
     <meta name="keywords" content="落地页,企业系统,商务合作,资源对接" />

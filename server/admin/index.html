@@ -279,6 +279,7 @@
         <div class="form-group"><label class="form-label">网站标题 <span class="form-hint-inline">（最多50字）</span></label><input class="form-input" id="site_title" maxlength="50" /></div>
         <div class="form-group"><label class="form-label">网站描述 <span class="form-hint-inline">（最多200字）</span></label><textarea class="form-textarea" id="site_description" rows="3" maxlength="200"></textarea></div>
         <div class="form-group"><label class="form-label">关键词 <span class="form-hint-inline">（最多100字）</span></label><input class="form-input" id="site_keywords" maxlength="100" /></div>
+        <div class="form-group"><label class="form-label">作者/版权 <span class="form-hint-inline">（meta author，最多50字）</span></label><input class="form-input" id="site_author" maxlength="50" /></div>
       </div>
       <div class="card">
         <div class="card-title">🏢 关于我们</div>
@@ -402,13 +403,6 @@
         <div class="image-grid">
           <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_pc',this)" id="upload-hero_banner_pc"><div class="upload-text">📤 点击上传</div></div></div>
           <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_h5',this)" id="upload-hero_banner_h5"><div class="upload-text">📤 点击上传</div></div></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">🤝 合作横幅</div>
-        <div class="image-grid">
-          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('collab_banner_pc',this)" id="upload-collab_banner_pc"><div class="upload-text">📤 点击上传</div></div></div>
-          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('collab_banner_h5',this)" id="upload-collab_banner_h5"><div class="upload-text">📤 点击上传</div></div></div>
         </div>
       </div>
     </div>
@@ -597,7 +591,7 @@ async function loadSites() {
 
 function renderSiteSelector() {
   const sel = document.getElementById('siteSelector')
-  sel.innerHTML = sites.map(s => `<option value="${s.id}" ${s.id===currentSite?'selected':''}>${s.name} (${s.id})</option>`).join('')
+  sel.innerHTML = sites.map(s => `<option value="${esc(s.id)}" ${s.id===currentSite?'selected':''}>${esc(s.name)} (${esc(s.id)})</option>`).join('')
 }
 
 // ========== 站点信息编辑交互 ==========
@@ -618,17 +612,19 @@ async function doEditSite() {
   const description = document.getElementById('editSiteDesc').value
   
   if(!name) return showToast('名称不能为空', 'error')
-  if(!newId) return showToast('站点ID不能为空', 'error')
-  
+  const newIdTrim = newId.trim()
+  if(!newIdTrim) return showToast('站点ID不能为空', 'error')
+  if(!/^[a-zA-Z0-9._-]+$/.test(newIdTrim)) return showToast('站点ID只能包含字母、数字、点、下划线和连字符', 'error')
+
   // 使用 encodeURIComponent 编码 ID，防止用户输入含有特殊字符或斜杠导致 Express 路由 404 报错
-  const r = await apiPut(`/api/admin/sites/${encodeURIComponent(originalId)}`, { newId, name, domain, description })
+  const r = await apiPut(`/api/admin/sites/${encodeURIComponent(originalId)}`, { newId: newIdTrim, name, domain, description })
   if (r.success) {
     showToast('更新成功')
     hideEditModal()
     
     // 如果修改了当前正在配置的站点 ID，必须重新加载一下不然获取不到配置
-    if (currentSite === originalId && newId !== originalId) {
-      currentSite = newId
+    if (currentSite === originalId && newIdTrim !== originalId) {
+      currentSite = newIdTrim
     }
     
     loadSites()
@@ -644,15 +640,15 @@ function renderSitesList() {
     : sites.map(s => `
     <div class="site-card">
       <div class="site-card-info">
-        <h4>${esc(s.name)} <span class="site-id">${s.id}</span>${s.password ? ' <span style="font-size:10px;color:var(--success)">🔑 已设密码</span>' : ' <span style="font-size:10px;color:var(--text-muted)">未设密码</span>'}</h4>
+        <h4>${esc(s.name)} <span class="site-id">${esc(s.id)}</span>${s.password ? ' <span style="font-size:10px;color:var(--success)">🔑 已设密码</span>' : ' <span style="font-size:10px;color:var(--text-muted)">未设密码</span>'}</h4>
         <p>${esc(s.domain || '未设置域名')} · ${esc(s.description || '')}</p>
       </div>
       <div class="site-card-actions">
-        ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showPasswordModal('${s.id}','${esc(s.password||'')}')">🔑 密码</button>` : ''}
-        ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showCloneModal('${s.id}','${esc(s.name)}')">📋 克隆</button>` : ''}
-        ${isSuperAdmin || s.id === currentSite ? `<button class="btn btn-sm btn-outline" onclick="showEditModal('${s.id}', '${esc(s.name)}', '${esc(s.domain || '')}', '${esc(s.description || '')}')">✏️ 编辑</button>` : ''}
-        <button class="btn btn-sm btn-outline" onclick="switchSite('${s.id}');switchSection('site',document.querySelectorAll('.nav-item')[${isSuperAdmin?2:0}])">⚙️ 配置</button>
-        ${isSuperAdmin && sites.length > 1 ? `<button class="btn btn-sm btn-danger" onclick="doDeleteSite('${s.id}','${esc(s.name)}')">删除</button>` : ''}
+        ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showPasswordModal('${jsQuoted(s.id)}','${jsQuoted(s.password||'')}')">🔑 密码</button>` : ''}
+        ${isSuperAdmin ? `<button class="btn btn-sm btn-outline" onclick="showCloneModal('${jsQuoted(s.id)}','${jsQuoted(s.name)}')">📋 克隆</button>` : ''}
+        ${isSuperAdmin || s.id === currentSite ? `<button class="btn btn-sm btn-outline" onclick="showEditModal('${jsQuoted(s.id)}', '${jsQuoted(s.name)}', '${jsQuoted(s.domain || '')}', '${jsQuoted(s.description || '')}')">✏️ 编辑</button>` : ''}
+        <button class="btn btn-sm btn-outline" onclick="switchSite('${jsQuoted(s.id)}');switchSection('site',document.querySelectorAll('.nav-item')[1])">⚙️ 配置</button>
+        ${isSuperAdmin && sites.length > 1 ? `<button class="btn btn-sm btn-danger" onclick="doDeleteSite('${jsQuoted(s.id)}','${jsQuoted(s.name)}')">删除</button>` : ''}
       </div>
     </div>
   `).join('')
@@ -765,7 +761,7 @@ async function loadSiteConfig() {
 
 function populateAllForms() {
   const c = configData
-  setVal('site_title',c.site_title||'');setVal('site_description',c.site_description||'');setVal('site_keywords',c.site_keywords||'')
+  setVal('site_title',c.site_title||'');setVal('site_description',c.site_description||'');setVal('site_keywords',c.site_keywords||'');setVal('site_author',c.site_author||'')
   setVal('about_title',c.about_title||'');setVal('about_text',c.about_text||'')
   const bc=c.business_contact||{};setVal('business_handle',bc.handle||'');setVal('business_url',bc.url||'');setVal('business_avatar',bc.avatar||'')
   const tg=c.tg_recruit_group||{};setVal('tg_recruit_label',tg.label||'');setVal('tg_recruit_url',tg.url||'')
@@ -777,7 +773,7 @@ function populateAllForms() {
   setVal('service_title',c.service_title||'');setVal('service_desc',c.service_desc||'')
   renderGuaranteeTags(c.guarantee_accounts||[])
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
-  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','values_pc','values_h5','collab_banner_pc','collab_banner_h5']
+  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','values_pc','values_h5']
   imgKeys.forEach(k=>{const el=document.getElementById(`upload-${k}`);if(el){if(c[k]){el.innerHTML=`<img src="${c[k]}" /><div class="upload-text">点击更换</div>`;el.classList.add('has-image')}else{el.innerHTML='<div class="upload-text">📤 点击上传</div>';el.classList.remove('has-image')}}})
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }
@@ -788,7 +784,7 @@ function switchSection(name,btn){document.querySelectorAll('.section-panel').for
 
 // Save functions
 const siteQ = () => `?site=${currentSite}`
-async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'site_author',value:getVal('site_author'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
 async function saveContacts(){
   const ca = getVal('complaint_avatar') || ''
   const cn = getVal('complaint_name') || ''
@@ -1020,6 +1016,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 })
 
 function esc(s){if(typeof s!=='string')return '';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+/** 嵌入 HTML onclick="...'...'..." 中单引号 JS 字符串字面量 */
+function jsQuoted(s){if(typeof s!=='string')return '';return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029')}
 
 checkAuth()
 </script>

@@ -23,6 +23,7 @@ const seedData = [
   { key: 'site_title', value: '合兴集团 - 合于信 兴于行 | 官方落地页', label: '网站标题', category: 'site' },
   { key: 'site_description', value: '合兴集团官方落地页。合于信、兴于行，提供高效的投流合作、活动奢励与广告资源对接，诚信为本、合作共赣、追求卓越。', label: '网站描述(SEO)', category: 'site' },
   { key: 'site_keywords', value: '合兴集团,合兴,hexing,投流合作,广告呼召,机房合作,商务合作,资源对接', label: '关键词(SEO)', category: 'site' },
+  { key: 'site_author', value: '合兴集团', label: '作者/版权(meta author)', category: 'site' },
   { key: 'about_title', value: '关于合兴：', label: '关于我们标题', category: 'site' },
   { key: 'about_text', value: '合兴集团自成立以来，秉承"<span class="hl">合于信，兴于行</span>"的理念，我们始终坚信，信任是合作关系的基石，卓越的执行力则是可持续发展的引擎。在过去的发展历程中，我们始终坚守"<span class="hl">诚信为本、合作共赢、追求卓越</span>"三大核心价值观，将其作为企业立身与发展的根本。合兴的使命：持续创造价值，驱动行业变革。合兴的愿景：铸就百年品牌，成为您"<span class="hl">百年大业</span>"最信赖的合作伙伴。', label: '关于我们描述', category: 'site' },
 
@@ -160,9 +161,7 @@ const seedData = [
   { key: 'hero_banner_pc', value: '', label: 'PC首屏Banner', category: 'images' },
   { key: 'hero_banner_h5', value: '', label: 'H5首屏Banner', category: 'images' },
   { key: 'values_pc', value: '', label: 'PC核心价值观图片', category: 'images' },
-  { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' },
-  { key: 'collab_banner_pc', value: '', label: 'PC合作横幅', category: 'images' },
-  { key: 'collab_banner_h5', value: '', label: 'H5合作横幅', category: 'images' }
+  { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' }
 ]
 
 try {

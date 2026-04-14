@@ -245,7 +245,10 @@ app.put('/api/admin/sites/:id', requireSiteAccess, (req, res) => {
     domain = normalizeParam(domain)
     if (!getSite(req.params.id)) return res.status(404).json({ error: '站点不存在' })
     const targetId = newId && newId.trim() !== '' ? newId.trim() : req.params.id
-    
+    if (!/^[a-zA-Z0-9._-]+$/.test(targetId)) {
+      return res.status(400).json({ error: '站点ID只能包含字母、数字、点、下划线和连字符' })
+    }
+
     // 如果修改了 ID，检查新 ID 是否冲突
     if (targetId !== req.params.id && getSite(targetId)) {
       return res.status(400).json({ error: `新站点 ID [${targetId}] 已被占用，请更换` })
