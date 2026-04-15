@@ -30,7 +30,13 @@
               <div class="accordion-content" v-show="activeIndex === index" v-html="getActivityContent(item)"></div>
             </div>
           </div>
-          <a :href="TG_OFFICIAL_CHANNEL.url" target="_blank" rel="noopener noreferrer" class="tg-button-link">
+          <a
+            v-if="officialChannelUrl"
+            :href="officialChannelUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="tg-button-link"
+          >
             <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="192" height="48" />
           </a>
           <p class="act-contact">
@@ -81,6 +87,7 @@ const numIcons = [num1, num2, num3, num4, num5, num6]
 
 const actBgImage = computed(() => images.activity_bg_pc || defaultActBg)
 const activityPersonImage = computed(() => images.activity_person_pc || defaultActPerson)
+const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
 
 // 兼容旧数据（content 字符串）和新数据（sections 结构化）
 function getActivityContent(item) {

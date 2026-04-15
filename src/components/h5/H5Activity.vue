@@ -31,7 +31,13 @@
         <!-- 底部人物 + 联系方式 -->
         <div class="contact-row">
           <div class="contact-info">
-            <a :href="TG_OFFICIAL_CHANNEL.url" target="_blank" rel="noopener noreferrer" class="tg-button-link">
+            <a
+              v-if="officialChannelUrl"
+              :href="officialChannelUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="tg-button-link"
+            >
               <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="128"
                 height="32" />
             </a>
@@ -80,6 +86,7 @@ const numIcons = [num1, num2, num3, num4, num5, num6]
 
 const actBgImage = computed(() => images.activity_bg_h5 || defaultActBg)
 const activityPersonImage = computed(() => images.activity_person_h5 || defaultActPerson)
+const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
 
 // 兼容旧数据（content 字符串）和新数据（sections 结构化）
 function getActivityContent(item) {
