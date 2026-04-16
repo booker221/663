@@ -19,8 +19,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 const PORT = process.env.PORT || 3456
 
-// 超级管理员密码
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin'
+// 超级管理员密码（可由环境变量覆盖）
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hxldyadmin'
 
 // 清理参数：去除协议 http(s)://、端口号 :port 以及末尾斜杠，仅保留域名或主机部分
 const normalizeParam = (val) => {

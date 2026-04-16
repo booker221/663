@@ -11,6 +11,19 @@ import { fetchSiteConfig } from '@/api/config.js'
 import logoMain from '@/assets/images/webp/logo-hx.webp'
 import logoText from '@/assets/images/webp/logo-text-hexing.webp'
 import logoDomain from '@/assets/images/webp/logo-text-663.webp'
+const API_BASE = (import.meta.env.VITE_API_BASE || '').trim()
+
+function getApiOrigin() {
+  if (!API_BASE) return window.location.origin
+  try {
+    if (/^https?:\/\//i.test(API_BASE)) return new URL(API_BASE).origin
+  } catch {
+    // ignore parse error, fallback to current origin
+  }
+  return window.location.origin
+}
+
+const API_ORIGIN = getApiOrigin()
 
 // ========== 站点基本信息 ==========
 export const siteInfo = reactive({
@@ -35,11 +48,42 @@ export const remoteSiteMeta = ref(null)
 
 function toAbsoluteUrl(href) {
   if (!href || typeof href !== 'string') return ''
+  const normalized = resolveAssetUrl(href)
+  if (normalized) return normalized
   try {
     return new URL(href, window.location.origin).href
   } catch {
     return href
   }
+}
+
+function resolveAssetUrl(href) {
+  if (!href || typeof href !== 'string') return ''
+  const value = href.trim()
+  if (!value) return ''
+
+  // 已经是绝对地址 / data url，直接返回
+  if (/^(https?:)?\/\//i.test(value) || /^data:/i.test(value) || /^blob:/i.test(value)) return value
+
+  // 后端上传资源：跨服务器部署时统一走 API 服务地址
+  if (value.startsWith('/api/uploads/') || value.startsWith('/uploads/')) {
+    try {
+      return new URL(value, API_ORIGIN).href
+    } catch {
+      return value
+    }
+  }
+
+  // 其他绝对路径保持当前站点域名
+  if (value.startsWith('/')) {
+    try {
+      return new URL(value, window.location.origin).href
+    } catch {
+      return value
+    }
+  }
+
+  return value
 }
 
 function setMetaName(name, content) {
@@ -238,27 +282,27 @@ export async function loadRemoteConfig() {
   if (data.business_contact) {
     Object.assign(BUSINESS_CONTACT, {
       ...data.business_contact,
-      avatar: data.business_contact.avatar || logoMain
+      avatar: resolveAssetUrl(data.business_contact.avatar) || logoMain
     })
   }
   if (data.tg_recruit_group) Object.assign(TG_RECRUIT_GROUP, data.tg_recruit_group)
   if (data.tg_official_channel) {
     Object.assign(TG_OFFICIAL_CHANNEL, {
       ...data.tg_official_channel,
-      avatar: data.tg_official_channel.avatar || logoMain
+      avatar: resolveAssetUrl(data.tg_official_channel.avatar) || logoMain
     })
   }
   if (data.customer_service) {
     Object.assign(CUSTOMER_SERVICE, {
       ...data.customer_service,
-      avatar: data.customer_service.avatar || logoMain
+      avatar: resolveAssetUrl(data.customer_service.avatar) || logoMain
     })
   }
   if (data.complaint_contact) {
     const cc = data.complaint_contact
     Object.assign(COMPLAINT_CONTACT, {
       ...cc,
-      avatar: cc.avatar || logoMain
+      avatar: resolveAssetUrl(cc.avatar) || logoMain
     })
   }
 
@@ -266,13 +310,13 @@ export async function loadRemoteConfig() {
   if (data.promote_partners && Array.isArray(data.promote_partners)) {
     PROMOTE_PARTNERS.splice(0, PROMOTE_PARTNERS.length, ...data.promote_partners.map(p => ({
       ...p,
-      avatar: p.avatar || logoMain
+      avatar: resolveAssetUrl(p.avatar) || logoMain
     })))
   }
   if (data.third_partners && Array.isArray(data.third_partners)) {
     THIRD_PARTNERS.splice(0, THIRD_PARTNERS.length, ...data.third_partners.map(p => ({
       ...p,
-      avatar: p.avatar || logoMain
+      avatar: resolveAssetUrl(p.avatar) || logoMain
     })))
   }
 
@@ -295,7 +339,7 @@ export async function loadRemoteConfig() {
 
   // 合并图片（所有可配置的图片 key）
   Object.keys(images).forEach(key => {
-    if (data[key]) images[key] = data[key]
+    if (data[key]) images[key] = resolveAssetUrl(data[key])
   })
 
   // 动态更新浏览器 Favicon

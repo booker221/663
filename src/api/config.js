@@ -3,7 +3,31 @@
  * ✅ 多站点支持：通过 VITE_SITE_ID 指定当前站点
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE || ''
+const API_BASE = (import.meta.env.VITE_API_BASE || '').trim()
+
+/**
+ * 统一拼接 API 地址，避免出现 /api/api 的重复前缀。
+ * 支持以下写法：
+ * - VITE_API_BASE=/api
+ * - VITE_API_BASE=/
+ * - VITE_API_BASE=http://host:port
+ * - VITE_API_BASE=http://host:port/api
+ */
+function buildApiUrl(pathname) {
+  const cleanPath = pathname.startsWith('/') ? pathname : `/${pathname}`
+  const hasApiPrefix = /^\/api(\/|$)/.test(cleanPath)
+  const normalizedBase = API_BASE.replace(/\/+$/, '')
+
+  // 没配环境变量时，默认走当前域名下 /api
+  if (!normalizedBase) return hasApiPrefix ? cleanPath : `/api${cleanPath}`
+
+  // 若 base 已经是 /api，则不再重复加 /api
+  if (/\/api$/i.test(normalizedBase)) {
+    return hasApiPrefix ? `${normalizedBase}${cleanPath.replace(/^\/api/, '')}` : `${normalizedBase}${cleanPath}`
+  }
+
+  return hasApiPrefix ? `${normalizedBase}${cleanPath}` : `${normalizedBase}/api${cleanPath}`
+}
 
 // 从 URL 参数获取明确指定的站点ID
 function getUrlSiteId() {
@@ -22,15 +46,15 @@ function getDefaultSiteId() {
  */
 export async function fetchSiteConfig() {
   let url = ''
-  let siteId = getUrlSiteId()
+  let siteId = getUrlSiteId() || getDefaultSiteId()
   const domain = window.location.hostname
 
   if (siteId) {
-    // 1. 如果 URL 中指定了 ?site=xx，强制使用该站点
-    url = `${API_BASE}/api/config?site=${siteId}`
+    // 1. 如果 URL 或环境变量中指定了站点，优先按 site 读取（跨服务器部署更稳定）
+    url = `${buildApiUrl('/config')}?site=${encodeURIComponent(siteId)}`
   } else {
     // 2. 尝试按照当前访问的域名去后端匹配对应站点
-    url = `${API_BASE}/api/config/by-domain?domain=${encodeURIComponent(domain)}`
+    url = `${buildApiUrl('/config/by-domain')}?domain=${encodeURIComponent(domain)}`
   }
 
   try {
@@ -40,7 +64,7 @@ export async function fetchSiteConfig() {
     // 3. 如果按域名匹配失败（例如开发环境 localhost），降级回退到系统内第一条数据
     if (!siteId && !data.success) {
       console.log(`[API] 域名 [${domain}] 未匹配到站点，尝试降级为系统的第一条数据...`)
-      url = `${API_BASE}/api/config`
+      url = buildApiUrl('/config')
       res = await fetch(url, { headers: { 'Accept': 'application/json' } })
       data = await res.json()
     }
