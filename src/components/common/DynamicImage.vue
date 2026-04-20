@@ -14,6 +14,8 @@
     :class="imgClass"
     :style="imgStyle"
     loading="lazy"
+    decoding="async"
+    :fetchpriority="fetchPriorityAttr"
     @error="handleError"
   />
 </template>
@@ -34,9 +36,17 @@ const props = defineProps({
   aspectRatio: { type: String, default: '' },
   height: { type: String, default: '' },
   borderRadius: { type: String, default: '12px' },
+  /** 浏览器调度优先级：high / low / auto；空则不设置（保持默认） */
+  fetchPriority: { type: String, default: '' },
 })
 
 const loadFailed = ref(false)
+
+const fetchPriorityAttr = computed(() => {
+  const v = (props.fetchPriority || '').toLowerCase()
+  if (v === 'high' || v === 'low' || v === 'auto') return v
+  return undefined
+})
 
 // 监听 remoteSrc 变化时重置错误状态
 watch(() => props.remoteSrc, () => { loadFailed.value = false })

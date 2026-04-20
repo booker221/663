@@ -1,5 +1,5 @@
 <template>
-  <section class="guarantee-section" id="guarantee-h5">
+  <section class="guarantee-section" id="guarantee">
     <div class="guarantee-card">
       <!-- 标题 -->
       <h3 class="guarantee-title">担保验证</h3>

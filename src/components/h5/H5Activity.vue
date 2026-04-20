@@ -1,5 +1,5 @@
 <template>
-  <section class="section">
+  <section class="section" id="activity">
     <div class="section-header">
       <h2 class="section-title"><span class="dot">◆</span> 活动专栏</h2>
     </div>
