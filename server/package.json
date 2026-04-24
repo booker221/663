@@ -4,6 +4,7 @@
   "description": "合兴落地页 - 后台管理服务",
   "type": "module",
   "scripts": {
+    "postinstall": "npm rebuild better-sqlite3",
     "start": "node index.js",
     "seed": "node seed.js"
   },
