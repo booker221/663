@@ -39,7 +39,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'hxldy-admin-secret-key-2024',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'lax' }
+  cookie: { maxAge: 30 * 60 * 1000, httpOnly: true, sameSite: 'lax' }
 }))
 
 // ==================== 文件上传 ====================

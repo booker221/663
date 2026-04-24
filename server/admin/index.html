@@ -484,6 +484,8 @@ let configData = {}, currentSite = '', sites = []
 let currentUploadKey = null, currentUploadTarget = null, currentAvatarInput = null
 let currentRole = '' // 'superadmin' or 'siteadmin'
 const API = window.location.origin
+let authHeartbeatTimer = null
+let sessionExpiredNotified = false
 
 function showToast(msg, type='success') {
   const c = document.getElementById('toastContainer')
@@ -494,19 +496,65 @@ function showToast(msg, type='success') {
   setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 300) }, 3000)
 }
 
-async function apiGet(u){return(await fetch(`${API}${u}`,{credentials:'include'})).json()}
-async function apiPut(u,d){return(await fetch(`${API}${u}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),credentials:'include'})).json()}
-async function apiPost(u,d){return(await fetch(`${API}${u}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),credentials:'include'})).json()}
-async function apiDelete(u){return(await fetch(`${API}${u}`,{method:'DELETE',credentials:'include'})).json()}
+function resetAuthUI() {
+  currentRole = ''
+  currentSite = ''
+  sites = []
+  stopAuthHeartbeat()
+  document.getElementById('loginOverlay').style.display = 'flex'
+  document.getElementById('app').style.display = 'none'
+  document.getElementById('loginPassword').value = ''
+  document.getElementById('loginError').textContent = ''
+}
+
+function handleSessionExpired(msg = '登录已过期，请重新登录') {
+  if (!sessionExpiredNotified) {
+    showToast(msg, 'warning')
+    sessionExpiredNotified = true
+  }
+  resetAuthUI()
+}
+
+function startAuthHeartbeat() {
+  stopAuthHeartbeat()
+  authHeartbeatTimer = setInterval(() => {
+    checkAuth({ silent: true })
+  }, 60 * 1000)
+}
+
+function stopAuthHeartbeat() {
+  if (authHeartbeatTimer) {
+    clearInterval(authHeartbeatTimer)
+    authHeartbeatTimer = null
+  }
+}
+
+async function apiRequest(u, options = {}) {
+  const res = await fetch(`${API}${u}`, { credentials: 'include', ...options })
+  if (res.status === 401) {
+    handleSessionExpired()
+    return null
+  }
+  return res.json()
+}
+
+async function apiGet(u){return apiRequest(u)}
+async function apiPut(u,d){return apiRequest(u,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
+async function apiPost(u,d){return apiRequest(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
+async function apiDelete(u){return apiRequest(u,{method:'DELETE'})}
 
 // ==================== Auth ====================
-async function checkAuth() {
+async function checkAuth(options = {}) {
+  const { silent = false } = options
   try {
     const r = await apiGet('/api/auth/check')
+    if (!r) return false
     if (r.authenticated) {
+      sessionExpiredNotified = false
       currentRole = r.role
       document.getElementById('loginOverlay').style.display = 'none'
       document.getElementById('app').style.display = 'flex'
+      startAuthHeartbeat()
       applyRoleUI(r.role, r.siteId)
       await loadSites()
       // 站点管理员直接跳到内容配置
@@ -515,8 +563,16 @@ async function checkAuth() {
         await loadSiteConfig()
         switchSection('site', document.querySelectorAll('.nav-item')[1])
       }
+      return true
+    } else if (!silent) {
+      resetAuthUI()
     }
-  } catch(e) {}
+  } catch(e) {
+    if (!silent) {
+      document.getElementById('loginError').textContent = '连接失败'
+    }
+  }
+  return false
 }
 
 async function doLogin() {
@@ -524,10 +580,13 @@ async function doLogin() {
   if (!p) return
   try {
     const r = await apiPost('/api/auth/login', { password: p })
+    if (!r) return
     if (r.success) {
+      sessionExpiredNotified = false
       currentRole = r.role
       document.getElementById('loginOverlay').style.display = 'none'
       document.getElementById('app').style.display = 'flex'
+      startAuthHeartbeat()
       applyRoleUI(r.role, r.siteId)
       await loadSites()
       if (r.role === 'siteadmin') {
@@ -547,11 +606,8 @@ async function doLogin() {
 
 function doLogout() {
   apiPost('/api/auth/logout', {})
-  currentRole = ''
-  document.getElementById('loginOverlay').style.display = 'flex'
-  document.getElementById('app').style.display = 'none'
-  document.getElementById('loginPassword').value = ''
-  document.getElementById('loginError').textContent = ''
+  sessionExpiredNotified = false
+  resetAuthUI()
 }
 
 // ==================== Role-based UI ====================
@@ -577,6 +633,7 @@ function applyRoleUI(role, siteId) {
 // ==================== Sites ====================
 async function loadSites() {
   const r = await apiGet('/api/admin/sites')
+  if (!r) return
   if (r.success) {
     sites = r.data
     renderSiteSelector()
@@ -618,6 +675,7 @@ async function doEditSite() {
 
   // 使用 encodeURIComponent 编码 ID，防止用户输入含有特殊字符或斜杠导致 Express 路由 404 报错
   const r = await apiPut(`/api/admin/sites/${encodeURIComponent(originalId)}`, { newId: newIdTrim, name, domain, description })
+  if (!r) return
   if (r.success) {
     showToast('更新成功')
     hideEditModal()
@@ -674,6 +732,7 @@ async function doCreateSite() {
   const password = document.getElementById('newSitePassword').value.trim()
   if (!id || !name) return showToast('ID和名称不能为空','warning')
   const r = await apiPost('/api/admin/sites', { id, name, domain, password })
+  if (!r) return
   if (r.success) {
     showToast(`站点 [${name}] 创建成功`)
     hideCreateSite()
@@ -699,6 +758,7 @@ async function confirmDeleteSite() {
   hideDeleteModal()
   try {
     const r = await apiDelete(`/api/admin/sites/${encodeURIComponent(id)}`)
+    if (!r) return
     if (r.success) {
       showToast('站点已删除')
       if (currentSite === id) currentSite = ''
@@ -718,6 +778,7 @@ async function saveSitePassword() {
   const id = document.getElementById('passwordSiteId').value
   const password = document.getElementById('sitePasswordInput').value.trim()
   const r = await apiPut(`/api/admin/sites/${encodeURIComponent(id)}/password`, { password })
+  if (!r) return
   if (r.success) {
     showToast(r.message)
     hidePasswordModal()
@@ -739,6 +800,7 @@ async function doCloneSite() {
   const newDomain = document.getElementById('cloneNewDomain').value.trim()
   if (!newId || !newName) return showToast('请填写ID和名称','warning')
   const r = await apiPost(`/api/admin/sites/${sourceId}/clone`, { newId, newName, newDomain })
+  if (!r) return
   if (r.success) {
     showToast(`站点克隆成功 → ${newName}`)
     hideCloneModal()
@@ -755,6 +817,7 @@ async function loadSiteConfig() {
   if (!currentSite) return
   try {
     const r = await apiGet(`/api/config?site=${currentSite}`)
+    if (!r) return
     if (r.success) { configData = r.data; populateAllForms() }
   } catch (e) { showToast('加载失败','error') }
 }
@@ -784,14 +847,14 @@ function switchSection(name,btn){document.querySelectorAll('.section-panel').for
 
 // Save functions
 const siteQ = () => `?site=${currentSite}`
-async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'site_author',value:getVal('site_author'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveSiteConfig(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'site_title',value:getVal('site_title'),category:'site'},{key:'site_description',value:getVal('site_description'),category:'site'},{key:'site_keywords',value:getVal('site_keywords'),category:'site'},{key:'site_author',value:getVal('site_author'),category:'site'},{key:'about_title',value:getVal('about_title'),category:'site'},{key:'about_text',value:getVal('about_text'),category:'site'}]});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')}
 async function saveContacts(){
   const ca = getVal('complaint_avatar') || ''
   const cn = getVal('complaint_name') || ''
   if(cn && !ca) {
     return showToast('投诉接收人必填头像', 'error')
   }
-  const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'business_contact',value:{handle:getVal('business_handle'),url:getVal('business_url'),avatar:getVal('business_avatar')},category:'contacts'},{key:'tg_recruit_group',value:{label:getVal('tg_recruit_label'),url:getVal('tg_recruit_url')},category:'contacts'},{key:'tg_official_channel',value:{label:getVal('tg_channel_label'),handle:getVal('tg_channel_handle'),url:getVal('tg_channel_url'),avatar:getVal('tg_channel_avatar')},category:'contacts'},{key:'customer_service',value:{handle:getVal('customer_handle'),url:getVal('customer_url'),avatar:getVal('customer_avatar')},category:'contacts'},{key:'complaint_contact',value:{name:cn,handle:getVal('complaint_handle'),url:getVal('complaint_url'),avatar:ca},category:'contacts'}]});r.success?showToast('已保存'):showToast(r.error,'error')
+  const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'business_contact',value:{handle:getVal('business_handle'),url:getVal('business_url'),avatar:getVal('business_avatar')},category:'contacts'},{key:'tg_recruit_group',value:{label:getVal('tg_recruit_label'),url:getVal('tg_recruit_url')},category:'contacts'},{key:'tg_official_channel',value:{label:getVal('tg_channel_label'),handle:getVal('tg_channel_handle'),url:getVal('tg_channel_url'),avatar:getVal('tg_channel_avatar')},category:'contacts'},{key:'customer_service',value:{handle:getVal('customer_handle'),url:getVal('customer_url'),avatar:getVal('customer_avatar')},category:'contacts'},{key:'complaint_contact',value:{name:cn,handle:getVal('complaint_handle'),url:getVal('complaint_url'),avatar:ca},category:'contacts'}]});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')
 }
 
 // Partners
@@ -806,7 +869,7 @@ async function savePartners(){
       return showToast(`人员【${p.name || '未命名'}】缺少必填的头像URL`, 'error')
     }
   }
-  const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'promote_partners',value:promotePartners,category:'partners'},{key:'third_partners',value:thirdPartners,category:'partners'}]});r.success?showToast('已保存'):showToast(r.error,'error')
+  const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'promote_partners',value:promotePartners,category:'partners'},{key:'third_partners',value:thirdPartners,category:'partners'}]});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')
 }
 
 // Activities — Structured Editor
@@ -969,21 +1032,22 @@ async function saveActivities() {
   // 保存时只存 title + sections（不再存 content HTML）
   const cleanData = activities.map(a => ({ title: a.title, sections: a.sections }))
   const r = await apiPut(`/api/admin/config/activities${siteQ()}`, { value: cleanData, category: 'activities' })
+  if (!r) return
   r.success ? showToast('已保存') : showToast(r.error, 'error')
 }
 
 // Service
-async function saveService(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'service_title',value:getVal('service_title'),category:'service'},{key:'service_desc',value:getVal('service_desc'),category:'service'}]});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveService(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'service_title',value:getVal('service_title'),category:'service'},{key:'service_desc',value:getVal('service_desc'),category:'service'}]});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')}
 
 // Guarantee
 let guaranteeAccounts=[]
 function renderGuaranteeTags(d){guaranteeAccounts=[...d];document.getElementById('guarantee-tags').innerHTML=guaranteeAccounts.map((a,i)=>`<span class="tag">${esc(a)}<span class="tag-remove" onclick="removeGuarantee(${i})">✕</span></span>`).join('')}
 function addGuarantee(){const v=document.getElementById('newGuaranteeAccount').value.trim();if(!v)return;const h=v.startsWith('@')?v:`@${v}`;if(guaranteeAccounts.includes(h))return showToast('已存在','warning');guaranteeAccounts.push(h);renderGuaranteeTags(guaranteeAccounts);document.getElementById('newGuaranteeAccount').value=''}
 function removeGuarantee(i){guaranteeAccounts.splice(i,1);renderGuaranteeTags(guaranteeAccounts)}
-async function saveGuarantee(){const r=await apiPut(`/api/admin/config/guarantee_accounts${siteQ()}`,{value:guaranteeAccounts,category:'guarantee'});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveGuarantee(){const r=await apiPut(`/api/admin/config/guarantee_accounts${siteQ()}`,{value:guaranteeAccounts,category:'guarantee'});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')}
 
 // Search
-async function saveSearch(){const r=await apiPut(`/api/admin/config/search_config${siteQ()}`,{value:{placeholder:getVal('search_placeholder'),defaultValue:getVal('search_defaultValue'),successText:getVal('search_successText'),failText:getVal('search_failText')},category:'search'});r.success?showToast('已保存'):showToast(r.error,'error')}
+async function saveSearch(){const r=await apiPut(`/api/admin/config/search_config${siteQ()}`,{value:{placeholder:getVal('search_placeholder'),defaultValue:getVal('search_defaultValue'),successText:getVal('search_successText'),failText:getVal('search_failText')},category:'search'});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')}
 
 // Images
 function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
@@ -993,7 +1057,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('fileInput').addEventListener('change',async(e)=>{
     const f=e.target.files[0];if(!f||!currentUploadKey)return
     const fd=new FormData();fd.append('image',f)
-    try{const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});const d=await r.json()
+    try{const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}const d=await r.json()
     if(d.success){if(currentUploadTarget){currentUploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;currentUploadTarget.classList.add('has-image')}
     await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
     e.target.value=''
@@ -1003,7 +1067,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const f=e.target.files[0];if(!f||!currentAvatarInput)return
     const fd=new FormData();fd.append('image',f)
     try{
-      const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'})
+      const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}
       const d=await r.json()
       if(d.success){
         currentAvatarInput.value = d.data.url
@@ -1021,6 +1085,10 @@ function esc(s){if(typeof s!=='string')return '';const d=document.createElement(
 function jsQuoted(s){if(typeof s!=='string')return '';return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r/g,'\\r').replace(/\n/g,'\\n').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029')}
 
 checkAuth()
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') checkAuth({ silent: true })
+})
+window.addEventListener('focus', () => checkAuth({ silent: true }))
 </script>
 
 </body>
