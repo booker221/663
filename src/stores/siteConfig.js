@@ -240,6 +240,8 @@ export const images = reactive({
   logo_domain: logoDomain,
   hero_banner_pc: '',
   hero_banner_h5: '',
+  about_cover_pc: '',
+  about_cover_h5: '',
   values_pc: '',
   values_h5: '',
   activity_person_pc: '',

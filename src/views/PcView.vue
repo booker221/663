@@ -2,6 +2,7 @@
   <div class="pc-page">
     <PcTopbar />
     <PcHero />
+    <PcAbout />
     <PcValues />
     <PcBusiness />
     <PcGuarantee />
@@ -31,6 +32,7 @@ import { BUSINESS_CONTACT, CUSTOMER_SERVICE, COMPLAINT_CONTACT } from '../config
 import DraggableFab from '../components/common/DraggableFab.vue'
 import PcTopbar from '../components/pc/PcTopbar.vue'
 import PcHero from '../components/pc/PcHero.vue'
+import PcAbout from '../components/pc/PcAbout.vue'
 import PcValues from '../components/pc/PcValues.vue'
 import PcBusiness from '../components/pc/PcBusiness.vue'
 import PcGuarantee from '../components/pc/PcGuarantee.vue'

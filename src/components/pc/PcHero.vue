@@ -1,12 +1,7 @@
 <template>
   <section class="hero">
-    <div class="hero-banner-wrap" :style="{ backgroundImage: `url(${bannerImage})` }">
-      <div class="about-overlay">
-        <div class="about-inner">
-          <h3 class="about-title">{{ siteInfo.aboutTitle }}</h3>
-          <p class="about-text" v-html="siteInfo.aboutText"></p>
-        </div>
-      </div>
+    <div class="hero-banner-wrap" >
+      <img :src="bannerImage" alt="Banner">
     </div>
   </section>
 </template>
@@ -30,46 +25,11 @@ const bannerImage = computed(() => images.hero_banner_pc || bannerUrl)
 .hero-banner-wrap {
   position: relative;
   width: 100%;
-  /* 保持原始宽高比 3840:1560 */
-  aspect-ratio: 3840 / 1560;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  height: 620px;
 }
-
-.about-overlay {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-}
-
-.about-inner {
-  width: min(960px, calc(100% - 32px));
-  margin: 0 auto;
-}
-
-.about-title {
-  color: #414A65;
-
-  font-family: Alibaba PuHuiTi 3.0;
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 30px;
-  letter-spacing: 0%;
-}
-
-.about-text {
-  color: #414A65;
-  font-family: Alibaba PuHuiTi 3.0;
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 30px;
-  letter-spacing: 0%;
-}
-
-.hl {
-  color: var(--primary);
-  font-weight: 700;
+.hero-banner-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 </style>

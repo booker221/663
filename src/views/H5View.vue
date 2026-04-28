@@ -2,6 +2,7 @@
   <H5Topbar />
   <div class="h5-page">
     <H5Hero />
+    <H5About />
     <H5Values />
     <H5Business />
     <H5Guarantee />
@@ -51,6 +52,7 @@ import { BUSINESS_CONTACT, CUSTOMER_SERVICE, COMPLAINT_CONTACT } from '../config
 import DraggableFab from '../components/common/DraggableFab.vue'
 import H5Topbar from '../components/h5/H5Topbar.vue'
 import H5Hero from '../components/h5/H5Hero.vue'
+import H5About from '../components/h5/H5About.vue'
 import H5Values from '../components/h5/H5Values.vue'
 import H5Business from '../components/h5/H5Business.vue'
 import H5Guarantee from '../components/h5/H5Guarantee.vue'

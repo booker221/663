@@ -405,6 +405,13 @@
           <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('hero_banner_h5',this)" id="upload-hero_banner_h5"><div class="upload-text">📤 点击上传</div></div></div>
         </div>
       </div>
+      <div class="card">
+        <div class="card-title">🎬 关于我们图片</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('about_cover_pc',this)" id="upload-about_cover_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('about_cover_h5',this)" id="upload-about_cover_h5"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
+      </div>
     </div>
   </main>
 </div>
@@ -836,7 +843,7 @@ function populateAllForms() {
   setVal('service_title',c.service_title||'');setVal('service_desc',c.service_desc||'')
   renderGuaranteeTags(c.guarantee_accounts||[])
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
-  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','values_pc','values_h5']
+  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','about_cover_pc','about_cover_h5','values_pc','values_h5']
   imgKeys.forEach(k=>{const el=document.getElementById(`upload-${k}`);if(el){if(c[k]){el.innerHTML=`<img src="${c[k]}" /><div class="upload-text">点击更换</div>`;el.classList.add('has-image')}else{el.innerHTML='<div class="upload-text">📤 点击上传</div>';el.classList.remove('has-image')}}})
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }
