@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { ref, watchEffect, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, watchEffect, onMounted, onBeforeUnmount } from 'vue'
 import { images } from '@/stores/siteConfig.js'
 import { SEARCH_CONFIG, TG_OFFICIAL_CHANNEL, CUSTOMER_SERVICE, COMPLAINT_CONTACT } from '@/config/contacts.js'
 import { verifyOfficialHandle } from '@/utils/verify.js'
@@ -41,7 +41,7 @@ const searchHandle = ref(SEARCH_CONFIG.defaultValue || '')
 const isMenuOpen = ref(false)
 const menuWrapRef = ref(null)
 
-const menuItems = [
+const menuItems = computed(() => [
   { key: 'promote-business', label: '推广招商部', targetId: 'business' },
   { key: 'payment-business', label: '支付通道招商部', targetId: 'business' },
   { key: 'guarantee', label: '担保验证', targetId: 'guarantee' },
@@ -49,7 +49,7 @@ const menuItems = [
   { key: 'tg-channel', label: 'TG官方频道', externalUrl: TG_OFFICIAL_CHANNEL.url },
   { key: 'customer', label: '福利客服', externalUrl: CUSTOMER_SERVICE.url },
   { key: 'complaint', label: '投诉建议', externalUrl: COMPLAINT_CONTACT.url },
-]
+])
 
 // API 数据加载后自动更新搜索框默认值
 watchEffect(() => {
@@ -92,6 +92,8 @@ const openExternal = (url) => {
 }
 
 const handleMenuClick = (item) => {
+   console.log(item);
+   
   isMenuOpen.value = false
   if (item.targetId) {
     scrollToSection(item.targetId)
