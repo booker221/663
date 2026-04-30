@@ -80,9 +80,12 @@ import num3 from '@/assets/images/icon/num-3.webp'
 import num4 from '@/assets/images/icon/num-4.webp'
 import num5 from '@/assets/images/icon/num-5.webp'
 import num6 from '@/assets/images/icon/num-6.webp'
+import num7 from '@/assets/images/icon/num-7.webp'
+import num8 from '@/assets/images/icon/num-8.webp'
+import num9 from '@/assets/images/icon/num-9.webp'
 import titleDotIcon from '@/assets/images/webp/icon-title-dot.webp'
 
-const numIcons = [num1, num2, num3, num4, num5, num6]
+const numIcons = [num1, num2, num3, num4, num5, num6, num7, num8, num9]
 
 const actBgImage = computed(() => images.activity_bg_h5 || defaultActBg)
 const activityPersonImage = computed(() => images.activity_person_h5 || defaultActPerson)
