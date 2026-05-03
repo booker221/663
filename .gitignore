@@ -12,5 +12,6 @@ dist/
 
 # Server data (运行时生成)
 server/data.sqlite
+server/data.sqlite-*
 server/uploads/
 .playwright-cli

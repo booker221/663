@@ -847,7 +847,7 @@ function populateAllForms() {
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
   const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','about_cover_pc','about_cover_h5','values_pc','values_h5']
   imgKeys.forEach(k=>renderUploadPreview(k,c[k],'image'))
-  renderUploadPreview('about_video_pc',c.about_video_pc,'video')
+  renderUploadPreview('about_video_pc',c.about_video_pc,'video',c.about_cover_pc||'')
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }
 
@@ -1069,12 +1069,12 @@ async function saveSearch(){const r=await apiPut(`/api/admin/config/search_confi
 function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
 function triggerVideoUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('videoInput').click()}
 function triggerAvatarUpload(el){currentAvatarInput=el;document.getElementById('avatarFileInput').click()}
-function renderUploadPreview(k,url,type='image'){
+function renderUploadPreview(k,url,type='image',poster=''){
   const el=document.getElementById(`upload-${k}`)
   if(!el)return
   if(url){
     el.innerHTML=type==='video'
-      ? `<video src="${url}" muted controls></video><div class="upload-text">点击更换视频</div>`
+      ? `<video src="${url}" ${poster ? `poster="${poster}"` : ''} muted controls></video><div class="upload-text">点击更换视频</div>`
       : `<img src="${url}" /><div class="upload-text">点击更换</div>`
     el.classList.add('has-image')
   }else{
@@ -1083,34 +1083,93 @@ function renderUploadPreview(k,url,type='image'){
   }
 }
 
+async function captureVideoPoster(file){
+  return new Promise((resolve,reject)=>{
+    const video=document.createElement('video')
+    const url=URL.createObjectURL(file)
+    let done=false
+    const cleanup=()=>{URL.revokeObjectURL(url);video.removeAttribute('src');video.load()}
+    const finish=(blob)=>{
+      if(done)return
+      done=true
+      cleanup()
+      resolve(new File([blob],`${file.name.replace(/\.[^.]+$/,'')}-poster.webp`,{type:'image/webp'}))
+    }
+    const fail=(err)=>{
+      if(done)return
+      done=true
+      cleanup()
+      reject(err)
+    }
+    video.muted=true
+    video.playsInline=true
+    video.preload='metadata'
+    video.addEventListener('loadeddata',()=>{
+      try{
+        const canvas=document.createElement('canvas')
+        canvas.width=video.videoWidth||1280
+        canvas.height=video.videoHeight||720
+        canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height)
+        canvas.toBlob(blob=>blob?finish(blob):fail(new Error('封面生成失败')),'image/webp',0.88)
+      }catch(err){fail(err)}
+    },{once:true})
+    video.addEventListener('error',()=>fail(new Error('视频读取失败')),{once:true})
+    video.src=url
+    video.currentTime=0.01
+  })
+}
+
+async function uploadAdminFile(file, site){
+  const fd=new FormData();fd.append('image',file)
+  const r=await fetch(`${API}/api/admin/upload?site=${site}`,{method:'POST',body:fd,credentials:'include'})
+  if(r.status===401){handleSessionExpired();return null}
+  return r.json()
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('fileInput').addEventListener('change',async(e)=>{
-    const f=e.target.files[0];if(!f||!currentUploadKey)return
-    const fd=new FormData();fd.append('image',f)
-    try{const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}const d=await r.json()
-    if(d.success){if(currentUploadTarget){currentUploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;currentUploadTarget.classList.add('has-image')}
-    await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
+    const f=e.target.files[0]
+    const uploadKey=currentUploadKey
+    const uploadTarget=currentUploadTarget
+    const uploadSite=currentSite
+    if(!f||!uploadKey)return
+    try{const d=await uploadAdminFile(f, uploadSite);if(!d){e.target.value='';return}
+    if(d.success){if(uploadTarget){uploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;uploadTarget.classList.add('has-image')}
+    await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
     e.target.value=''
   })
 
   document.getElementById('videoInput').addEventListener('change',async(e)=>{
-    const f=e.target.files[0];if(!f||!currentUploadKey)return
-    const fd=new FormData();fd.append('video',f)
-    try{const r=await fetch(`${API}/api/admin/upload-video?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}const d=await r.json()
-    if(d.success){if(currentUploadTarget){renderUploadPreview(currentUploadKey,d.data.url,'video')}
-    await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('视频上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('视频上传失败','error')}
+    const f=e.target.files[0]
+    const uploadKey=currentUploadKey
+    const uploadTarget=currentUploadTarget
+    const uploadSite=currentSite
+    if(!f||!uploadKey)return
+    try{
+      const posterFile=await captureVideoPoster(f)
+      const d=await uploadAdminFile(f, uploadSite);if(!d){e.target.value='';return}
+      if(!d.success){showToast(d.error,'error');e.target.value='';return}
+      const poster=await uploadAdminFile(posterFile, uploadSite)
+      if(!poster){e.target.value='';return}
+      if(uploadTarget){renderUploadPreview(uploadKey,d.data.url,'video', poster.success ? poster.data.url : '')}
+      await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'})
+      if(poster.success){
+        await apiPut(`/api/admin/config/about_cover_pc?site=${uploadSite}`,{value:poster.data.url,category:'images'})
+        configData.about_cover_pc=poster.data.url
+        renderUploadPreview('about_cover_pc',poster.data.url,'image')
+      }
+      showToast(poster.success?'视频上传成功，已生成封面':'视频上传成功，封面生成失败')
+    }catch(err){showToast('视频上传失败','error')}
     e.target.value=''
   })
 
   document.getElementById('avatarFileInput').addEventListener('change',async(e)=>{
-    const f=e.target.files[0];if(!f||!currentAvatarInput)return
-    const fd=new FormData();fd.append('image',f)
+    const f=e.target.files[0];const avatarInput=currentAvatarInput;const uploadSite=currentSite;if(!f||!avatarInput)return
     try{
-      const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}
-      const d=await r.json()
+      const d=await uploadAdminFile(f, uploadSite);if(!d){e.target.value='';return}
       if(d.success){
-        currentAvatarInput.value = d.data.url
-        currentAvatarInput.dispatchEvent(new Event('change')) // emit change
+        avatarInput.value = d.data.url
+        avatarInput.dispatchEvent(new Event('change')) // emit change
         showToast('头像已上传并填入')
       }else{showToast(d.error,'error')}
     }catch(err){showToast('头像上传失败','error')}

@@ -1,19 +1,27 @@
 <template>
   <PcSectionPanel section-id="about" :title="aboutTitle">
     <div class="video-shell">
-      <video
-        v-if="images.about_video_pc"
-        ref="videoRef"
-        class="video-card about-media"
-        :poster="images.about_cover_pc || undefined"
-        preload="metadata"
-        playsinline
-        controls
-        @play="isPlaying = true"
-        @pause="isPlaying = false"
-      >
-        <source :src="images.about_video_pc" />
-      </video>
+      <template v-if="images.about_video_pc">
+        <video
+          ref="videoRef"
+          class="video-card about-media"
+          :poster="images.about_cover_pc || undefined"
+          preload="metadata"
+          playsinline
+          @play="isPlaying = true"
+          @pause="isPlaying = false"
+          @click="toggleVideo"
+        >
+          <source :src="images.about_video_pc" />
+        </video>
+        <img
+          v-if="images.about_cover_pc && !isPlaying"
+          class="video-poster-cover"
+          :src="images.about_cover_pc"
+          alt=""
+          @click="playVideo"
+        />
+      </template>
       <DynamicImage
         v-else
         :remote-src="images.about_cover_pc"
@@ -54,6 +62,16 @@ const isPlaying = ref(false)
 function playVideo() {
   videoRef.value?.play()
 }
+
+function toggleVideo() {
+  const video = videoRef.value
+  if (!video) return
+  if (video.paused) {
+    video.play()
+  } else {
+    video.pause()
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -88,10 +106,23 @@ function playVideo() {
   object-fit: cover;
 }
 
+.video-poster-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
 .play-button {
   position: absolute;
   left: 50%;
   top: 50%;
+  z-index: 2;
   width: 80px;
   height: 80px;
   border: none;

@@ -48,12 +48,32 @@ app.use(session({
 const uploadsDir = path.join(__dirname, 'uploads')
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true })
 
+const IMAGE_EXT_RE = /\.(jpg|jpeg|png|gif|webp|svg|ico|avif)$/i
+const VIDEO_EXT_RE = /\.(mp4|webm|mov|m4v)$/i
+
+function getUploadKind(filename = '') {
+  const ext = path.extname(filename)
+  if (IMAGE_EXT_RE.test(ext)) return 'image'
+  if (VIDEO_EXT_RE.test(ext)) return 'video'
+  return ''
+}
+
+function removeUploadedFile(file) {
+  if (!file?.path) return
+  try {
+    fs.unlinkSync(file.path)
+  } catch (err) {
+    console.warn('[upload] 清理文件失败:', err.message)
+  }
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // 所有上传文件统一存放到 uploads/img 目录
-    const imgDir = path.join(uploadsDir, 'img')
-    if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true })
-    cb(null, imgDir)
+    const kind = getUploadKind(file.originalname)
+    const subDir = kind === 'video' ? 'video' : 'img'
+    const targetDir = path.join(uploadsDir, subDir)
+    if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir, { recursive: true })
+    cb(null, targetDir)
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname)
@@ -64,12 +84,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: MAX_UPLOAD_SIZE },
+  limits: { fileSize: MAX_VIDEO_UPLOAD_SIZE },
   fileFilter: (req, file, cb) => {
-    if (/\.(jpg|jpeg|png|gif|webp|svg|ico|avif)$/i.test(path.extname(file.originalname))) {
+    if (getUploadKind(file.originalname)) {
       cb(null, true)
     } else {
-      cb(new Error('只支持图片文件 (jpg/jpeg/png/gif/webp/svg/ico/avif)'))
+      cb(new Error('只支持图片或视频文件 (jpg/jpeg/png/gif/webp/svg/ico/avif/mp4/webm/mov/m4v)'))
     }
   }
 })
@@ -378,7 +398,7 @@ app.post('/api/admin/upload', requireSiteAccess, (req, res, next) => {
       console.error('[upload] multer 错误:', err)
       const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400
       const message = err.code === 'LIMIT_FILE_SIZE'
-        ? `上传失败: 图片不能超过 ${Math.floor(MAX_UPLOAD_SIZE / 1024 / 1024)}MB`
+        ? `上传失败: 文件不能超过 ${Math.floor(MAX_VIDEO_UPLOAD_SIZE / 1024 / 1024)}MB`
         : `上传失败: ${err.message}`
       return res.status(status).json({ error: message })
     }
@@ -386,10 +406,20 @@ app.post('/api/admin/upload', requireSiteAccess, (req, res, next) => {
   })
 }, (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: '请选择图片' })
-    const fileUrl = `/api/uploads/img/${req.file.filename}`
+    if (!req.file) return res.status(400).json({ error: '请选择文件' })
+    const kind = getUploadKind(req.file.originalname)
+    if (kind === 'video' && req.file.size > MAX_VIDEO_UPLOAD_SIZE) {
+      removeUploadedFile(req.file)
+      return res.status(413).json({ error: `上传失败: 视频不能超过 ${Math.floor(MAX_VIDEO_UPLOAD_SIZE / 1024 / 1024)}MB` })
+    }
+    if (kind === 'image' && req.file.size > MAX_UPLOAD_SIZE) {
+      removeUploadedFile(req.file)
+      return res.status(413).json({ error: `上传失败: 图片不能超过 ${Math.floor(MAX_UPLOAD_SIZE / 1024 / 1024)}MB` })
+    }
+    const subDir = kind === 'video' ? 'video' : 'img'
+    const fileUrl = `/api/uploads/${subDir}/${req.file.filename}`
     console.log(`[upload] 成功: ${fileUrl} (${req.file.size} bytes)`)
-    res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size } })
+    res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size, type: kind || 'image' } })
   } catch (err) {
     console.error('[upload] 处理错误:', err)
     res.status(500).json({ error: err.message })
