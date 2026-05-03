@@ -26,7 +26,7 @@ defineProps({
 <style scoped lang="scss">
 .pc-section-panel {
   margin: 40px 0 24px;
-  padding: 0 16px 18px;
+  padding: 20px 24px 24px;
   border-radius: 20px;
   background: radial-gradient(100% 213.42% at 0% 0%, #ECA366 0%, #4F3320 14.25%, #4F3320 84.44%, #ECA366 100%);
 }
@@ -36,7 +36,7 @@ defineProps({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 8px;
+  padding: 0 0 20px;
 }
 
 .pc-section-title {
@@ -50,7 +50,7 @@ defineProps({
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: "PingFang SC", sans-serif;
-    font-size: 26px;
+    font-size: 44px;
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0;
@@ -66,7 +66,7 @@ defineProps({
 }
 
 .pc-section-desc {
-  margin: -6px 0 12px;
+  margin: 10px 0 0;
   color: #B48735;
   font-family: "PingFang SC", sans-serif;
   font-size: 12px;

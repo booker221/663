@@ -1,6 +1,6 @@
 <template>
   <section class="hero">
-    <div class="hero-banner-wrap" >
+    <div class="hero-banner-wrap">
       <img :src="bannerImage" alt="Banner">
     </div>
   </section>
@@ -23,10 +23,14 @@ const bannerImage = computed(() => images.hero_banner_pc || bannerUrl)
 }
 
 .hero-banner-wrap {
-  position: relative;
+  aspect-ratio: 3840 / 1560;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
   width: 100%;
-  height: 880px;
+  position: relative;
 }
+
 .hero-banner-wrap img {
   width: 100%;
   height: 100%;

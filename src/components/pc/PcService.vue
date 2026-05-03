@@ -1,10 +1,9 @@
 <template>
   <PcSectionPanel section-id="service" title="服务体系" desc="全程跟进对接，沟通无障碍">
-    <!-- 一对一专员卡片 -->
-    <div class="specialist-card" :style="{ backgroundImage: `url(${cardBgImage})` }">
+    <div class="specialist-card">
       <div class="specialist-left">
-        <h3 class="specialist-name">{{ serviceInfo.title }}</h3>
-        <p class="specialist-desc">{{ serviceInfo.desc }}</p>
+        <div class="specialist-name">{{ serviceInfo.title }}</div>
+        <div class="specialist-desc">{{ serviceInfo.desc }}</div>
       </div>
       <div class="specialist-right">
         <img class="specialist-photo" :src="servicePersonImage" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
@@ -16,52 +15,51 @@
 <script setup>
 import { computed } from 'vue'
 import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
-import defaultCardBg from '@/assets/images/webp/service-card-bg-pc.webp'
-import defaultServicePerson from '@/assets/images/webp/service-person-pc.webp'
+import defaultServicePerson from '@/assets/images/webp/service-person-pc-ui.webp'
 import { serviceInfo, images } from '@/stores/siteConfig.js'
 
-const cardBgImage = computed(() => images.service_card_bg_pc || defaultCardBg)
 const servicePersonImage = computed(() => images.service_person_pc || defaultServicePerson)
 </script>
 
-<style scoped>
-/* 专员卡片 */
+<style scoped lang="scss">
 .specialist-card {
   display: flex;
+  width: 100%;
+  min-height: 300px;
+  align-items: flex-start;
   justify-content: space-between;
-  border-radius: 16px;
+  padding: 38px 0 0 40px;
+  border: 1px solid #fbe59a;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 220, 105, 0.18) 0, rgba(255, 220, 105, 0) 24%),
+    linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
   overflow: hidden;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-color: #fff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  padding: 32px 0 0 40px;
-  gap: 20px;
+  box-shadow: inset 0 0 0 1px rgba(255, 220, 105, 0.08);
 }
 
 .specialist-left {
   flex: 1;
   min-width: 0;
-  /* padding-bottom: 32px; */
+  max-width: 650px;
 }
 
 .specialist-name {
-  color: #414A65;
-  font-family: "PingFang SC";
+  color: #ffdc69;
+  font-family: "PingFang SC", sans-serif;
   font-size: 28px;
-  font-style: normal;
   font-weight: 600;
-  line-height: normal;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .specialist-desc {
-  color: #6C7BA8;
-  font-family: "PingFang SC";
+  margin-top: 10px;
+  color: rgba(255, 220, 105, 0.7);
+  font-family: "PingFang SC", sans-serif;
   font-size: 18px;
-  font-style: normal;
   font-weight: 500;
   line-height: 28px;
   display: -webkit-box;
@@ -72,13 +70,14 @@ const servicePersonImage = computed(() => images.service_person_pc || defaultSer
 
 .specialist-right {
   flex-shrink: 0;
-  width: 240px;
+  width: 300px;
   display: flex;
   align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .specialist-photo {
-  width: 100%;
+  width: 300px;
   display: block;
   object-fit: contain;
   object-position: bottom;

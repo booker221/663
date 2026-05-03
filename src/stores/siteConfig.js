@@ -208,7 +208,7 @@ export function activityToHtml(sections) {
         return `<p class="act-line red mt-2">${esc(s.value)}</p>`
       case 'tiers':
         return (s.items || []).map(t =>
-          `<div class="act-flex"><span class="label">${esc(t.label)}</span> <span class="amount">${esc(t.amount)}</span></div>`
+          `<div class="act-flex"><div class="label">${esc(t.label)}</div><div class="amount">${esc(t.amount)}</div></div>`
         ).join('')
       default:
         return ''
@@ -241,6 +241,7 @@ export const images = reactive({
   hero_banner_pc: '',
   hero_banner_h5: '',
   about_cover_pc: '',
+  about_video_pc: '',
   about_cover_h5: '',
   values_pc: '',
   values_h5: '',

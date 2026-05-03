@@ -90,7 +90,7 @@
     .image-upload-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#fafbfc}
     .image-upload-area:hover{border-color:var(--primary)}
     .image-upload-area.has-image{padding:6px}
-    .image-upload-area img{max-width:100%;max-height:160px;border-radius:8px;object-fit:contain}
+    .image-upload-area img,.image-upload-area video{max-width:100%;max-height:160px;border-radius:8px;object-fit:contain}
     .upload-text{color:var(--text-muted);font-size:12px;margin-top:6px}
     .image-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
@@ -408,7 +408,8 @@
       <div class="card">
         <div class="card-title">🎬 关于我们图片</div>
         <div class="image-grid">
-          <div class="form-group"><label class="form-label">PC端</label><div class="image-upload-area" onclick="triggerUpload('about_cover_pc',this)" id="upload-about_cover_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">PC端图片</label><div class="image-upload-area" onclick="triggerUpload('about_cover_pc',this)" id="upload-about_cover_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">PC端视频</label><div class="image-upload-area" onclick="triggerVideoUpload('about_video_pc',this)" id="upload-about_video_pc"><div class="upload-text">🎬 点击上传视频</div></div></div>
           <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('about_cover_h5',this)" id="upload-about_cover_h5"><div class="upload-text">📤 点击上传</div></div></div>
         </div>
       </div>
@@ -483,6 +484,7 @@
 </div>
 
 <input type="file" id="fileInput" accept="image/*" style="display:none" />
+<input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime,video/x-m4v" style="display:none" />
 <input type="file" id="avatarFileInput" accept="image/*" style="display:none" />
 <div class="toast-container" id="toastContainer"></div>
 
@@ -844,7 +846,8 @@ function populateAllForms() {
   renderGuaranteeTags(c.guarantee_accounts||[])
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
   const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','about_cover_pc','about_cover_h5','values_pc','values_h5']
-  imgKeys.forEach(k=>{const el=document.getElementById(`upload-${k}`);if(el){if(c[k]){el.innerHTML=`<img src="${c[k]}" /><div class="upload-text">点击更换</div>`;el.classList.add('has-image')}else{el.innerHTML='<div class="upload-text">📤 点击上传</div>';el.classList.remove('has-image')}}})
+  imgKeys.forEach(k=>renderUploadPreview(k,c[k],'image'))
+  renderUploadPreview('about_video_pc',c.about_video_pc,'video')
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }
 
@@ -914,9 +917,11 @@ function migrateHtmlToSections(html) {
  * 确保活动数据使用结构化 sections 格式
  */
 function normalizeActivity(a) {
-  if (a.sections && Array.isArray(a.sections)) return a
+  if (a.sections && Array.isArray(a.sections)) {
+    return { title: a.title || '', summary: a.summary || a.subtitle || '', sections: a.sections }
+  }
   // 旧格式：有 content 字段（HTML字符串）
-  return { title: a.title, sections: migrateHtmlToSections(a.content) }
+  return { title: a.title || '', summary: a.summary || a.subtitle || '', sections: migrateHtmlToSections(a.content) }
 }
 
 /**
@@ -945,6 +950,10 @@ function renderActivities(data) {
         <div class="form-group">
           <label class="form-label">活动标题</label>
           <input class="form-input" value="${esc(a.title)}" maxlength="15" onchange="activities[${i}].title=this.value;renderActivities(activities)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">卡片短描述 <span style="font-weight:400;color:var(--text-muted)">(显示在PC活动卡片底部胶囊内)</span></label>
+          <input class="form-input" value="${esc(a.summary || '')}" maxlength="20" onchange="activities[${i}].summary=this.value;renderActivities(activities)" placeholder="如：满足条件 奖金翻倍" />
         </div>
         <div class="form-group">
           <label class="form-label">内容块 <span style="font-weight:400;color:var(--text-muted)">(每个块是一行内容，可按需添加)</span></label>
@@ -992,7 +1001,7 @@ function renderSections(actIdx, sections) {
 }
 
 function addActivity() {
-  activities.push({ title: '新活动', sections: [{ type: 'text', value: '' }] })
+  activities.push({ title: '新活动', summary: '', sections: [{ type: 'text', value: '' }] })
   renderActivities(activities)
 }
 function removeActivity(i) { activities.splice(i, 1); renderActivities(activities) }
@@ -1036,8 +1045,8 @@ function refreshPreview(actIdx) {
 }
 
 async function saveActivities() {
-  // 保存时只存 title + sections（不再存 content HTML）
-  const cleanData = activities.map(a => ({ title: a.title, sections: a.sections }))
+  // 保存时只存结构化字段（不再存 content HTML）
+  const cleanData = activities.map(a => ({ title: a.title, summary: a.summary || '', sections: a.sections }))
   const r = await apiPut(`/api/admin/config/activities${siteQ()}`, { value: cleanData, category: 'activities' })
   if (!r) return
   r.success ? showToast('已保存') : showToast(r.error, 'error')
@@ -1058,7 +1067,21 @@ async function saveSearch(){const r=await apiPut(`/api/admin/config/search_confi
 
 // Images
 function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
+function triggerVideoUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('videoInput').click()}
 function triggerAvatarUpload(el){currentAvatarInput=el;document.getElementById('avatarFileInput').click()}
+function renderUploadPreview(k,url,type='image'){
+  const el=document.getElementById(`upload-${k}`)
+  if(!el)return
+  if(url){
+    el.innerHTML=type==='video'
+      ? `<video src="${url}" muted controls></video><div class="upload-text">点击更换视频</div>`
+      : `<img src="${url}" /><div class="upload-text">点击更换</div>`
+    el.classList.add('has-image')
+  }else{
+    el.innerHTML=type==='video'?'<div class="upload-text">🎬 点击上传视频</div>':'<div class="upload-text">📤 点击上传</div>'
+    el.classList.remove('has-image')
+  }
+}
 
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('fileInput').addEventListener('change',async(e)=>{
@@ -1067,6 +1090,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     try{const r=await fetch(`${API}/api/admin/upload?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}const d=await r.json()
     if(d.success){if(currentUploadTarget){currentUploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;currentUploadTarget.classList.add('has-image')}
     await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
+    e.target.value=''
+  })
+
+  document.getElementById('videoInput').addEventListener('change',async(e)=>{
+    const f=e.target.files[0];if(!f||!currentUploadKey)return
+    const fd=new FormData();fd.append('video',f)
+    try{const r=await fetch(`${API}/api/admin/upload-video?site=${currentSite}`,{method:'POST',body:fd,credentials:'include'});if(r.status===401){handleSessionExpired();e.target.value='';return}const d=await r.json()
+    if(d.success){if(currentUploadTarget){renderUploadPreview(currentUploadKey,d.data.url,'video')}
+    await apiPut(`/api/admin/config/${currentUploadKey}${siteQ()}`,{value:d.data.url,category:'images'});showToast('视频上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('视频上传失败','error')}
     e.target.value=''
   })
 

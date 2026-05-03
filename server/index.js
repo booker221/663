@@ -22,6 +22,7 @@ const PORT = process.env.PORT || 3456
 // 超级管理员密码（可由环境变量覆盖）
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hxldyadmin'
 const MAX_UPLOAD_SIZE = 30 * 1024 * 1024
+const MAX_VIDEO_UPLOAD_SIZE = 200 * 1024 * 1024
 
 // 清理参数：去除协议 http(s)://、端口号 :port 以及末尾斜杠，仅保留域名或主机部分
 const normalizeParam = (val) => {
@@ -69,6 +70,31 @@ const upload = multer({
       cb(null, true)
     } else {
       cb(new Error('只支持图片文件 (jpg/jpeg/png/gif/webp/svg/ico/avif)'))
+    }
+  }
+})
+
+const videoStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const videoDir = path.join(uploadsDir, 'video')
+    if (!fs.existsSync(videoDir)) fs.mkdirSync(videoDir, { recursive: true })
+    cb(null, videoDir)
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname)
+    const name = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9\-_]/g, '_')
+    cb(null, `${name}-${Date.now()}${ext}`)
+  }
+})
+
+const uploadVideo = multer({
+  storage: videoStorage,
+  limits: { fileSize: MAX_VIDEO_UPLOAD_SIZE },
+  fileFilter: (req, file, cb) => {
+    if (/\.(mp4|webm|mov|m4v)$/i.test(path.extname(file.originalname))) {
+      cb(null, true)
+    } else {
+      cb(new Error('只支持视频文件 (mp4/webm/mov/m4v)'))
     }
   }
 })
@@ -366,6 +392,31 @@ app.post('/api/admin/upload', requireSiteAccess, (req, res, next) => {
     res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size } })
   } catch (err) {
     console.error('[upload] 处理错误:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// 上传视频（需要站点访问权限）
+app.post('/api/admin/upload-video', requireSiteAccess, (req, res, next) => {
+  uploadVideo.single('video')(req, res, (err) => {
+    if (err) {
+      console.error('[upload-video] multer 错误:', err)
+      const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400
+      const message = err.code === 'LIMIT_FILE_SIZE'
+        ? `上传失败: 视频不能超过 ${Math.floor(MAX_VIDEO_UPLOAD_SIZE / 1024 / 1024)}MB`
+        : `上传失败: ${err.message}`
+      return res.status(status).json({ error: message })
+    }
+    next()
+  })
+}, (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: '请选择视频' })
+    const fileUrl = `/api/uploads/video/${req.file.filename}`
+    console.log(`[upload-video] 成功: ${fileUrl} (${req.file.size} bytes)`)
+    res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size } })
+  } catch (err) {
+    console.error('[upload-video] 处理错误:', err)
     res.status(500).json({ error: err.message })
   }
 })

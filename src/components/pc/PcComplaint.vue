@@ -1,20 +1,27 @@
 <template>
   <PcSectionPanel section-id="complaint" title="投诉接受" desc="全程跟进对接，沟通无障碍">
-    <!-- 投诉联系卡片 -->
     <div class="complaint-card">
-      <!-- 左：头像 + 名字 -->
       <div class="partner-left">
-        <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" width="88" height="88" />
-        <span class="partner-name">{{ COMPLAINT_CONTACT.name }}</span>
+        <div class="partner-avatar-wrap">
+          <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" width="88" height="88" />
+        </div>
+        <div class="partner-name">{{ COMPLAINT_CONTACT.name }}</div>
       </div>
 
-      <!-- 右：Telegram + handle + 复制 -->
       <div class="partner-right">
         <img class="tg-icon" src="@/assets/images/webp/icon-telegram.webp" alt="TG" width="64" height="64" />
-        <span class="partner-handle">{{ COMPLAINT_CONTACT.handle }}</span>
-        <button class="btn-copy" title="复制" @click="copy(COMPLAINT_CONTACT.handle)">
-          <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" width="36" height="36" />
-        </button>
+        <div class="partner-handle">{{ COMPLAINT_CONTACT.handle }}</div>
+        <div
+          class="btn-copy"
+          role="button"
+          tabindex="0"
+          title="复制"
+          @click="copy(COMPLAINT_CONTACT.handle)"
+          @keydown.enter.prevent="copy(COMPLAINT_CONTACT.handle)"
+          @keydown.space.prevent="copy(COMPLAINT_CONTACT.handle)"
+        >
+          <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy" width="44" height="44" />
+        </div>
       </div>
     </div>
   </PcSectionPanel>
@@ -30,72 +37,98 @@ function copy(text) {
 }
 </script>
 
-<style scoped>
-/* 卡片 */
+<style scoped lang="scss">
 .complaint-card {
   display: flex;
+  width: 100%;
+  min-height: 96px;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow);
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #fbe59a;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 220, 105, 0.18) 0, rgba(255, 220, 105, 0) 24%),
+    linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 220, 105, 0.08);
 }
 
-/* 左侧 */
 .partner-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  min-width: 0;
 }
 
-.partner-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
+.partner-avatar-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
   flex-shrink: 0;
 }
 
-.partner-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
+.partner-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-/* 右侧 */
+.partner-name {
+  color: #ffdc69;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .partner-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .tg-icon {
-  width: 22px;
-  height: 22px;
+  width: 34px;
+  height: 32px;
   object-fit: contain;
 }
 
 .partner-handle {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--blue);
+  color: #ffdc69;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .btn-copy {
-  background: none;
-  border: none;
+  display: grid;
+  width: 44px;
+  height: 44px;
   padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   cursor: pointer;
-  display: flex;
-  align-items: center;
 }
 
 .copy-icon {
-  width: 16px;
-  height: 16px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
-  opacity: 0.7;
+}
+
+.partner-avatar-frame {
+  position: absolute;
+  inset: 0;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  pointer-events: none;
 }
 </style>

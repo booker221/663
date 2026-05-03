@@ -1,406 +1,546 @@
 <template>
   <PcSectionPanel section-id="activity" title="活动专栏">
     <div class="activity-card">
-      <!-- 内容区（背景图通过 :style 设置）-->
-      <div class="card-content" :style="{ backgroundImage: `url(${actBgImage})` }">
-        <!-- 绝对定位的装饰图 -->
-        <img class="reward-title-img absolute-top-left" src="@/assets/images/icon/reward-label.webp" alt="合作奖励" />
-        <img class="coin-icon absolute-bottom-left" src="@/assets/images/icon/coin-left.webp" alt="coin" />
+      <img class="reward-title-img" src="@/assets/images/webp/activity-reward-label-pc.webp" alt="合作奖励" />
 
-        <div class="content-left">
-
-          <div class="accordion-container">
-            <div class="accordion-item" v-for="(item, index) in activities" :key="index">
-              <div class="accordion-header" @click="toggleActivity(index)">
-                <div class="title-left">
-                  <img :src="numIcons[index]" alt="index" class="num-icon" />
-                  <p class="act-label">{{ item.title }}</p>
-                </div>
-                <img class="arrow-img" :src="activeIndex === index ? arrowUpIcon : arrowDownIcon" alt="toggle" />
-              </div>
-              <div class="accordion-content" v-show="activeIndex === index" v-html="getActivityContent(item)"></div>
-            </div>
+      <div class="activity-grid">
+        <div v-for="card in activityCards" :key="card.label" class="activity-item" role="button" tabindex="0"
+          @click="openActivity(card)" @keydown.enter.prevent="openActivity(card)"
+          @keydown.space.prevent="openActivity(card)">
+          <div class="activity-label">
+            <div class="activity-label-text">{{ card.label }}</div>
           </div>
-          <a
-            v-if="officialChannelUrl"
-            :href="officialChannelUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="tg-button-link"
-          >
-            <img class="tg-button-img" src="@/assets/images/webp/tg-button.webp" alt="TG官方频道" width="192" height="48" />
-          </a>
-          <p class="act-contact">
-            <span class="contact-label">商务合作：</span>
-            <span class="contact-handle" @click="copyToClipboard(BUSINESS_CONTACT.handle)" title="点击复制">
-              {{ BUSINESS_CONTACT.handle }}
-            </span>
-            <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制"
-              @click="copyToClipboard(BUSINESS_CONTACT.handle)" width="20" height="20" />
-          </p>
-          <p class="act-contact" style="margin-bottom: 20px;">
-            <span class="contact-label">TG招商群：</span>
-            <span class="contact-handle" @click="copyToClipboard(TG_RECRUIT_GROUP.url)" title="点击复制">
-              {{ TG_RECRUIT_GROUP.url }}
-            </span>
-            <img class="copy-icon" src="@/assets/images/webp/icon-copy.webp" alt="复制"
-              @click="copyToClipboard(TG_RECRUIT_GROUP.url)" width="20" height="20" />
-          </p>
-        </div>
-
-        <!-- 右侧人物图 -->
-        <div class="content-right">
-          <img class="person-img" :src="activityPersonImage" alt="活动商务负责人" loading="lazy" />
+          <div class="visual-card" :style="{ backgroundImage: `url(${cardBg})` }">
+            <div class="brand-pill">
+              <img class="brand-pill-img" src="@/assets/images/webp/activity-brand-pill-pc.webp" alt="合兴集团一路向前"
+                loading="lazy" />
+            </div>
+            <div class="activity-title">{{ card.title }}</div>
+            <div class="activity-summary">
+              <div class="summary-text">{{ card.summary }}</div>
+            </div>
+            <img class="activity-prize-img" :src="card.prize" alt="" loading="lazy" />
+          </div>
         </div>
       </div>
+
+      <a v-if="officialChannelUrl" :href="officialChannelUrl" target="_blank" rel="noopener noreferrer"
+        class="tg-button-link">
+        <img class="tg-button-img" src="@/assets/images/webp/activity-tg-button-pc.webp" alt="TG官方频道" width="192"
+          height="48" />
+      </a>
+
+      <div class="contact-row">
+        <div class="act-contact">
+          <div class="contact-label">商务合作：</div>
+          <div class="contact-handle" role="button" tabindex="0" title="点击复制"
+            @click="copyToClipboard(BUSINESS_CONTACT.handle)"
+            @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)"
+            @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
+            {{ BUSINESS_CONTACT.handle }}
+          </div>
+          <div class="copy-btn" role="button" tabindex="0" title="复制" @click="copyToClipboard(BUSINESS_CONTACT.handle)"
+            @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)"
+            @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
+            <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44" height="44" />
+          </div>
+        </div>
+
+        <div class="act-contact">
+          <div class="contact-label">TG招商群：</div>
+          <div class="contact-handle" role="button" tabindex="0" title="点击复制"
+            @click="copyToClipboard(TG_RECRUIT_GROUP.url)"
+            @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)"
+            @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
+            {{ TG_RECRUIT_GROUP.url }}
+          </div>
+          <div class="copy-btn" role="button" tabindex="0" title="复制" @click="copyToClipboard(TG_RECRUIT_GROUP.url)"
+            @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)"
+            @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
+            <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44" height="44" />
+          </div>
+        </div>
+      </div>
+
+      <img class="coin-icon" src="@/assets/images/webp/activity-coin-pc.webp" alt="" />
     </div>
+
+    <Teleport to="body">
+      <div v-if="selectedActivity" class="activity-modal-mask" @click.self="closeActivity">
+        <div class="activity-modal" role="dialog" aria-modal="true" :aria-label="selectedActivity.title">
+          <div class="modal-close" role="button" tabindex="0" aria-label="关闭" @click="closeActivity"
+            @keydown.enter.prevent="closeActivity" @keydown.space.prevent="closeActivity">×</div>
+          <div class="modal-title-row">
+            <div class="modal-num">{{ selectedActivity.index + 1 }}</div>
+            <h3>{{ selectedActivity.title }}</h3>
+          </div>
+          <div class="modal-content" v-html="selectedActivityContent"></div>
+        </div>
+      </div>
+    </Teleport>
   </PcSectionPanel>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
-import defaultActBg from '@/assets/images/webp/activity-content-bg-pc.webp'
-import defaultActPerson from '@/assets/images/webp/activity-person-new-pc.png'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
-import { activities, images, activityToHtml } from '@/stores/siteConfig.js'
+import { activities, activityToHtml } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
-import arrowUpIcon from '@/assets/images/icon/arrow-up.webp'
-import arrowDownIcon from '@/assets/images/icon/arrow-down.webp'
-import num1 from '@/assets/images/icon/num-1.webp'
-import num2 from '@/assets/images/icon/num-2.webp'
-import num3 from '@/assets/images/icon/num-3.webp'
-import num4 from '@/assets/images/icon/num-4.webp'
-import num5 from '@/assets/images/icon/num-5.webp'
-import num6 from '@/assets/images/icon/num-6.webp'
-import num7 from '@/assets/images/icon/num-7.webp'
-import num8 from '@/assets/images/icon/num-8.webp'
-import num9 from '@/assets/images/icon/num-9.webp'
+import cardBg from '@/assets/images/webp/activity-card-bg-pc.webp'
+import prize1 from '@/assets/images/webp/activity-card-prize-pc-1.webp'
+import prize2 from '@/assets/images/webp/activity-card-prize-pc-2.webp'
+import prize3 from '@/assets/images/webp/activity-card-prize-pc-3.webp'
+import prize4 from '@/assets/images/webp/activity-card-prize-pc-4.webp'
+import prize5 from '@/assets/images/webp/activity-card-prize-pc-5.webp'
+import prize6 from '@/assets/images/webp/activity-card-prize-pc-6.webp'
 
-const numIcons = [num1, num2, num3, num4, num5, num6, num7, num8, num9]
+const prizeImages = [prize1, prize2, prize3, prize4, prize5, prize6]
+const fallbackTitles = ['首单奖励', '拉新奖励', '冲刺奖励', '流水提成奖励', '排行榜奖励', '优质通道每月奖励']
+const fallbackSummaries = ['满足条件 奖金翻倍', '连续拉新 额外奖励', '最高可得 18888', '额外返点 高额奖金', '全球空降 嫩模3天', '满足条件 奖金翻倍']
 
-const actBgImage = computed(() => images.activity_bg_pc || defaultActBg)
-const activityPersonImage = computed(() => images.activity_person_pc || defaultActPerson)
+const selectedActivity = ref(null)
+
+const activityCards = computed(() => prizeImages.map((prize, index) => {
+  const item = activities[index] || {}
+  return {
+    index,
+    prize,
+    label: `活动${index + 1}`,
+    title: item.title || fallbackTitles[index],
+    summary: item.summary || item.subtitle || fallbackSummaries[index],
+    sections: item.sections || [],
+    content: item.content || '',
+  }
+}))
+
 const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
 
-// 兼容旧数据（content 字符串）和新数据（sections 结构化）
-function getActivityContent(item) {
-  if (item.content && typeof item.content === 'string') return item.content
-  if (item.sections) return activityToHtml(item.sections)
-  return ''
+const selectedActivityContent = computed(() => {
+  if (!selectedActivity.value) return ''
+  if (selectedActivity.value.content) return selectedActivity.value.content
+  return activityToHtml(selectedActivity.value.sections)
+})
+
+function openActivity(card) {
+  selectedActivity.value = card
 }
 
-const activeIndex = ref(-1)
-const toggleActivity = (index) => {
-  activeIndex.value = activeIndex.value === index ? -1 : index
+function closeActivity() {
+  selectedActivity.value = null
 }
 </script>
 
-
-<style scoped>
-/* 活动卡片 */
+<style scoped lang="scss">
 .activity-card {
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.card-content {
   position: relative;
-  display: flex;
-  align-items: flex-start;
-  padding: 80px 40px 40px;
-  gap: 16px;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  border-radius: 16px;
-}
-
-.content-left {
-  flex: 1;
-  max-width: 660px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  /* padding: 40px; */
-}
-
-.content-right {
-  width: 400px;
-  height: 400px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-  align-self: stretch;
-}
-
-.person-img {
-  width: 400px;
-  height: 400px;
-  object-fit: contain;
-  object-position: bottom;
-}
-
-/* 内容文字 */
-.absolute-top-left {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  height: 52px;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.absolute-bottom-left {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 90px;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.act-block {
-  margin-bottom: 12px;
-  letter-spacing: 1.6px;
-}
-
-.act-label {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #414A65;
-  margin: 0;
-  white-space: nowrap;
+  width: min(100%, 1140px);
+  min-height: 680px;
+  margin: 0 auto;
+  padding: 73px 17px 34px;
+  border: 1px solid #fbe59a;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 180px;
 }
 
-.accordion-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 24px;
-  background: #FFF;
-  border-radius: 12px;
-  padding: 0 20px;
+.reward-title-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 168px;
+  height: 64px;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.accordion-item {
-  background: transparent;
-  border-bottom: 1px solid #EEF3FF;
-}
-
-.accordion-item:last-child {
-  border-bottom: none;
-}
-
-.accordion-header {
-  display: flex;
-  align-items: center;
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 355px);
   justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+.activity-item {
+  position: relative;
+  display: block;
+  width: 355px;
+  height: 160px;
+  padding: 10px 0 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
-  padding: 20px 0;
-  transition: opacity 0.3s;
-}
-
-.accordion-header:hover {
-  opacity: 0.8;
-}
-
-.title-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.num-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
-
-.accordion-content {
-  padding: 16px;
-  background: #FFF0F2;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.arrow-img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  transition: transform 0.3s;
-}
-
-:deep(.act-line) {
-  font-family: "PingFang SC", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #414A65;
-  line-height: 1.4;
-  margin: 0 0 10px 0;
-  letter-spacing: 0;
-}
-
-:deep(.act-line.red),
-:deep(.red-text) {
-  font-family: "PingFang SC", sans-serif;
-  color: #FF4A4A;
-  font-weight: 600;
-  line-height: 24px;
-  letter-spacing: 0.1em;
-}
-
-:deep(.amount) {
-  font-family: "PingFang SC", sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: 0.1em;
-  color: #FF4A4A;
-}
-
-:deep(.act-flex) {
-  display: flex;
-  align-items: baseline;
-  font-family: "PingFang SC", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #414A65;
-  line-height: 1.4;
-  margin-bottom: 10px;
-  letter-spacing: 0;
-}
-
-:deep(.act-flex .label) {
-  min-width: 60px;
-  color: #414A65;
-  flex-shrink: 0;
-}
-
-:deep(.act-flex .label.rank-label) {
-  width: 90px;
-}
-
-:deep(.rank-amount) {
-  width: 130px;
-  text-align: right;
-}
-
-:deep(.rank-amount2) {
-  /* width: 160px; */
   text-align: left;
-  font-family: "PingFang SC", sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: 0.1em;
-  color: #FF4A4A;
 }
 
-:deep(.act-flex .label.lg) {
-  min-width: 120px;
+.activity-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: block;
+  width: 91px;
+  height: 28px;
+  padding: 0;
+  background: url("@/assets/images/webp/activity-label-bg-pc.webp") left top / 91px 28px no-repeat;
 }
 
-:deep(.act-flex .label.red) {
-  color: #FF1F1F;
-}
-
-:deep(.mt-2) {
-  margin-top: 8px;
-}
-
-:deep(.inline-dot) {
-  width: 8px;
-  height: 8px;
-  margin-right: 6px;
-  object-fit: contain;
-}
-
-:deep(.flex-center-y) {
+.activity-label-text {
+  position: relative;
+  z-index: 2;
   display: flex;
+  height: 100%;
   align-items: center;
-}
-
-.highlight {
-  color: var(--primary);
-  font-weight: 700;
-}
-
-.act-footer {
-  font-family: "PingFang SC";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
-  margin-bottom: 8px;
-}
-
-.act-contact {
+  padding-left: 16px;
+  color: #000;
+  font-family: "PingFang SC", sans-serif;
   font-size: 14px;
-  font-weight: 700;
-  margin-top: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.activity-label::after {
+  content: none;
+}
+
+.visual-card {
+  position: relative;
+  display: block;
+  width: 355px;
+  height: 150px;
+  border: 1px solid #fbe59a;
+  border-radius: 20px;
+  background-color: #060606;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.visual-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.36) 55%, rgba(0, 0, 0, 0.08) 100%),
+    radial-gradient(circle at 44% 26%, rgba(255, 220, 105, 0.56), transparent 34%);
+  pointer-events: none;
+}
+
+.brand-pill {
+  position: absolute;
+  top: 19px;
+  left: 58px;
+  z-index: 2;
+  display: block;
+  width: 81px;
+  height: 28px;
+  overflow: hidden;
+}
+
+.brand-pill-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.activity-title {
+  position: absolute;
+  left: 22px;
+  top: 58px;
+  z-index: 2;
+  max-width: 205px;
+  font-family: YouSheBiaoTiHei;
+  font-size: 31px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+  background: linear-gradient(180deg, #FFF 17.8%, #FDE420 56.02%, #FFC800 82.2%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.activity-item:nth-child(6) .activity-title {
+  font-size: 24px;
+  top: 62px;
+}
+
+.activity-summary {
+  position: absolute;
+  left: 37px;
+  bottom: 24px;
+  z-index: 2;
   display: flex;
+  min-width: 150px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid #fbe59a;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+  box-shadow:
+    inset 0 1px 3px rgba(255, 255, 255, 0.32),
+    inset 0 -1px 2px rgba(233, 201, 126, 0.7),
+    0 0 8px rgba(255, 220, 105, 0.18);
+  white-space: nowrap;
 }
 
-.contact-label {
+.summary-text {
+  color: #ffd43d;
   font-family: "PingFang SC", sans-serif;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
-  color: #8826FF;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 0 0.5px #000;
 }
 
-.contact-handle {
-  font-family: "PingFang SC", sans-serif;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
-  color: #4676FF;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-
+.activity-prize-img {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  z-index: 1;
+  width: 158px;
+  height: 158px;
+  object-fit: contain;
+  pointer-events: none;
 }
 
-.contact-handle:hover {
-  opacity: 0.8;
-  text-decoration: underline;
+.activity-item:nth-child(5) .activity-prize-img {
+  width: 168px;
+  height: 168px;
 }
 
-.copy-icon {
-  width: 20px;
-  height: 20px;
-  margin-left: 6px;
-  margin-top: 3px;
-  cursor: pointer;
-  vertical-align: middle;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.copy-icon:hover {
-  opacity: 1;
+.activity-item:hover .visual-card {
+  box-shadow: 0 0 18px rgba(255, 220, 105, 0.22);
 }
 
 .tg-button-link {
-  display: inline-block;
-  margin-bottom: 10px;
-  transition: opacity 0.2s;
+  display: block;
+  width: 192px;
+  height: 48px;
+  margin-top: 28px;
+  transform-origin: center;
+  animation: tgButtonBreath 1.8s ease-in-out infinite;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 .tg-button-link:hover {
-  opacity: 0.85;
+  opacity: 0.86;
+  animation-play-state: paused;
+  transform: scale(1.04);
 }
 
 .tg-button-img {
+  display: block;
   width: 192px;
   height: 48px;
-  display: block;
   object-fit: contain;
+}
+
+@keyframes tgButtonBreath {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 220, 105, 0));
+  }
+
+  50% {
+    transform: scale(1.045);
+    filter: drop-shadow(0 0 14px rgba(255, 220, 105, 0.45));
+  }
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 21px;
+}
+
+.act-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  min-width: 0;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.contact-label {
+  color: #fff;
+}
+
+.contact-handle {
+  color: #ffdc69;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.contact-handle:hover {
+  opacity: 0.82;
+}
+
+.copy-btn {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.copy-btn:hover {
+  transform: translateY(-1px);
+}
+
+.copy-icon {
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.coin-icon {
+  position: absolute;
+  left: -1px;
+  bottom: -1px;
+  width: 144px;
+  height: 90px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.activity-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.activity-modal {
+  position: relative;
+  width: min(680px, calc(100vw - 48px));
+  max-height: calc(100vh - 80px);
+  padding: 28px 34px 32px;
+  border: 1px solid rgba(251, 229, 154, 0.75);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  overflow: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff0f2;
+  color: #d83828;
+  font-size: 28px;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-title-row h3 {
+  margin: 0;
+  color: #414a65;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.modal-num {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ff4a4a 0%, #c90000 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.modal-content {
+  padding: 18px 16px;
+  border-radius: 8px;
+  background: #fff0f2;
+}
+
+.modal-content :deep(.act-line) {
+  margin: 0 0 10px;
+  color: #414a65;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.modal-content :deep(.act-line.red),
+.modal-content :deep(.red-text) {
+  color: #ff4a4a;
+  font-weight: 700;
+}
+
+.modal-content :deep(.act-flex) {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: #414a65;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.modal-content :deep(.act-flex::before) {
+  content: "";
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ffc800 0%, #ff8a00 100%);
+}
+
+.modal-content :deep(.label) {
+  min-width: 48px;
+  font-weight: 600;
+}
+
+.modal-content :deep(.amount) {
+  color: #ff4a4a;
+  font-size: 22px;
+  font-weight: 800;
 }
 </style>

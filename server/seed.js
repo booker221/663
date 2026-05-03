@@ -58,6 +58,7 @@ const seedData = [
     value: [
       {
         title: '首单奖励',
+        summary: '满足条件 奖金翻倍',
         sections: [
           { type: 'text', value: '新、老合作方每月完成首次真实跑量（量+成本）' },
           { type: 'text', value: '三网实卡/虚卡/IM首单奖励:' },
@@ -72,6 +73,7 @@ const seedData = [
       },
       {
         title: '拉新奖励',
+        summary: '连续拉新 额外奖励',
         sections: [
           { type: 'text', value: '成功引入有效合作渠道并完成对接' },
           { type: 'tiers', items: [{ label: '首个有效渠道奖励:', amount: '188$' }] },
@@ -85,6 +87,7 @@ const seedData = [
       },
       {
         title: '冲刺奖励',
+        summary: '最高可得 18888',
         sections: [
           { type: 'text', value: '短周期爆发（3天/7天）' },
           { type: 'highlight', value: '🔸 3天冲刺' },
@@ -95,6 +98,7 @@ const seedData = [
       },
       {
         title: '流水提成奖励',
+        summary: '额外返点 高额奖金',
         sections: [
           { type: 'text', value: '按打款流水阶梯提成' },
           { type: 'tiers', items: [
@@ -105,6 +109,7 @@ const seedData = [
       },
       {
         title: '排行榜奖励',
+        summary: '全球空降 嫩模3天',
         sections: [
           { type: 'text', value: '拉新/流水/投量排名' },
           { type: 'tiers', items: [
@@ -115,6 +120,7 @@ const seedData = [
       },
       {
         title: '优质通道每月奖励',
+        summary: '满足条件 奖金翻倍',
         sections: [
           { type: 'text', value: '提供稳定高质量通道资源' },
           { type: 'tiers', items: [
@@ -160,6 +166,7 @@ const seedData = [
   { key: 'logo_domain', value: '', label: '站点域名Logo', category: 'images' },
   { key: 'hero_banner_pc', value: '', label: 'PC首屏Banner', category: 'images' },
   { key: 'hero_banner_h5', value: '', label: 'H5首屏Banner', category: 'images' },
+  { key: 'about_video_pc', value: '', label: 'PC关于我们视频', category: 'images' },
   { key: 'values_pc', value: '', label: 'PC核心价值观图片', category: 'images' },
   { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' }
 ]

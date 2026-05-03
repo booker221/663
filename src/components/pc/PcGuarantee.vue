@@ -1,6 +1,15 @@
 <template>
-  <PcSectionPanel section-id="guarantee" title="担保验证" desc="首创担保与理赔一体化服务！">
+  <component
+    :is="embedded ? 'div' : PcSectionPanel"
+    v-bind="panelProps"
+    :class="{ 'guarantee-embedded': embedded }"
+  >
     <div class="guarantee-card">
+      <div v-if="embedded" class="guarantee-heading">
+        <h3>担保验证</h3>
+        <p>首创担保与理赔一体化服务！</p>
+      </div>
+
       <!-- 输入区 -->
       <div class="input-wrapper">
         <div class="input-box">
@@ -16,32 +25,47 @@
             @input="onInput"
             @keyup.enter="handleVerify"
           />
-          <button class="paste-btn" @click="handlePaste">粘贴</button>
+          <div
+            class="paste-btn"
+            role="button"
+            tabindex="0"
+            @click="handlePaste"
+            @keydown.enter.prevent="handlePaste"
+            @keydown.space.prevent="handlePaste"
+          >粘贴</div>
         </div>
       </div>
 
       <!-- 验证按钮 -->
-      <button class="verify-btn" @click="handleVerify" :disabled="!inputId.trim()">
-        <span>验证</span>
-      </button>
+      <div
+        :class="['verify-btn', { disabled: !inputId.trim() }]"
+        role="button"
+        :tabindex="inputId.trim() ? 0 : -1"
+        :aria-disabled="!inputId.trim()"
+        @click="tryHandleVerify"
+        @keydown.enter.prevent="tryHandleVerify"
+        @keydown.space.prevent="tryHandleVerify"
+      >
+        <div>验证</div>
+      </div>
 
       <!-- 验证结果 -->
       <transition name="result-fade">
         <div v-if="verifyResult !== null" :class="['verify-result', verifyResult ? 'success' : 'fail']">
           <svg v-if="verifyResult" class="result-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#16a34a" stroke-width="2"/><path d="M7 12.5l3 3 7-7" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <svg v-else class="result-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#dc2626" stroke-width="2"/><path d="M8 8l8 8M16 8l-8 8" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/></svg>
-          <span class="result-text" v-if="verifyResult">验证通过！该ID为官方认证合作伙伴，放心合作。</span>
-          <span class="result-text" v-else>验证失败！该ID不在官方认证列表中，请谨慎辨别，防止被骗。</span>
+          <div class="result-text" v-if="verifyResult">验证通过！该ID为官方认证合作伙伴，放心合作。</div>
+          <div class="result-text" v-else>验证失败！该ID不在官方认证列表中，请谨慎辨别，防止被骗。</div>
         </div>
       </transition>
 
       <!-- 底部提示 -->
-      <p class="guarantee-footer">
-        <span class="footer-note">合作ID是理赔的唯一依据！</span>
-        <span class="footer-highlight">使用前请先验证网址是否加入担保，未来才能放心的使用或发起理赔。</span>
-      </p>
+      <div class="guarantee-footer">
+        <div class="footer-note">合作ID是理赔的唯一依据！</div>
+        <div class="footer-highlight">使用前请先验证网址是否加入担保，未来才能放心的使用或发起理赔。</div>
+      </div>
     </div>
-  </PcSectionPanel>
+  </component>
 </template>
 
 <script setup>
@@ -52,6 +76,19 @@ import { showToast } from '@/utils/toast.js'
 
 const inputId = ref('')
 const verifyResult = ref(null)
+
+const props = defineProps({
+  embedded: { type: Boolean, default: false },
+})
+
+const panelProps = computed(() => props.embedded
+  ? {}
+  : {
+      sectionId: 'guarantee',
+      title: '担保验证',
+      desc: '首创担保与理赔一体化服务！',
+    }
+)
 
 // 响应式计算所有官方 handles（API 更新后自动变化）
 const allOfficialHandles = computed(() => {
@@ -94,15 +131,24 @@ const handleVerify = () => {
   const normalized = query.replace(/^@/, '').toLowerCase().trim()
   verifyResult.value = allOfficialHandles.value.includes(normalized)
 }
+
+const tryHandleVerify = () => {
+  if (!inputId.value.trim()) return
+  handleVerify()
+}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .guarantee-card {
-  background: #FFF;
+  background: #fff;
   border-radius: 12px;
   padding: 32px 40px 28px;
   box-shadow: 0 4px 8px 0 rgba(163, 191, 222, 0.24);
   text-align: center;
+}
+
+.guarantee-heading {
+  display: none;
 }
 
 /* 输入区 */
@@ -193,16 +239,16 @@ const handleVerify = () => {
   margin-bottom: 20px;
 }
 
-.verify-btn:hover:not(:disabled) {
+.verify-btn:hover:not(.disabled) {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(230, 48, 39, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-.verify-btn:active:not(:disabled) {
+.verify-btn:active:not(.disabled) {
   transform: translateY(0) scale(0.98);
 }
 
-.verify-btn:disabled {
+.verify-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -260,6 +306,9 @@ const handleVerify = () => {
 
 /* 底部提示 */
 .guarantee-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: "PingFang SC", sans-serif;
   font-size: 12px;
   font-style: normal;
@@ -276,5 +325,133 @@ const handleVerify = () => {
   color: #00D800;
   font-weight: 500;
   margin-left: 4px;
+}
+
+.guarantee-embedded {
+  display: block;
+  width: 100%;
+
+  .guarantee-card {
+    display: flex;
+    width: 100%;
+    min-height: 236px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 18px 30px 12px;
+    border: 1px solid #fbe59a;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+    box-shadow: none;
+  }
+
+  .guarantee-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #ffdc69;
+
+    h3,
+    p {
+      margin: 0;
+      line-height: 1.2;
+      font-family: "PingFang SC", sans-serif;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    p {
+      color: rgba(255, 220, 105, 0.5);
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+
+  .input-wrapper {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+
+  .input-box {
+    height: 48px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: #242529;
+    box-shadow: inset 0 1px 0.5px #42444a;
+  }
+
+  .input-box:focus-within {
+    box-shadow: inset 0 1px 0.5px #42444a, 0 0 0 1px rgba(255, 220, 105, 0.35);
+  }
+
+  .search-icon {
+    color: #99a2bb;
+  }
+
+  .guarantee-input {
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .guarantee-input::placeholder {
+    color: #99a2bb;
+  }
+
+  .paste-btn {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255, 220, 105, 0.1);
+    color: #ffdc69;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .paste-btn:hover {
+    background: rgba(255, 220, 105, 0.18);
+  }
+
+  .verify-btn {
+    min-width: 128px;
+    height: 48px;
+    margin: -8px 0 0;
+    padding: 10px 34px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%);
+    box-shadow: none;
+    color: #000;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .verify-btn:hover:not(.disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(255, 220, 105, 0.18);
+  }
+
+  .verify-result {
+    margin: -8px auto 0;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .guarantee-footer {
+    width: 100%;
+    color: #fff;
+    text-align: left;
+  }
+
+  .footer-note {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .footer-highlight {
+    color: #00d800;
+  }
 }
 </style>

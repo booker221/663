@@ -16,15 +16,19 @@
           <input type="text" v-model="searchHandle" class="search-input" :placeholder="SEARCH_CONFIG.placeholder"
             @input="onInput" @keyup.enter="handleSearch" />
         </div>
-        <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
+        <div class="flag-icon-wrap">
+          <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
+        </div>
         <div class="menu-icon-wrap" ref="menuWrapRef">
           <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" width="64" height="64"
-            @click="toggleMenu" />
+            role="button" tabindex="0" @click="toggleMenu" @keydown.enter.prevent="toggleMenu"
+            @keydown.space.prevent="toggleMenu" />
           <div v-if="isMenuOpen" class="menu-drawer">
-            <button v-for="item in menuItems" :key="item.key" type="button" class="menu-item"
-              @click="handleMenuClick(item)">
-              {{ item.label }}
-            </button>
+            <div v-for="item in menuItems" :key="item.key" class="menu-item" role="button" tabindex="0"
+              @click="handleMenuClick(item)" @keydown.enter.prevent="handleMenuClick(item)"
+              @keydown.space.prevent="handleMenuClick(item)">
+              <div class="menu-item-text">{{ item.label }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -94,8 +98,6 @@ const openExternal = (url) => {
 }
 
 const handleMenuClick = (item) => {
-  console.log(item);
-
   isMenuOpen.value = false
   if (item.targetId) {
     scrollToSection(item.targetId)
@@ -126,13 +128,14 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .topbar {
-  background: linear-gradient(90deg, #000000 0%, #171715 100%);
+  background: linear-gradient(180deg, rgba(7, 7, 7, 0.98) 0%, rgba(21, 18, 10, 0.96) 100%);
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.34);
+  border-bottom: 1px solid rgba(255, 216, 106, 0.24);
 }
 
 .topbar-inner {
@@ -164,6 +167,7 @@ onBeforeUnmount(() => {
   height: 14px;
   width: auto;
   margin-left: 2px;
+  filter: drop-shadow(0 0 6px rgba(255, 212, 102, 0.2));
 }
 
 .topbar-actions {
@@ -176,13 +180,14 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: 7px 12px;
   border-radius: 999px;
-  color: #a0a8b4;
-  cursor: pointer;
-  width: 144px;
+  color: #d1b76a;
+  width: 164px;
   transition: all 0.2s;
-  background: #242529;
+  background: linear-gradient(180deg, rgba(30, 27, 18, 0.98) 0%, rgba(19, 17, 11, 0.98) 100%);
+  border: 1px solid rgba(255, 214, 101, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .search-input {
@@ -190,35 +195,42 @@ onBeforeUnmount(() => {
   background: transparent;
   outline: none;
   font-size: 14px;
-  color: #99A2BB;
+  color: #d9c27d;
   width: 100%;
 }
 
 .search-input::placeholder {
-  color: #a0a8b4;
+  color: #8f7e47;
 }
 
 .search-pill:hover {
-  border-color: #c8cdd5;
-  background: #eef1f6;
+  border-color: rgba(255, 216, 106, 0.32);
+  box-shadow: 0 0 0 1px rgba(255, 216, 106, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .search-icon {
-  color: #99A2BB;
+  color: #cfaf54;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.flag-icon {
+.flag-icon-wrap {
   width: 26px;
   height: 26px;
   border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 216, 106, 0.28);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.24);
+}
+
+.flag-icon {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  cursor: pointer;
   transition: transform 0.2s;
 }
 
-.flag-icon:hover {
+.flag-icon-wrap:hover .flag-icon {
   transform: scale(1.08);
 }
 
@@ -242,32 +254,43 @@ onBeforeUnmount(() => {
 
 .menu-drawer {
   position: absolute;
-  top: calc(100% + 14px);
+  top: calc(100% + 10px);
   right: 0;
-  width: 128px;
+  width: 150px;
   padding: 8px 0;
-  border-radius: 12px;
-  box-shadow: 0 14px 32px rgba(44, 62, 80, 0.18);
-  border: 1px solid #EEF3FF;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(14, 12, 8, 0.98) 0%, rgba(24, 20, 12, 0.98) 100%);
+  border: 1px solid rgba(255, 216, 106, 0.26);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
   z-index: 120;
 }
 
 .menu-item {
+  display: flex;
   width: 100%;
-  padding: 10px;
-  border: none;
+  padding: 8px 16px;
   background: transparent;
+  border: none;
   text-align: left;
   font-family: "PingFang SC", sans-serif;
   font-size: 14px;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.4;
   letter-spacing: 0;
-  color: #414A65;
+  color: #d7bd6b;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.menu-item-text {
+  width: 100%;
 }
 
 .menu-item:hover {
-  background: #F4F8FF;
+  background: rgba(255, 216, 106, 0.08);
+  color: #ffe28a;
+  transform: translateX(2px);
 }
 </style>

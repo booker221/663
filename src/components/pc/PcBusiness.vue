@@ -7,47 +7,69 @@
         <div class="dept-label">{{ promoteDeptLabel }}</div>
         <div class="partner-list">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
-            <div class="partner-left">
+            <div class="partner-profile">
               <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
                 <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="88" height="88" />
               </a>
-              <span class="partner-name">{{ p.name }}</span>
-              <span class="divider">丨</span>
+              <div class="partner-name">{{ p.name }}</div>
+            </div>
+            <div class="partner-handle-row">
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="22" height="22" />
-                <span>{{ p.handle }}</span>
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="34" height="32" />
+                <div>{{ p.handle }}</div>
+              </div>
+              <div
+                class="partner-copy"
+                role="button"
+                tabindex="0"
+                title="复制"
+                @click="copy(p.handle)"
+                @keydown.enter.prevent="copy(p.handle)"
+                @keydown.space.prevent="copy(p.handle)"
+              >
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy" width="50" height="50" />
               </div>
             </div>
-              <button class="partner-copy" title="复制" @click="copy(p.handle)">
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" width="36" height="36" />
-              </button>
           </div>
         </div>
       </div>
-
-      
 
       <!-- 支付通道招商部 -->
       <div class="dept-block">
         <div class="dept-label">{{ thirdDeptLabel }}</div>
         <div class="partner-list">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
-            <div class="partner-left">
-              <a :href="p.url" target="_blank" class="avatar-link">
+            <div class="partner-profile">
+              <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
                 <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="88" height="88" />
               </a>
-              <span class="partner-name">{{ p.name }}</span>
-              <span class="divider">丨</span>
+              <div class="partner-name">{{ p.name }}</div>
+            </div>
+            <div class="partner-handle-row">
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="22" height="22" />
-                <span>{{ p.handle }}</span>
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="34" height="32" />
+                <div>{{ p.handle }}</div>
+              </div>
+              <div
+                class="partner-copy"
+                role="button"
+                tabindex="0"
+                title="复制"
+                @click="copy(p.handle)"
+                @keydown.enter.prevent="copy(p.handle)"
+                @keydown.space.prevent="copy(p.handle)"
+              >
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy" width="50" height="50" />
               </div>
             </div>
-              <button class="partner-copy" title="复制" @click="copy(p.handle)">
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy.webp" alt="点击复制" loading="lazy" />
-              </button>
           </div>
         </div>
+      </div>
+
+      <PcGuarantee embedded />
+
+      <div class="collab-banner-wrap">
+        <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc-ui.webp" alt="寻求代投资源合作背景" loading="lazy" width="1024" height="90" />
       </div>
     </div>
   </PcSectionPanel>
@@ -55,6 +77,7 @@
 
 <script setup>
 import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
+import PcGuarantee from '@/components/pc/PcGuarantee.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 
@@ -70,70 +93,122 @@ function copy(text) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 /* 主卡片 */
 .section-card {
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(100, 130, 180, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 20px;
+  background: #0e0c0b;
+  overflow: visible;
 }
 
 /* 部门块 */
 .dept-block {
-  padding: 16px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  padding: 0 20px 20px;
+  border: 1px solid rgba(255, 220, 105, 0.2);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 220, 105, 0.16) 0%, rgba(255, 220, 105, 0) 49.7%, rgba(255, 220, 105, 0.16) 100%);
 }
 
 .dept-label {
   display: flex;
+  position: relative;
+  width: 290px;
   height: 48px;
-  padding: 10px 20px;
+  margin-top: 0;
+  padding: 0 44px;
   align-items: center;
-  gap: 10px;
-  align-self: stretch;
-  border-radius: 20px 20px 0 0;
-  border: 1px solid #FFF;
-  background: linear-gradient(180deg, #F4F7FF 0%, #FFF 96%);
-  box-shadow: 0 1px 1px 0 #FFF inset;
-  font-size: 13px;
+  justify-content: center;
+  border-radius: 0 0 22px 22px;
+  background: linear-gradient(180deg, rgba(255, 220, 105, 0.85) 0%, rgba(50, 35, 16, 0.95) 20%, rgba(24, 19, 12, 0.98) 74%, rgba(255, 220, 105, 0.9) 100%);
+  color: transparent;
+  background-clip: padding-box;
+  font-size: 20px;
   font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 0;
+  font-family: "PingFang SC", sans-serif;
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow: 0 1px 8px rgba(255, 220, 105, 0.2);
+  overflow: hidden;
 }
 
- 
+.dept-label::before,
+.dept-label::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 56px;
+  height: 100%;
+  background: #12100c;
+  border-bottom: 4px solid #ffdc69;
+}
+
+.dept-label::before {
+  left: -34px;
+  border-bottom-right-radius: 22px;
+}
+
+.dept-label::after {
+  right: -34px;
+  border-bottom-left-radius: 22px;
+}
+
+.dept-label {
+  -webkit-text-fill-color: transparent;
+  background-image:
+    linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%),
+    linear-gradient(180deg, rgba(255, 220, 105, 0.85) 0%, rgba(50, 35, 16, 0.95) 20%, rgba(24, 19, 12, 0.98) 74%, rgba(255, 220, 105, 0.9) 100%);
+  background-clip: text, padding-box;
+  -webkit-background-clip: text, padding-box;
+}
 
 /* 联系人横向列表 */
 .partner-list {
   display: flex;
-  flex-direction: row;
   align-items: stretch;
-  gap: 0;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
 }
 
 .partner-card {
-  flex: 1;
+  flex: 0 0 calc((100% - 32px) / 3);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.partner-card:last-child {
-  border-right: none;
-}
-
-.partner-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
   min-width: 0;
+  height: 286px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 8px 30px;
+  border: 1px solid #fbe59a;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+}
+
+.partner-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .avatar-link {
-  display: flex;
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 0.2s;
@@ -144,78 +219,106 @@ function copy(text) {
 }
 
 .partner-avatar {
-  width: 44px;
-  height: 44px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
 }
 
 .partner-name {
-  font-size: 14px;
+  width: 100%;
+  color: #ffdc69;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--text);
+  line-height: 1.2;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 60px;
+  max-width: 120px;
 }
 
-.divider {
-  color: #ddd;
-  font-size: 16px;
-  flex-shrink: 0;
+.partner-handle-row {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 .partner-handle {
   display: flex;
+  width: 100%;
+  min-height: 48px;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 12px;
   min-width: 0;
+  padding: 8px 20px;
+  border: 1px solid #fbe59a;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
 }
 
 .icon-tg {
-  width: 18px;
-  height: 18px;
+  width: 34px;
+  height: 32px;
   flex-shrink: 0;
 }
 
 .partner-handle span {
-  color: var(--blue);
-  font-size: 13px;
-  font-weight: 600;
+  color: #ffdc69;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 18px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  min-width: 0;
 }
 
 .partner-copy {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid rgba(124, 152, 255, 0.25);
-  background: #fff;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
   display: grid;
   place-items: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: transform 0.2s, background 0.2s;
 }
 
 .partner-copy:hover {
-  background: rgba(61, 124, 255, 0.06);
+  background: transparent;
+  transform: translateY(-1px);
 }
 
 .icon-copy {
-  width: 16px;
-  height: 16px;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
 }
 
 /* 合作横幅 */
+.collab-banner-wrap {
+  width: 100%;
+  height: 96px;
+  border-radius: 20px;
+  background: transparent;
+  overflow: hidden;
+}
+
 .collab-banner {
   width: 100%;
+  height: 100%;
   display: block;
-  margin-top: 16px;
+  border-radius: 20px;
+  object-fit: fill;
 }
 </style>

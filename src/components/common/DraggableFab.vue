@@ -6,9 +6,12 @@
       left: pos.x + 'px',
       '--fab-w': props.fabWidth + 'px',
       '--fab-h': props.fabHeight + 'px',
-      '--fab-r': (props.fabHeight * 0.56) + 'px',
+      '--fab-r': (props.borderRadius ?? props.fabHeight * 0.56) + 'px',
       '--fab-bg': props.bg,
       '--fab-shadow': props.shadowColor,
+      '--fab-active-shadow': props.activeShadowColor,
+      '--fab-box-shadow': props.shadowStyle || `0 6px 24px ${props.shadowColor}`,
+      '--fab-active-box-shadow': props.activeShadowStyle || `0 10px 32px ${props.activeShadowColor}`,
     }"
     @mousedown="onDragStart"
     @touchstart.passive="onDragStart"
@@ -29,8 +32,12 @@ const props = defineProps({
   defaultBottom: { type: Number, default: 80 },
   fabWidth: { type: Number, default: 80 },
   fabHeight: { type: Number, default: 77.333 },
+  borderRadius: { type: Number, default: null },
   bg: { type: String, default: 'linear-gradient(180deg, #FFB676 0%, #FF4D00 59.67%, #FF9C45 100%)' },
   shadowColor: { type: String, default: 'rgba(255, 77, 0, 0.4)' },
+  activeShadowColor: { type: String, default: 'rgba(217, 13, 13, 0.55)' },
+  shadowStyle: { type: String, default: '' },
+  activeShadowStyle: { type: String, default: '' },
 })
 
 // 初始位置（右下角换算为 left/top）
@@ -139,7 +146,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: 4px;
   z-index: 999;
-  box-shadow: 0 6px 24px var(--fab-shadow, rgba(255, 77, 0, 0.4));
+  box-shadow: var(--fab-box-shadow, 0 6px 24px var(--fab-shadow, rgba(255, 77, 0, 0.4)));
   cursor: grab;
   user-select: none;
   touch-action: none;
@@ -148,6 +155,6 @@ onUnmounted(() => {
 
 .draggable-fab:active {
   cursor: grabbing;
-  box-shadow: 0 10px 32px rgba(217, 13, 13, 0.55);
+  box-shadow: var(--fab-active-box-shadow, 0 10px 32px var(--fab-active-shadow, rgba(217, 13, 13, 0.55)));
 }
 </style>
