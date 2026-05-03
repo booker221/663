@@ -442,10 +442,14 @@ function closeActivity() {
   width: min(680px, calc(100vw - 48px));
   max-height: calc(100vh - 80px);
   padding: 28px 34px 32px;
-  border: 1px solid rgba(251, 229, 154, 0.75);
+  border: 1px solid rgba(251, 229, 154, 0.6);
   border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  background:
+    linear-gradient(180deg, rgba(255, 220, 105, 0.08) 0%, rgba(0, 0, 0, 0) 18%),
+    linear-gradient(180deg, rgba(17, 14, 7, 0.98) 0%, rgba(6, 5, 3, 0.98) 100%);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 220, 105, 0.08);
   overflow: auto;
 }
 
@@ -457,11 +461,27 @@ function closeActivity() {
   height: 34px;
   border: 0;
   border-radius: 50%;
-  background: #fff0f2;
-  color: #d83828;
-  font-size: 28px;
-  line-height: 30px;
+  background: linear-gradient(180deg, rgba(255, 220, 105, 0.18) 0%, rgba(255, 220, 105, 0.08) 100%);
+  color: #ffdc69;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  line-height: 1;
   cursor: pointer;
+  transition: color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.activity-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.activity-modal::-webkit-scrollbar-track {
+  background: rgba(255, 220, 105, 0.05);
+}
+
+.activity-modal::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 220, 105, 0.42);
 }
 
 .modal-title-row {
@@ -473,7 +493,7 @@ function closeActivity() {
 
 .modal-title-row h3 {
   margin: 0;
-  color: #414a65;
+  color: #f6e5aa;
   font-family: "PingFang SC", sans-serif;
   font-size: 20px;
   font-weight: 700;
@@ -485,21 +505,24 @@ function closeActivity() {
   height: 26px;
   place-items: center;
   border-radius: 50%;
-  background: linear-gradient(180deg, #ff4a4a 0%, #c90000 100%);
-  color: #fff;
+  background: linear-gradient(180deg, #ffdc69 0%, #b48735 100%);
+  color: #000;
   font-size: 16px;
   font-weight: 800;
 }
 
 .modal-content {
   padding: 18px 16px;
-  border-radius: 8px;
-  background: #fff0f2;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 220, 105, 0.08) 0%, rgba(255, 220, 105, 0.02) 100%),
+    rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(251, 229, 154, 0.18);
 }
 
 .modal-content :deep(.act-line) {
   margin: 0 0 10px;
-  color: #414a65;
+  color: #d6c28a;
   font-family: "PingFang SC", sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -508,7 +531,7 @@ function closeActivity() {
 
 .modal-content :deep(.act-line.red),
 .modal-content :deep(.red-text) {
-  color: #ff4a4a;
+  color: #ffdc69;
   font-weight: 700;
 }
 
@@ -517,7 +540,7 @@ function closeActivity() {
   align-items: baseline;
   gap: 10px;
   margin-bottom: 8px;
-  color: #414a65;
+  color: #d6c28a;
   font-family: "PingFang SC", sans-serif;
   font-size: 16px;
   line-height: 1.45;
@@ -530,16 +553,17 @@ function closeActivity() {
   flex: 0 0 12px;
   transform: rotate(45deg);
   border-radius: 2px;
-  background: linear-gradient(180deg, #ffc800 0%, #ff8a00 100%);
+  background: linear-gradient(180deg, #ffdc69 0%, #b48735 100%);
 }
 
 .modal-content :deep(.label) {
   min-width: 48px;
   font-weight: 600;
+  color: #f1e2b2;
 }
 
 .modal-content :deep(.amount) {
-  color: #ff4a4a;
+  color: #ffdc69;
   font-size: 22px;
   font-weight: 800;
 }
