@@ -1,15 +1,5 @@
 <template>
-  <section class="section" id="complaint">
-    <!-- 标题 -->
-    <div class="section-header">
-      <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
-        投诉接受
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
-      </h2>
-      <p class="section-sub">全程跟进对接，沟通无障碍</p>
-    </div>
-
+  <PcSectionPanel section-id="complaint" title="投诉接受" desc="全程跟进对接，沟通无障碍">
     <!-- 投诉联系卡片 -->
     <div class="complaint-card">
       <!-- 左：头像 + 名字 -->
@@ -27,10 +17,11 @@
         </button>
       </div>
     </div>
-  </section>
+  </PcSectionPanel>
 </template>
 
 <script setup>
+import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import { COMPLAINT_CONTACT } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 
@@ -40,24 +31,6 @@ function copy(text) {
 </script>
 
 <style scoped>
-.section {
-  margin-bottom: 16px;
-}
-
-.section-header {
-  margin-top: 60px;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-
-
-.section-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin: 0;
-}
-
 /* 卡片 */
 .complaint-card {
   display: flex;

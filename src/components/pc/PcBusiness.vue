@@ -1,15 +1,5 @@
 <template>
-  <section class="section" id="business">
-    <!-- 标题 -->
-    <div class="section-header">
-      <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
-        官方商务
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
-      </h2>
-      <p class="section-subtitle">只认准以下商务人员，其他勿信，谨防被骗</p>
-    </div>
-
+  <PcSectionPanel section-id="business" title="官方商务" desc="只认准以下商务人员，其他勿信，谨防被骗">
     <!-- 主卡片：两个部门同时显示 -->
     <div class="section-card">
       <!-- 推广招商部 -->
@@ -60,10 +50,11 @@
         </div>
       </div>
     </div>
-  </section>
+  </PcSectionPanel>
 </template>
 
 <script setup>
+import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 
@@ -80,28 +71,6 @@ function copy(text) {
 </script>
 
 <style scoped>
-.section {
-  margin-bottom: 24px;
-}
-
-/* 标题区 */
-.section-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-
-
-.section-subtitle {
-  color: #6C7BA8;
-  text-align: center;
-  font-family: "PingFang SC";
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-}
-
 /* 主卡片 */
 .section-card {
   background: #fff;

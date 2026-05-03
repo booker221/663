@@ -1,14 +1,5 @@
 <template>
-  <section class="section" id="activity">
-    <div class="section-header">
-      <h2 class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28"
-          height="28" />
-        活动专栏
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" />
-      </h2>
-    </div>
-
+  <PcSectionPanel section-id="activity" title="活动专栏">
     <div class="activity-card">
       <!-- 内容区（背景图通过 :style 设置）-->
       <div class="card-content" :style="{ backgroundImage: `url(${actBgImage})` }">
@@ -63,11 +54,12 @@
         </div>
       </div>
     </div>
-  </section>
+  </PcSectionPanel>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import defaultActBg from '@/assets/images/webp/activity-content-bg-pc.webp'
 import defaultActPerson from '@/assets/images/webp/activity-person-new-pc.png'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
@@ -84,7 +76,6 @@ import num6 from '@/assets/images/icon/num-6.webp'
 import num7 from '@/assets/images/icon/num-7.webp'
 import num8 from '@/assets/images/icon/num-8.webp'
 import num9 from '@/assets/images/icon/num-9.webp'
-import titleDotIcon from '@/assets/images/webp/icon-title-dot.webp'
 
 const numIcons = [num1, num2, num3, num4, num5, num6, num7, num8, num9]
 
@@ -107,16 +98,6 @@ const toggleActivity = (index) => {
 
 
 <style scoped>
-.section {}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 40px;
-  margin-top: 60px;
-}
-
-
-
 /* 活动卡片 */
 .activity-card {
   border-radius: 16px;

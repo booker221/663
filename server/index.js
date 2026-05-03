@@ -21,6 +21,7 @@ const PORT = process.env.PORT || 3456
 
 // 超级管理员密码（可由环境变量覆盖）
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hxldyadmin'
+const MAX_UPLOAD_SIZE = 30 * 1024 * 1024
 
 // 清理参数：去除协议 http(s)://、端口号 :port 以及末尾斜杠，仅保留域名或主机部分
 const normalizeParam = (val) => {
@@ -62,12 +63,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: MAX_UPLOAD_SIZE },
   fileFilter: (req, file, cb) => {
-    if (/\.(jpg|jpeg|png|gif|webp|svg|ico)$/i.test(path.extname(file.originalname))) {
+    if (/\.(jpg|jpeg|png|gif|webp|svg|ico|avif)$/i.test(path.extname(file.originalname))) {
       cb(null, true)
     } else {
-      cb(new Error('只支持图片文件 (jpg/png/gif/webp/svg)'))
+      cb(new Error('只支持图片文件 (jpg/jpeg/png/gif/webp/svg/ico/avif)'))
     }
   }
 })
@@ -349,7 +350,11 @@ app.post('/api/admin/upload', requireSiteAccess, (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
       console.error('[upload] multer 错误:', err)
-      return res.status(500).json({ error: `上传失败: ${err.message}` })
+      const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400
+      const message = err.code === 'LIMIT_FILE_SIZE'
+        ? `上传失败: 图片不能超过 ${Math.floor(MAX_UPLOAD_SIZE / 1024 / 1024)}MB`
+        : `上传失败: ${err.message}`
+      return res.status(status).json({ error: message })
     }
     next()
   })

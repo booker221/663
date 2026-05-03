@@ -1,10 +1,6 @@
 <template>
-  <section class="guarantee-section" id="guarantee">
+  <PcSectionPanel section-id="guarantee" title="担保验证" desc="首创担保与理赔一体化服务！">
     <div class="guarantee-card">
-      <!-- 标题 -->
-      <h3 class="guarantee-title">担保验证</h3>
-      <p class="guarantee-subtitle">首创担保与理赔一体化服务！</p>
-
       <!-- 输入区 -->
       <div class="input-wrapper">
         <div class="input-box">
@@ -45,11 +41,12 @@
         <span class="footer-highlight">使用前请先验证网址是否加入担保，未来才能放心的使用或发起理赔。</span>
       </p>
     </div>
-  </section>
+  </PcSectionPanel>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import { GUARANTEE_ACCOUNTS, PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { showToast } from '@/utils/toast.js'
 
@@ -100,39 +97,12 @@ const handleVerify = () => {
 </script>
 
 <style scoped>
-.guarantee-section {
-  margin-top: 16px;
-  margin-bottom: 0;
-}
-
 .guarantee-card {
   background: #FFF;
   border-radius: 12px;
   padding: 32px 40px 28px;
   box-shadow: 0 4px 8px 0 rgba(163, 191, 222, 0.24);
   text-align: center;
-}
-
-/* 标题 */
-.guarantee-title {
-  color: #414A65;
-  text-align: center;
-  font-family: "PingFang SC", sans-serif;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  margin: 0 0 8px;
-}
-
-.guarantee-subtitle {
-  color: #414A65;
-  font-family: "PingFang SC", sans-serif;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  margin: 0 0 24px;
 }
 
 /* 输入区 */

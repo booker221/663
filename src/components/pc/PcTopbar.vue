@@ -8,19 +8,21 @@
       </div>
       <div class="topbar-actions">
         <div class="search-pill">
-          <input type="text" v-model="searchHandle" class="search-input" :placeholder="SEARCH_CONFIG.placeholder"
-            @input="onInput" @keyup.enter="handleSearch" />
-          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2" @click="handleSearch">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
+          <input type="text" v-model="searchHandle" class="search-input" :placeholder="SEARCH_CONFIG.placeholder"
+            @input="onInput" @keyup.enter="handleSearch" />
         </div>
         <img class="flag-icon" src="@/assets/images/webp/icon-flag-cn.webp" alt="中文" width="64" height="64" />
         <div class="menu-icon-wrap" ref="menuWrapRef">
-          <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" width="64" height="64" @click="toggleMenu" />
+          <img class="menu-icon" src="@/assets/images/webp/icon-menu.webp" alt="菜单" width="64" height="64"
+            @click="toggleMenu" />
           <div v-if="isMenuOpen" class="menu-drawer">
-            <button v-for="item in menuItems" :key="item.key" type="button" class="menu-item" @click="handleMenuClick(item)">
+            <button v-for="item in menuItems" :key="item.key" type="button" class="menu-item"
+              @click="handleMenuClick(item)">
               {{ item.label }}
             </button>
           </div>
@@ -92,8 +94,8 @@ const openExternal = (url) => {
 }
 
 const handleMenuClick = (item) => {
-   console.log(item);
-   
+  console.log(item);
+
   isMenuOpen.value = false
   if (item.targetId) {
     scrollToSection(item.targetId)
@@ -124,7 +126,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .topbar {
-  background: #fff;
+  background: linear-gradient(90deg, #000000 0%, #171715 100%);
   width: 100%;
   position: fixed;
   top: 0;
@@ -174,20 +176,21 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 16px;
+  padding: 6px 10px;
   border-radius: 999px;
   color: #a0a8b4;
   cursor: pointer;
-  width: 200px;
+  width: 144px;
   transition: all 0.2s;
+  background: #242529;
 }
 
 .search-input {
   border: none;
   background: transparent;
   outline: none;
-  font-size: 13px;
-  color: #2c3e50;
+  font-size: 14px;
+  color: #99A2BB;
   width: 100%;
 }
 
@@ -201,8 +204,9 @@ onBeforeUnmount(() => {
 }
 
 .search-icon {
-  color: #a0a8b4;
+  color: #99A2BB;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .flag-icon {
@@ -243,7 +247,6 @@ onBeforeUnmount(() => {
   width: 128px;
   padding: 8px 0;
   border-radius: 12px;
-  background: #fff;
   box-shadow: 0 14px 32px rgba(44, 62, 80, 0.18);
   border: 1px solid #EEF3FF;
   z-index: 120;

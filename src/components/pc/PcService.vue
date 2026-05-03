@@ -1,32 +1,21 @@
 <template>
-  <div id="service">
-    <!-- 服务体系 -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">
-          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
-          服务体系
-          <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
-        </h2>
-        <p class="section-sub">全程跟进对接，沟通无障碍</p>
+  <PcSectionPanel section-id="service" title="服务体系" desc="全程跟进对接，沟通无障碍">
+    <!-- 一对一专员卡片 -->
+    <div class="specialist-card" :style="{ backgroundImage: `url(${cardBgImage})` }">
+      <div class="specialist-left">
+        <h3 class="specialist-name">{{ serviceInfo.title }}</h3>
+        <p class="specialist-desc">{{ serviceInfo.desc }}</p>
       </div>
-
-      <!-- 一对一专员卡片 -->
-      <div class="specialist-card" :style="{ backgroundImage: `url(${cardBgImage})` }">
-        <div class="specialist-left">
-          <h3 class="specialist-name">{{ serviceInfo.title }}</h3>
-          <p class="specialist-desc">{{ serviceInfo.desc }}</p>
-        </div>
-        <div class="specialist-right">
-          <img class="specialist-photo" :src="servicePersonImage" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
-        </div>
+      <div class="specialist-right">
+        <img class="specialist-photo" :src="servicePersonImage" alt="服务专员负责人肖像" loading="lazy" width="240" height="240" />
       </div>
-    </section>
-  </div>
+    </div>
+  </PcSectionPanel>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import defaultCardBg from '@/assets/images/webp/service-card-bg-pc.webp'
 import defaultServicePerson from '@/assets/images/webp/service-person-pc.webp'
 import { serviceInfo, images } from '@/stores/siteConfig.js'
@@ -36,24 +25,6 @@ const servicePersonImage = computed(() => images.service_person_pc || defaultSer
 </script>
 
 <style scoped>
-.section {
-  margin-bottom: 24px;
-}
-
-.section-header {
-  text-align: center;
-  margin-top: 60px;
-  margin-bottom: 40px;
-}
-
-
-
-.section-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin: 0;
-}
-
 /* 专员卡片 */
 .specialist-card {
   display: flex;

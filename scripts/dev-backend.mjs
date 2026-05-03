@@ -8,13 +8,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const thisScript = fileURLToPath(import.meta.url)
 const serverDir = path.join(root, 'server')
 const indexJs = path.join(root, 'server', 'index.js')
 const sqliteBuild = path.join(serverDir, 'node_modules', 'better-sqlite3', 'build')
 const backendPort = '3456'
-const requiredAbi = '137'
-const bootstrapEnvKey = 'HXLDY_BACKEND_BOOTSTRAPPED'
 
 function npmCliJs() {
   const binDir = path.dirname(process.execPath)
@@ -45,43 +42,6 @@ function run(label, command, args, options = {}) {
   }
 }
 
-function nodeAbi(nodePath) {
-  const out = spawnSync(nodePath, ['-p', 'process.versions.modules'], {
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'ignore'],
-  })
-  if (out.error || out.status !== 0) return null
-  return (out.stdout || '').trim()
-}
-
-function ensureCompatibleNode() {
-  if (process.env[bootstrapEnvKey] === '1') return
-  if (process.versions.modules === requiredAbi) return
-
-  const candidates = [
-    process.env.HXLDY_BACKEND_NODE,
-    '/Users/booker/.local/bin/node',
-    '/opt/homebrew/opt/node@24/bin/node',
-  ].filter(Boolean)
-
-  const match = candidates.find((p) => fs.existsSync(p) && nodeAbi(p) === requiredAbi)
-  if (!match) {
-    console.error(
-      `[dev:backend] better-sqlite3 requires NODE_MODULE_VERSION ${requiredAbi}, current is ${process.versions.modules}. Install Node 24 and set HXLDY_BACKEND_NODE if needed.`,
-    )
-    process.exit(1)
-  }
-
-  console.warn(
-    `[dev:backend] switching runtime to ${match} (NODE_MODULE_VERSION ${requiredAbi}) for better-sqlite3 compatibility`,
-  )
-  run('bootstrap compatible node', match, [thisScript], {
-    cwd: root,
-    env: { ...process.env, [bootstrapEnvKey]: '1' },
-  })
-  process.exit(0)
-}
-
 function killPortIfBusy(port) {
   const lookup = spawnSync('lsof', ['-ti', `tcp:${port}`], {
     encoding: 'utf8',
@@ -104,8 +64,6 @@ function killPortIfBusy(port) {
     process.exit(kill.status ?? 1)
   }
 }
-
-ensureCompatibleNode()
 
 console.error(`[dev:backend] using ${process.execPath} — ${process.version} (NODE_MODULE_VERSION ${process.versions.modules})`)
 

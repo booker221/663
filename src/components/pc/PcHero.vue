@@ -25,7 +25,7 @@ const bannerImage = computed(() => images.hero_banner_pc || bannerUrl)
 .hero-banner-wrap {
   position: relative;
   width: 100%;
-  height: 620px;
+  height: 880px;
 }
 .hero-banner-wrap img {
   width: 100%;
