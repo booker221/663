@@ -26,9 +26,18 @@
           <rect x="3" y="16" width="18" height="2" rx="1" fill="currentColor" />
         </svg>
         <div v-if="isMenuOpen" class="menu-drawer">
-          <button v-for="item in menuItems" :key="item.key" type="button" class="menu-item" @click="handleMenuClick(item)">
+          <div
+            v-for="item in menuItems"
+            :key="item.key"
+            class="menu-item"
+            role="button"
+            tabindex="0"
+            @click="handleMenuClick(item)"
+            @keydown.enter.prevent="handleMenuClick(item)"
+            @keydown.space.prevent="handleMenuClick(item)"
+          >
             {{ item.label }}
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -131,13 +140,14 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: #fff;
+  background: linear-gradient(180deg, rgba(7, 7, 7, 0.98) 0%, rgba(21, 18, 10, 0.96) 100%);
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 216, 106, 0.18);
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
@@ -184,10 +194,10 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: 6px;
   height: 32px;
-  background: #EEF6FF;
-  border: 1px solid #D8E7FF;
+  background: linear-gradient(180deg, rgba(30, 27, 18, 0.98) 0%, rgba(19, 17, 11, 0.98) 100%);
+  border: 1px solid rgba(255, 214, 101, 0.18);
   border-radius: 99px;
-  color: #A3B5D0;
+  color: #d1b76a;
   font-size: 11px;
   padding: 0 10px;
   cursor: pointer;
@@ -200,21 +210,21 @@ onBeforeUnmount(() => {
   background: transparent;
   outline: none;
   font-size: 11px;
-  color: #2c3e50;
+  color: #e6d39a;
   width: 100%;
   padding: 0;
 }
 
 .search-input::placeholder {
-  color: #A3B5D0;
+  color: #8f7e47;
 }
 
 .search-pill:active {
-  background: #e1efff;
+  background: rgba(255, 220, 105, 0.08);
 }
 
 .search-icon {
-  color: #A3B5D0;
+  color: #cfaf54;
   flex-shrink: 0;
 }
 
@@ -238,7 +248,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #414A65;
+  color: #cfaf54;
   cursor: pointer;
 }
 
@@ -254,9 +264,9 @@ onBeforeUnmount(() => {
   width: 128px;
   padding: 6px 0;
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 12px 30px rgba(44, 62, 80, 0.16);
-  border: 1px solid #EEF3FF;
+  background: linear-gradient(180deg, rgba(14, 12, 8, 0.98) 0%, rgba(24, 20, 12, 0.98) 100%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.36);
+  border: 1px solid rgba(255, 216, 106, 0.26);
   z-index: 120;
 }
 
@@ -271,11 +281,13 @@ onBeforeUnmount(() => {
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0;
-  color: #414A65;
+  color: #d7bd6b;
   cursor: pointer;
+  display: block;
 }
 
 .menu-item:active {
-  background: #F4F8FF;
+  background: rgba(255, 216, 106, 0.08);
+  color: #ffe28a;
 }
 </style>

@@ -20,30 +20,38 @@
             @input="onInput"
             @keyup.enter="handleVerify"
           />
-          <button class="paste-btn" @click="handlePaste">粘贴</button>
+          <div class="paste-btn" role="button" tabindex="0" @click="handlePaste" @keydown.enter.prevent="handlePaste" @keydown.space.prevent="handlePaste">粘贴</div>
         </div>
       </div>
 
       <!-- 验证按钮 -->
-      <button class="verify-btn" @click="handleVerify" :disabled="!inputId.trim()">
-        <span>验证</span>
-      </button>
+      <div
+        :class="['verify-btn', { disabled: isVerifyDisabled }]"
+        role="button"
+        :tabindex="isVerifyDisabled ? -1 : 0"
+        :aria-disabled="isVerifyDisabled"
+        @click="handleVerify"
+        @keydown.enter.prevent="handleVerify"
+        @keydown.space.prevent="handleVerify"
+      >
+        <div>验证</div>
+      </div>
 
       <!-- 验证结果 -->
       <transition name="result-fade">
         <div v-if="verifyResult !== null" :class="['verify-result', verifyResult ? 'success' : 'fail']">
           <svg v-if="verifyResult" class="result-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#16a34a" stroke-width="2"/><path d="M7 12.5l3 3 7-7" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <svg v-else class="result-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#dc2626" stroke-width="2"/><path d="M8 8l8 8M16 8l-8 8" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/></svg>
-          <span class="result-text" v-if="verifyResult">验证通过！该ID为官方认证合作伙伴，放心合作。</span>
-          <span class="result-text" v-else>验证失败！该ID不在官方认证列表中，请谨慎辨别，防止被骗。</span>
+          <div class="result-text" v-if="verifyResult">验证通过！该ID为官方认证合作伙伴，放心合作。</div>
+          <div class="result-text" v-else>验证失败！该ID不在官方认证列表中，请谨慎辨别，防止被骗。</div>
         </div>
       </transition>
 
       <!-- 底部提示 -->
-      <p class="guarantee-footer">
-        <span class="footer-note">合作ID是理赔的唯一依据！</span>
-        <span class="footer-highlight">使用前请先验证网址是否加入担保，未来才能放心的使用或发起理赔。</span>
-      </p>
+      <div class="guarantee-footer">
+        <div class="footer-note">合作ID是理赔的唯一依据！</div>
+        <div class="footer-highlight">使用前请先验证网址是否加入担保，未来才能放心的使用或发起理赔。</div>
+      </div>
     </div>
   </section>
 </template>
@@ -55,6 +63,7 @@ import { showToast } from '@/utils/toast.js'
 
 const inputId = ref('')
 const verifyResult = ref(null)
+const isVerifyDisabled = computed(() => !inputId.value.trim())
 
 // 响应式计算所有官方 handles（API 更新后自动变化）
 const allOfficialHandles = computed(() => {
@@ -91,6 +100,7 @@ const handlePaste = async () => {
 }
 
 const handleVerify = () => {
+  if (isVerifyDisabled.value) return
   const query = inputId.value.trim()
   if (!query) return
 
@@ -105,16 +115,19 @@ const handleVerify = () => {
 }
 
 .guarantee-card {
-  background: #FFF;
+  background:
+    linear-gradient(180deg, rgba(255, 220, 105, 0.07) 0%, rgba(255, 220, 105, 0) 24%),
+    linear-gradient(180deg, rgba(17, 14, 7, 0.98) 0%, rgba(6, 5, 3, 0.98) 100%);
   border-radius: 12px;
   padding: 24px 20px 20px;
-  box-shadow: 0 4px 8px 0 rgba(163, 191, 222, 0.24);
+  border: 1px solid rgba(255, 216, 106, 0.18);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
   text-align: center;
 }
 
 /* 标题 */
 .guarantee-title {
-  color: #414A65;
+  color: #ffdc69;
   text-align: center;
   font-family: "PingFang SC", sans-serif;
   font-size: 16px;
@@ -125,7 +138,7 @@ const handleVerify = () => {
 }
 
 .guarantee-subtitle {
-  color: #414A65;
+  color: #d6c28a;
   font-family: "PingFang SC", sans-serif;
   font-size: 14px;
   font-style: normal;
@@ -149,18 +162,18 @@ const handleVerify = () => {
   flex-shrink: 0;
   align-self: stretch;
   border-radius: 10px;
-  background: #E9F3FF;
-  border: none;
-  box-shadow: 0 1px 0.5px 0 #B8D3F4 inset;
+  background: rgba(255, 220, 105, 0.08);
+  border: 1px solid rgba(255, 216, 106, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 105, 0.08);
   transition: box-shadow 0.25s;
 }
 
 .input-box:focus-within {
-  box-shadow: 0 1px 0.5px 0 #B8D3F4 inset, 0 0 0 2px rgba(70, 118, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 105, 0.12), 0 0 0 2px rgba(255, 216, 106, 0.12);
 }
 
 .search-icon {
-  color: #A3B5D0;
+  color: #cfaf54;
   flex-shrink: 0;
 }
 
@@ -170,13 +183,13 @@ const handleVerify = () => {
   background: transparent;
   outline: none;
   font-size: 14px;
-  color: var(--text);
+  color: #f4e4ad;
   font-family: "PingFang SC", sans-serif;
   min-width: 0;
 }
 
 .guarantee-input::placeholder {
-  color: #A3B5D0;
+  color: #8f7e47;
   font-size: 13px;
 }
 
@@ -185,17 +198,17 @@ const handleVerify = () => {
   padding: 6px 14px;
   border-radius: 10px;
   border: none;
-  background: rgba(70, 118, 255, 0.24);
+  background: rgba(255, 220, 105, 0.14);
   font-size: 13px;
   font-weight: 600;
-  color: #4676FF;
+  color: #ffdc69;
   cursor: pointer;
   font-family: "PingFang SC", sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
 .paste-btn:active {
-  background: #E4EBF6;
+  background: rgba(255, 220, 105, 0.22);
   transform: scale(0.96);
 }
 
@@ -210,9 +223,9 @@ const handleVerify = () => {
   padding: 12px 0;
   border: none;
   border-radius: 999px;
-  background: linear-gradient(180deg, #FF5E3A 0%, #E6302A 50%, #C41F17 100%);
-  box-shadow: 0 4px 16px rgba(230, 48, 39, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: linear-gradient(180deg, #ffdc69 0%, #b48735 100%);
+  box-shadow: 0 4px 16px rgba(255, 216, 106, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  color: #000;
   font-size: 16px;
   font-weight: 700;
   font-family: "PingFang SC", sans-serif;
@@ -221,11 +234,11 @@ const handleVerify = () => {
   transition: all 0.2s;
 }
 
-.verify-btn:active:not(:disabled) {
+.verify-btn:active:not(.disabled) {
   transform: scale(0.97);
 }
 
-.verify-btn:disabled {
+.verify-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -246,15 +259,15 @@ const handleVerify = () => {
 }
 
 .verify-result.success {
-  background: rgba(34, 197, 94, 0.08);
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  color: #16a34a;
+  background: rgba(255, 220, 105, 0.08);
+  border: 1px solid rgba(255, 220, 105, 0.22);
+  color: #ffdc69;
 }
 
 .verify-result.fail {
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  color: #dc2626;
+  background: rgba(180, 135, 53, 0.12);
+  border: 1px solid rgba(180, 135, 53, 0.28);
+  color: #f0c366;
 }
 
 .result-icon {
@@ -291,12 +304,12 @@ const handleVerify = () => {
 }
 
 .footer-note {
-  color: #414A65;
+  color: #d6c28a;
   font-weight: 400;
 }
 
 .footer-highlight {
-  color: #00D800;
+  color: #ffdc69;
   font-weight: 500;
 }
 </style>

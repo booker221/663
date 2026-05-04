@@ -167,6 +167,7 @@ const seedData = [
   { key: 'hero_banner_pc', value: '', label: 'PC首屏Banner', category: 'images' },
   { key: 'hero_banner_h5', value: '', label: 'H5首屏Banner', category: 'images' },
   { key: 'about_video_pc', value: '', label: 'PC关于我们视频', category: 'images' },
+  { key: 'about_video_h5', value: '', label: 'H5关于我们视频', category: 'images' },
   { key: 'values_pc', value: '', label: 'PC核心价值观图片', category: 'images' },
   { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' }
 ]

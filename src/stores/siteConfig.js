@@ -243,6 +243,7 @@ export const images = reactive({
   about_cover_pc: '',
   about_video_pc: '',
   about_cover_h5: '',
+  about_video_h5: '',
   values_pc: '',
   values_h5: '',
   activity_person_pc: '',

@@ -1,7 +1,10 @@
 <template>
   <section class="section">
      <div class="section-header">
-      <h2 class="section-title"><span class="dot">◆</span> 核心价值观</h2>
+      <div class="section-title">
+        <img class="title-dot" src="@/assets/images/webp/icon-title-dot-l.webp" alt="" />
+        <div class="title-text">核心价值观</div>
+      </div>
     </div>
     <DynamicImage
       :remote-src="images.values_h5"
@@ -27,18 +30,27 @@ import { images } from '@/stores/siteConfig.js'
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text);
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   margin-left: 12px;
 }
-.dot {
-  color: var(--primary);
-  font-size: 13px;
+.title-dot {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.title-text {
+  background: linear-gradient(180deg, #FFDC69 0%, #FFE280 13.47%, #B48735 50.12%, #FFE280 86.98%, #FFD466 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
 }
 .values-img {
   width: 100%;

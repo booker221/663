@@ -96,23 +96,22 @@ import prize5 from '@/assets/images/webp/activity-card-prize-pc-5.webp'
 import prize6 from '@/assets/images/webp/activity-card-prize-pc-6.webp'
 
 const prizeImages = [prize1, prize2, prize3, prize4, prize5, prize6]
-const fallbackTitles = ['首单奖励', '拉新奖励', '冲刺奖励', '流水提成奖励', '排行榜奖励', '优质通道每月奖励']
-const fallbackSummaries = ['满足条件 奖金翻倍', '连续拉新 额外奖励', '最高可得 18888', '额外返点 高额奖金', '全球空降 嫩模3天', '满足条件 奖金翻倍']
 
 const selectedActivity = ref(null)
 
-const activityCards = computed(() => prizeImages.map((prize, index) => {
-  const item = activities[index] || {}
-  return {
+const activityCards = computed(() => activities
+  .slice(0, prizeImages.length)
+  .map((item, index) => ({
     index,
-    prize,
+    prize: prizeImages[index],
     label: `活动${index + 1}`,
-    title: item.title || fallbackTitles[index],
-    summary: item.summary || item.subtitle || fallbackSummaries[index],
-    sections: item.sections || [],
+    title: (item.title || '').trim(),
+    summary: (item.summary || item.subtitle || '').trim(),
+    sections: Array.isArray(item.sections) ? item.sections : [],
     content: item.content || '',
-  }
-}))
+  }))
+  .filter(hasActivityData)
+)
 
 const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
 
@@ -128,6 +127,16 @@ function openActivity(card) {
 
 function closeActivity() {
   selectedActivity.value = null
+}
+
+function hasActivityData(card) {
+  if (card.title || card.summary || (card.content || '').trim()) return true
+  return card.sections.some(section => {
+    if ((section.value || '').trim()) return true
+    return Array.isArray(section.items) && section.items.some(item =>
+      (item.label || '').trim() || (item.amount || '').trim()
+    )
+  })
 }
 </script>
 

@@ -410,7 +410,8 @@
         <div class="image-grid">
           <div class="form-group"><label class="form-label">PC端图片</label><div class="image-upload-area" onclick="triggerUpload('about_cover_pc',this)" id="upload-about_cover_pc"><div class="upload-text">📤 点击上传</div></div></div>
           <div class="form-group"><label class="form-label">PC端视频</label><div class="image-upload-area" onclick="triggerVideoUpload('about_video_pc',this)" id="upload-about_video_pc"><div class="upload-text">🎬 点击上传视频</div></div></div>
-          <div class="form-group"><label class="form-label">H5端</label><div class="image-upload-area" onclick="triggerUpload('about_cover_h5',this)" id="upload-about_cover_h5"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端图片</label><div class="image-upload-area" onclick="triggerUpload('about_cover_h5',this)" id="upload-about_cover_h5"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端视频</label><div class="image-upload-area" onclick="triggerVideoUpload('about_video_h5',this)" id="upload-about_video_h5"><div class="upload-text">🎬 点击上传视频</div></div></div>
         </div>
       </div>
     </div>
@@ -848,6 +849,7 @@ function populateAllForms() {
   const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','about_cover_pc','about_cover_h5','values_pc','values_h5']
   imgKeys.forEach(k=>renderUploadPreview(k,c[k],'image'))
   renderUploadPreview('about_video_pc',c.about_video_pc,'video',c.about_cover_pc||'')
+  renderUploadPreview('about_video_h5',c.about_video_h5,'video',c.about_cover_h5||'')
   document.querySelectorAll('.current-site-badge').forEach(b=>{const s=sites.find(x=>x.id===currentSite);b.textContent=s?s.name:currentSite})
 }
 
@@ -1154,9 +1156,10 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(uploadTarget){renderUploadPreview(uploadKey,d.data.url,'video', poster.success ? poster.data.url : '')}
       await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'})
       if(poster.success){
-        await apiPut(`/api/admin/config/about_cover_pc?site=${uploadSite}`,{value:poster.data.url,category:'images'})
-        configData.about_cover_pc=poster.data.url
-        renderUploadPreview('about_cover_pc',poster.data.url,'image')
+        const coverKey=uploadKey==='about_video_h5'?'about_cover_h5':'about_cover_pc'
+        await apiPut(`/api/admin/config/${coverKey}?site=${uploadSite}`,{value:poster.data.url,category:'images'})
+        configData[coverKey]=poster.data.url
+        renderUploadPreview(coverKey,poster.data.url,'image')
       }
       showToast(poster.success?'视频上传成功，已生成封面':'视频上传成功，封面生成失败')
     }catch(err){showToast('视频上传失败','error')}
