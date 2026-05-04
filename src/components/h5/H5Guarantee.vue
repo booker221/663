@@ -1,5 +1,5 @@
 <template>
-  <section class="guarantee-section" id="guarantee">
+  <section :class="['guarantee-section', { embedded }]" :id="embedded ? undefined : 'guarantee'">
     <div class="guarantee-card">
       <!-- 标题 -->
       <h3 class="guarantee-title">担保验证</h3>
@@ -61,6 +61,10 @@ import { ref, computed } from 'vue'
 import { GUARANTEE_ACCOUNTS, PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { showToast } from '@/utils/toast.js'
 
+defineProps({
+  embedded: { type: Boolean, default: false },
+})
+
 const inputId = ref('')
 const verifyResult = ref(null)
 const isVerifyDisabled = computed(() => !inputId.value.trim())
@@ -111,17 +115,16 @@ const handleVerify = () => {
 
 <style scoped>
 .guarantee-section {
-  margin: 12px 12px 0;
+  margin: 0;
 }
 
 .guarantee-card {
   background:
-    linear-gradient(180deg, rgba(255, 220, 105, 0.07) 0%, rgba(255, 220, 105, 0) 24%),
-    linear-gradient(180deg, rgba(17, 14, 7, 0.98) 0%, rgba(6, 5, 3, 0.98) 100%);
-  border-radius: 12px;
-  padding: 24px 20px 20px;
-  border: 1px solid rgba(255, 216, 106, 0.18);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+    linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+  border-radius: 10px;
+  padding: 14px 8px;
+  border: 0.5px solid #fbe59a;
+  box-shadow: none;
   text-align: center;
 }
 
@@ -130,41 +133,41 @@ const handleVerify = () => {
   color: #ffdc69;
   text-align: center;
   font-family: "PingFang SC", sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  margin: 0 0 6px;
+  margin: 0 0 2px;
 }
 
 .guarantee-subtitle {
-  color: #d6c28a;
+  color: rgba(255, 220, 105, 0.5);
   font-family: "PingFang SC", sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin: 0 0 20px;
+  margin: 0 0 12px;
 }
 
 /* 输入区 */
 .input-wrapper {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
 }
 
 .input-box {
   display: flex;
   height: 48px;
-  padding: 6px 8px;
+  padding: 4px 4px 4px 8px;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
   flex-shrink: 0;
   align-self: stretch;
   border-radius: 10px;
-  background: rgba(255, 220, 105, 0.08);
-  border: 1px solid rgba(255, 216, 106, 0.16);
-  box-shadow: inset 0 1px 0 rgba(255, 220, 105, 0.08);
+  background: #242529;
+  border: 0;
+  box-shadow: inset 0 1px 0.5px #42444a;
   transition: box-shadow 0.25s;
 }
 
@@ -189,17 +192,21 @@ const handleVerify = () => {
 }
 
 .guarantee-input::placeholder {
-  color: #8f7e47;
-  font-size: 13px;
+  color: #99a2bb;
+  font-size: 14px;
 }
 
 .paste-btn {
   flex-shrink: 0;
-  padding: 6px 14px;
+  width: 56px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
   border-radius: 10px;
   border: none;
-  background: rgba(255, 220, 105, 0.14);
-  font-size: 13px;
+  background: rgba(255, 220, 105, 0.1);
+  font-size: 12px;
   font-weight: 600;
   color: #ffdc69;
   cursor: pointer;
@@ -217,17 +224,17 @@ const handleVerify = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 70%;
-  max-width: 280px;
-  margin: 0 auto 16px;
-  padding: 12px 0;
+  width: 96px;
+  height: 40px;
+  margin: 0 auto 12px;
+  padding: 0;
   border: none;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffdc69 0%, #b48735 100%);
-  box-shadow: 0 4px 16px rgba(255, 216, 106, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%);
+  box-shadow: none;
   color: #000;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   font-family: "PingFang SC", sans-serif;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -301,15 +308,18 @@ const handleVerify = () => {
   font-style: normal;
   line-height: normal;
   margin: 0;
+  text-align: left;
 }
 
 .footer-note {
-  color: #d6c28a;
-  font-weight: 400;
+  display: inline;
+  color: #fff;
+  font-weight: 600;
 }
 
 .footer-highlight {
-  color: #ffdc69;
+  display: inline;
+  color: #00d800;
   font-weight: 500;
 }
 </style>

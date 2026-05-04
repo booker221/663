@@ -1,81 +1,67 @@
 <template>
-  <section class="section" id="business">
-    <div class="section-header">
-      <div class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot-l.webp" alt="" />
-        <div class="title-text">官方商务</div>
-      </div>
-      <div class="section-desc">只认准以下商务人员，其他勿信，谨防被骗</div>
-    </div>
+  <H5SectionPanel section-id="business" title="官方商务" desc="只认准以下商务人员，其他勿信，谨防被骗">
     <div class="section-card">
-      <!-- Tab 切换：点击切换不同背景图 -->
-      <div class="biz-tabs">
-        <div
-          v-for="tab in tabs"
-          :key="tab.key"
-          :class="['biz-tab', { active: activeTab === tab.key }]"
-          role="button"
-          tabindex="0"
-          @click="activeTab = tab.key"
-          @keydown.enter.prevent="activeTab = tab.key"
-          @keydown.space.prevent="activeTab = tab.key"
-        >{{ tab.label }}</div>
-      </div>
       <!-- 推广招商部 -->
-      <div v-show="activeTab === 'promote'" class="partner-list">
-        <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
-          <div class="partner-left">
+      <div class="dept-block">
+        <div class="dept-label">
+          <div class="dept-label-text">推广招商部</div>
+        </div>
+        <div class="partner-list">
+          <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
               <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="80" height="80" />
             </a>
             <div class="partner-name">{{ p.name }}</div>
-            <div class="divider">丨</div>
             <div class="partner-handle">
               <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="36" height="36" />
               <div>{{ p.handle }}</div>
             </div>
-          </div>
-          <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)" @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" loading="lazy" width="44" height="44" />
+            <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)" @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
+              <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" loading="lazy" width="44" height="44" />
+            </div>
           </div>
         </div>
       </div>
       <!-- 支付通道招商部 -->
-      <div v-show="activeTab === 'third'" class="partner-list">
-        <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
-          <div class="partner-left">
+      <div class="dept-block">
+        <div class="dept-label">
+          <div class="dept-label-text">支付通道招商部</div>
+        </div>
+        <div class="partner-list">
+          <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
               <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
             </a>
             <div class="partner-name">{{ p.name }}</div>
-            <div class="divider">丨</div>
             <div class="partner-handle">
               <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" />
               <div>{{ p.handle }}</div>
             </div>
-          </div>
-          <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)" @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
-            <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" loading="lazy" width="44" height="44" />
+            <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)" @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
+              <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" loading="lazy" width="44" height="44" />
+            </div>
           </div>
         </div>
       </div>
+
+      <H5Guarantee embedded />
+
+      <div class="collab-banner-wrap">
+        <img class="collab-banner" :src="collabBannerH5" alt="寻求代投资源合作" loading="lazy" />
+      </div>
     </div>
-  </section>
+  </H5SectionPanel>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import H5SectionPanel from '@/components/h5/H5SectionPanel.vue'
+import H5Guarantee from '@/components/h5/H5Guarantee.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
+import collabBannerH5 from '@/assets/images/webp/collab-banner-h5-ui.webp'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS
-
-const activeTab = ref('promote')
-const tabs = [
-  { key: 'promote', label: '推广招商部' },
-  { key: 'third', label: '支付通道招商部' },
-]
 
 function copy(text) {
   copyToClipboard(text)
@@ -83,170 +69,108 @@ function copy(text) {
 </script>
 
 <style scoped>
-.section {
-  margin-bottom: 12px;
-}
-
-.section-header {
+.section-card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  margin-bottom: 10px;
-  padding: 0 12px;
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.title-dot {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.title-text {
-  background: linear-gradient(180deg, #FFDC69 0%, #FFE280 13.47%, #B48735 50.12%, #FFE280 86.98%, #FFD466 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0;
-}
-
-.section-desc {
-  color: #b48735;
-  font-size: 11px;
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: 0;
-}
-
-.section-card {
+  gap: 10px;
   background:
-    linear-gradient(180deg, rgba(255, 220, 105, 0.12) 0%, rgba(255, 220, 105, 0) 48%, rgba(255, 220, 105, 0.1) 100%),
     #0e0c0b;
-  border-radius: 14px;
-  margin: 0 12px;
+  border-radius: 8px;
+  margin: 0;
+  padding: 8px;
   overflow: hidden;
-  border: 1px solid rgba(255, 220, 105, 0.24);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
 }
 
-/* Tab 切换 */
-.biz-tabs {
+.dept-block {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  min-height: 52px;
-  padding: 0 14px 8px;
-  background: transparent;
-  border-bottom: 1px solid rgba(255, 216, 106, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 4px 4px;
+  border: 0.5px solid rgba(255, 220, 105, 0.2);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255, 220, 105, 0.16) 0%, rgba(255, 220, 105, 0) 49.7%, rgba(255, 220, 105, 0.16) 100%);
 }
 
-.biz-tab {
+.dept-label {
   position: relative;
-  z-index: 1;
-  background: transparent;
-  border: none;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  color: #8f7636;
-  /* 消除所有 hover/tap 效果 */
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  user-select: none;
+  width: 256px;
+  height: 44px;
+  margin: -18px auto 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
-  border-radius: 0 0 18px 18px;
-  background: rgba(18, 16, 12, 0.88);
-  box-shadow: inset 0 -2px 0 rgba(255, 220, 105, 0.24);
-  transition: color 0.2s, background 0.2s;
-  overflow: hidden;
+  overflow: visible;
+  isolation: isolate;
+  z-index: 1;
+  background: url("@/assets/images/svg/dept-label-center-pc.svg") center / 255.2px 44px no-repeat;
 }
 
-.biz-tab::before,
-.biz-tab::after {
+.dept-label::before,
+.dept-label::after {
   content: "";
   position: absolute;
   top: 0;
-  width: 30px;
-  height: 100%;
-  background: #0e0c0b;
-  border-bottom: 2px solid rgba(255, 220, 105, 0.68);
+  width: 39.484px;
+  height: 44px;
+  background-repeat: no-repeat;
+  background-size: 39.484px 44px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.biz-tab::before {
-  left: -20px;
-  border-bottom-right-radius: 16px;
+.dept-label::before {
+  left: -1px;
+  background-image: url("@/assets/images/svg/dept-label-left-pc.svg");
 }
 
-.biz-tab::after {
-  right: -20px;
-  border-bottom-left-radius: 16px;
+.dept-label::after {
+  right: -3px;
+  background-image: url("@/assets/images/svg/dept-label-right-pc.svg");
 }
 
-.biz-tab:hover,
-.biz-tab:focus,
-.biz-tab:active {
-  background: transparent;
-  outline: none;
-  box-shadow: none;
-}
-
-.biz-tab.active {
-  background:
-    linear-gradient(180deg, rgba(255, 220, 105, 0.82) 0%, rgba(50, 35, 16, 0.95) 22%, rgba(24, 19, 12, 0.98) 74%, rgba(255, 220, 105, 0.86) 100%);
-  box-shadow: none;
+.dept-label-text {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(255, 220, 105, 0.2);
+  background: linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%);
   -webkit-text-fill-color: transparent;
-  background-clip: padding-box;
-}
-
-.biz-tab.active {
-  background-image:
-    linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%),
-    linear-gradient(180deg, rgba(255, 220, 105, 0.82) 0%, rgba(50, 35, 16, 0.95) 22%, rgba(24, 19, 12, 0.98) 74%, rgba(255, 220, 105, 0.86) 100%);
-  background-clip: text, padding-box;
-  -webkit-background-clip: text, padding-box;
+  -webkit-background-clip: text;
+  background-clip: text;
+  white-space: nowrap;
 }
 
 /* 联系人列表 */
 .partner-list {
-  display: flex;
-  flex-direction: column;
-  padding: 12px 16px;
-  gap: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.partner-card:first-child {
+  grid-column: 1 / -1;
 }
 
 .partner-card {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255, 216, 106, 0.12);
-}
-
-.partner-card:last-child {
-  border-bottom: none;
-}
-
-.partner-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
+  justify-items: center;
+  gap: 12px;
   min-width: 0;
+  min-height: 166px;
+  padding: 14px 8px;
+  border: 0.5px solid rgba(251, 229, 154, 0.7);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
 }
 
 .avatar-link {
@@ -260,8 +184,8 @@ function copy(text) {
 }
 
 .partner-avatar {
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -269,43 +193,45 @@ function copy(text) {
 
 .partner-name {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: #f4e4ad;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 50px;
-}
-
-.divider {
-  color: rgba(255, 216, 106, 0.42);
-  font-size: 14px;
+  max-width: 100%;
 }
 
 .partner-handle {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  padding: 0 8px;
+  border: 0.5px solid rgba(251, 229, 154, 0.72);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
 }
 
 .icon-tg {
-  width: 18px;
-  height: 18px;
+  width: 29px;
+  height: 28px;
 }
 
 .partner-handle div {
   color: #d4b258;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 100%;
 }
 
 .partner-copy {
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -318,14 +244,19 @@ function copy(text) {
 }
 
 .icon-copy {
-  width: 24px;
-  height: 24px;
+  width: 44px;
+  height: 44px;
+}
+
+.collab-banner-wrap {
+  width: 100%;
 }
 
 /* 合作横幅 */
 .collab-banner {
-  width: 95%;
+  width: 100%;
   display: block;
-  margin: 12px auto;
+  height: 88px;
+  border-radius: 10px;
 }
 </style>

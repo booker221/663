@@ -311,11 +311,11 @@ function hasActivityData(card) {
 
 .activity-prize-img {
   position: absolute;
-  right: -8px;
-  bottom: -8px;
+  right: 0;
+  bottom: 0;
   z-index: 1;
-  width: 158px;
-  height: 158px;
+  width: 154px;
+  height: 154px;
   object-fit: contain;
   pointer-events: none;
 }

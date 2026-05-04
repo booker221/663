@@ -1,12 +1,5 @@
 <template>
-  <section class="section" id="about">
-    <div class="section-header">
-      <div class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot-l.webp" alt="" />
-        <div class="title-text">{{ aboutTitle }}</div>
-      </div>
-    </div>
-
+  <H5SectionPanel section-id="about" :title="aboutTitle">
     <div class="video-shell">
       <template v-if="images.about_video_h5">
         <video
@@ -51,19 +44,16 @@
         <div class="play-triangle"></div>
       </div>
     </div>
-  </section>
+  </H5SectionPanel>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
 import DynamicImage from '@/components/common/DynamicImage.vue'
+import H5SectionPanel from '@/components/h5/H5SectionPanel.vue'
 import { images, remoteSiteMeta } from '@/stores/siteConfig.js'
 
-const aboutTitle = computed(() => {
-  const siteName = (remoteSiteMeta.value?.name || '').trim()
-  const brand = Array.from(siteName).slice(0, 2).join('') || '合兴'
-  return `关于${brand}`
-})
+const aboutTitle = computed(() => remoteSiteMeta.value?.name ? `关于${Array.from(remoteSiteMeta.value.name).slice(0, 2).join('')}` : '关于合兴')
 
 const videoRef = ref(null)
 const isPlaying = ref(false)
@@ -84,55 +74,24 @@ function toggleVideo() {
 </script>
 
 <style scoped>
-.section {
-  margin-bottom: 14px;
-}
-
-.section-header {
-  margin-bottom: 10px;
-}
-
-.section-title {
-  margin: 0 0 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.title-dot {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.title-text {
-  background: linear-gradient(180deg, #FFDC69 0%, #FFE280 13.47%, #B48735 50.12%, #FFE280 86.98%, #FFD466 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0;
-}
-
 .video-shell {
   position: relative;
-  margin: 0 12px;
-  padding: 4px;
-  border-radius: 24px;
-  background: linear-gradient(180deg, #ffdc69 0%, #a9713f 100%);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.36);
+  width: 100%;
+  height: 178px;
+  border: 1px solid #a9713f;
+  border-radius: 12px;
+  background: #eef4ff;
+  box-shadow: 0 2.34px 4.68px rgba(163, 191, 222, 0.24);
   overflow: hidden;
 }
 
 .video-card {
   display: block;
   width: 100%;
-  aspect-ratio: 351 / 172;
-  border: 4px solid rgba(0, 0, 0, 0.72);
-  border-radius: 20px;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 12px;
   background: #060606;
   box-shadow: inset 0 1px 0 rgba(255, 220, 105, 0.18);
 }
@@ -149,12 +108,12 @@ function toggleVideo() {
 
 .video-poster-cover {
   position: absolute;
-  inset: 4px;
+  inset: 0;
   z-index: 1;
   display: block;
-  width: calc(100% - 8px);
-  height: calc(100% - 8px);
-  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
   object-fit: cover;
 }
 
@@ -184,7 +143,8 @@ function toggleVideo() {
 
 :deep(.image-placeholder) {
   width: 100%;
-  border: 4px solid rgba(0, 0, 0, 0.72);
+  height: 100%;
+  border: 0;
   background: #060606;
   box-shadow: inset 0 1px 0 rgba(255, 220, 105, 0.18);
 }

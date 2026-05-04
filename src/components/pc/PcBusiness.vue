@@ -4,7 +4,9 @@
     <div class="section-card">
       <!-- 推广招商部 -->
       <div class="dept-block">
-        <div class="dept-label">{{ promoteDeptLabel }}</div>
+        <div class="dept-label">
+          <div class="dept-label-text">{{ promoteDeptLabel }}</div>
+        </div>
         <div class="partner-list">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <div class="partner-profile">
@@ -15,19 +17,14 @@
             </div>
             <div class="partner-handle-row">
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="34" height="32" />
-                <div>{{ p.handle }}</div>
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy"
+                  width="34" height="32" />
+                <div class="tg-content">{{ p.handle }}</div>
               </div>
-              <div
-                class="partner-copy"
-                role="button"
-                tabindex="0"
-                title="复制"
-                @click="copy(p.handle)"
-                @keydown.enter.prevent="copy(p.handle)"
-                @keydown.space.prevent="copy(p.handle)"
-              >
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy" width="50" height="50" />
+              <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)"
+                @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy"
+                  width="50" height="50" />
               </div>
             </div>
           </div>
@@ -36,7 +33,9 @@
 
       <!-- 支付通道招商部 -->
       <div class="dept-block">
-        <div class="dept-label">{{ thirdDeptLabel }}</div>
+        <div class="dept-label">
+          <div class="dept-label-text">{{ thirdDeptLabel }}</div>
+        </div>
         <div class="partner-list">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <div class="partner-profile">
@@ -47,19 +46,14 @@
             </div>
             <div class="partner-handle-row">
               <div class="partner-handle">
-                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="34" height="32" />
-                <div>{{ p.handle }}</div>
+                <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy"
+                  width="34" height="32" />
+                <div class="tg-content">{{ p.handle }}</div>
               </div>
-              <div
-                class="partner-copy"
-                role="button"
-                tabindex="0"
-                title="复制"
-                @click="copy(p.handle)"
-                @keydown.enter.prevent="copy(p.handle)"
-                @keydown.space.prevent="copy(p.handle)"
-              >
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy" width="50" height="50" />
+              <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)"
+                @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
+                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy"
+                  width="50" height="50" />
               </div>
             </div>
           </div>
@@ -69,7 +63,8 @@
       <PcGuarantee embedded />
 
       <div class="collab-banner-wrap">
-        <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc-ui.webp" alt="寻求代投资源合作背景" loading="lazy" width="1024" height="90" />
+        <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc-ui.webp" alt="寻求代投资源合作背景" loading="lazy"
+          width="1024" height="90" />
       </div>
     </div>
   </PcSectionPanel>
@@ -120,25 +115,16 @@ function copy(text) {
 }
 
 .dept-label {
-  display: flex;
   position: relative;
   width: 290px;
-  height: 48px;
+  height: 50px;
   margin-top: 0;
-  padding: 0 44px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0 0 22px 22px;
-  background: linear-gradient(180deg, rgba(255, 220, 105, 0.85) 0%, rgba(50, 35, 16, 0.95) 20%, rgba(24, 19, 12, 0.98) 74%, rgba(255, 220, 105, 0.9) 100%);
-  color: transparent;
-  background-clip: padding-box;
-  font-size: 20px;
-  font-weight: 600;
-  font-family: "PingFang SC", sans-serif;
-  line-height: 1;
-  letter-spacing: 0;
-  text-shadow: 0 1px 8px rgba(255, 220, 105, 0.2);
-  overflow: hidden;
+  fill: linear-gradient(180deg, #2D2D2D 0%, #1F1F1F 50.31%, #393939 100%);
+  overflow: visible;
+  z-index: 1;
 }
 
 .dept-label::before,
@@ -146,29 +132,39 @@ function copy(text) {
   content: "";
   position: absolute;
   top: 0;
-  width: 56px;
-  height: 100%;
-  background: #12100c;
-  border-bottom: 4px solid #ffdc69;
+  width: 45px;
+  height: 50px;
+  background-repeat: no-repeat;
+  background-size: 45px 50px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .dept-label::before {
-  left: -34px;
-  border-bottom-right-radius: 22px;
+  left: -1px;
+  background-image: url("@/assets/images/svg/dept-label-left-pc.svg");
 }
 
 .dept-label::after {
-  right: -34px;
-  border-bottom-left-radius: 22px;
+  right: -3px;
+  background-image: url("@/assets/images/svg/dept-label-right-pc.svg");
 }
 
-.dept-label {
+.dept-label-text {
+  position: relative;
+  z-index: 1;
+  font-family: "PingFang SC", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-shadow: 0 1px 8px rgba(255, 220, 105, 0.2);
+  color: transparent;
   -webkit-text-fill-color: transparent;
-  background-image:
-    linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%),
-    linear-gradient(180deg, rgba(255, 220, 105, 0.85) 0%, rgba(50, 35, 16, 0.95) 20%, rgba(24, 19, 12, 0.98) 74%, rgba(255, 220, 105, 0.9) 100%);
-  background-clip: text, padding-box;
-  -webkit-background-clip: text, padding-box;
+  background: linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%);
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 /* 联系人横向列表 */
@@ -260,6 +256,10 @@ function copy(text) {
   border: 1px solid #fbe59a;
   border-radius: 10px;
   background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+
+  .tg-content {
+    color: #FFDC69;
+  }
 }
 
 .icon-tg {

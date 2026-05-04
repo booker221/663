@@ -78,16 +78,6 @@ img {
   }
 }
 
-.values-img {
-  aspect-ratio: 2449 / 564;
-}
-
-@media (max-width: 768px) {
-  .values-img {
-    aspect-ratio: 729 / 328;
-  }
-}
-
 /* ===== PC 板块标题统一样式 ===== */
 .pc-page .section-title {
   color: #414A65;

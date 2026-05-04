@@ -1,40 +1,32 @@
 <template>
-  <section class="section" id="activity">
-    <div class="section-header">
-      <div class="section-title">
-        <img class="title-dot" src="@/assets/images/webp/icon-title-dot-l.webp" alt="" />
-        <div class="title-text">活动专栏</div>
-      </div>
-    </div>
-
+  <H5SectionPanel section-id="activity" title="活动专栏">
     <div class="activity-card">
       <!-- 内容 -->
       <div class="card-content">
         <!-- 合作奖励标签 - 左上角 -->
-        <img class="reward-title-img" src="@/assets/images/webp/activity-reward-label-pc.webp" alt="合作奖励" />
         <img class="coin-icon-h5" src="@/assets/images/icon/coin-left-h5.webp" alt="" />
 
+        <div class="activity-group-label">
+          <div class="activity-group-label-text">活动奖励</div>
+        </div>
+
         <div class="activity-grid">
-          <div
-            v-for="card in activityCards"
-            :key="card.label"
-            class="activity-item"
-            role="button"
-            tabindex="0"
-            @click="openActivity(card)"
-            @keydown.enter.prevent="openActivity(card)"
-            @keydown.space.prevent="openActivity(card)"
-          >
+          <div v-for="card in activityCards" :key="card.label" class="activity-item" role="button" tabindex="0"
+            @click="openActivity(card)" @keydown.enter.prevent="openActivity(card)"
+            @keydown.space.prevent="openActivity(card)">
             <div class="activity-label">
               <div class="activity-label-text">{{ card.label }}</div>
             </div>
             <div class="visual-card" :style="{ backgroundImage: `url(${cardBg})` }">
-              <div class="brand-pill">
-                <img class="brand-pill-img" src="@/assets/images/webp/activity-brand-pill-pc.webp" alt="" loading="lazy" />
-              </div>
-              <div class="activity-title">{{ card.title }}</div>
-              <div v-if="card.summary" class="activity-summary">
-                <div class="summary-text">{{ card.summary }}</div>
+              <div class="visual-card-content">
+                <div class="brand-pill">
+                  <img class="brand-pill-img" src="@/assets/images/webp/activity-brand-pill-pc.webp" alt=""
+                    loading="lazy" />
+                </div>
+                <div class="activity-title">{{ card.title }}</div>
+                <div v-if="card.summary" class="activity-summary">
+                  <div class="summary-text">{{ card.summary }}</div>
+                </div>
               </div>
               <img class="activity-prize-img" :src="card.prize" alt="" loading="lazy" />
             </div>
@@ -44,33 +36,32 @@
         <!-- 底部人物 + 联系方式 -->
         <div class="contact-row">
           <div class="contact-info">
-            <div
-              v-if="officialChannelUrl"
-              class="tg-button-link"
-              role="button"
-              tabindex="0"
-              @click="openOfficialChannel"
-              @keydown.enter.prevent="openOfficialChannel"
-              @keydown.space.prevent="openOfficialChannel"
-            >
-              <div class="tg-button-img">TG官方频道</div>
+            <div v-if="officialChannelUrl" class="tg-button-link" role="button" tabindex="0"
+              @click="openOfficialChannel" @keydown.enter.prevent="openOfficialChannel"
+              @keydown.space.prevent="openOfficialChannel">
+              <img class="tg-button-img" src="@/assets/images/webp/activity-tg-button-pc.webp" alt="TG官方频道" />
             </div>
             <div class="act-contact">
               <div class="contact-label">商务合作：</div>
-              <div class="contact-handle" role="button" tabindex="0" @click="copyToClipboard(BUSINESS_CONTACT.handle)" @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)" @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
+              <div class="contact-handle" role="button" tabindex="0" @click="copyToClipboard(BUSINESS_CONTACT.handle)"
+                @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)"
+                @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
                 {{ BUSINESS_CONTACT.handle }}
-                <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44" height="44" />
+                <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44"
+                  height="44" />
               </div>
             </div>
             <div class="act-contact">
               <div class="contact-label">TG招商群：</div>
-              <div class="contact-handle" role="button" tabindex="0" @click="copyToClipboard(TG_RECRUIT_GROUP.url)" @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)" @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
+              <div class="contact-handle" role="button" tabindex="0" @click="copyToClipboard(TG_RECRUIT_GROUP.url)"
+                @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)"
+                @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
                 {{ TG_RECRUIT_GROUP.url }}
-                <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44" height="44" />
+                <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44"
+                  height="44" />
               </div>
             </div>
           </div>
-          <img class="person-img" :src="activityPersonImage" alt="活动商务专员" loading="lazy" width="312" height="312" />
         </div>
       </div>
     </div>
@@ -78,15 +69,8 @@
     <Teleport to="body">
       <div v-if="selectedActivity" class="activity-modal-mask" @click.self="closeActivity">
         <div class="activity-modal" role="dialog" aria-modal="true" :aria-label="selectedActivity.title">
-          <div
-            class="modal-close"
-            role="button"
-            tabindex="0"
-            aria-label="关闭"
-            @click="closeActivity"
-            @keydown.enter.prevent="closeActivity"
-            @keydown.space.prevent="closeActivity"
-          >×</div>
+          <div class="modal-close" role="button" tabindex="0" aria-label="关闭" @click="closeActivity"
+            @keydown.enter.prevent="closeActivity" @keydown.space.prevent="closeActivity">×</div>
           <div class="modal-title-row">
             <div class="modal-num">{{ selectedActivity.index + 1 }}</div>
             <h3>{{ selectedActivity.title }}</h3>
@@ -95,11 +79,12 @@
         </div>
       </div>
     </Teleport>
-  </section>
+  </H5SectionPanel>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import H5SectionPanel from '@/components/h5/H5SectionPanel.vue'
 import defaultActPerson from '@/assets/images/webp/activity-person-h5-new.webp'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
 import { activities, images, activityToHtml } from '@/stores/siteConfig.js'
@@ -163,41 +148,7 @@ const openOfficialChannel = () => {
 </script>
 
 
-<style scoped>
-.section {
-  margin-bottom: 12px;
-}
-
-.section-header {
-  margin-bottom: 12px;
-}
-
-.section-title {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: 12px;
-}
-
-.title-dot {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.title-text {
-  background: linear-gradient(180deg, #FFDC69 0%, #FFE280 13.47%, #B48735 50.12%, #FFE280 86.98%, #FFD466 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0;
-}
-
+<style scoped lang="scss">
 /* 活动卡片 */
 .activity-card {
   position: relative;
@@ -212,7 +163,7 @@ const openOfficialChannel = () => {
 .card-content {
   position: relative;
   z-index: 1;
-  padding: 50px 16px 16px;
+  padding: 58px 4px 8px;
 }
 
 /* 合作奖励标签 - 左上角 */
@@ -237,18 +188,77 @@ const openOfficialChannel = () => {
   z-index: 10;
 }
 
+.activity-group-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 256px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  overflow: visible;
+  isolation: isolate;
+  z-index: 4;
+  background: url("@/assets/images/svg/dept-label-center-pc.svg") center / 255.2px 44px no-repeat;
+}
+
+.activity-group-label::before,
+.activity-group-label::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 39.484px;
+  height: 44px;
+  background-repeat: no-repeat;
+  background-size: 39.484px 44px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.activity-group-label::before {
+  left: -1px;
+  background-image: url("@/assets/images/svg/dept-label-left-pc.svg");
+}
+
+.activity-group-label::after {
+  right: -3px;
+  background-image: url("@/assets/images/svg/dept-label-right-pc.svg");
+}
+
+.activity-group-label-text {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(255, 220, 105, 0.2);
+  background: linear-gradient(180deg, #ffdc69 15.07%, #b48735 49.83%, #ffd466 84.42%);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  white-space: nowrap;
+}
+
 .activity-grid {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr;
+  gap: 8px;
   margin-bottom: 16px;
 }
 
 .activity-item {
   position: relative;
   min-width: 0;
-  height: 120px;
+  height: 150px;
   padding-top: 8px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -259,18 +269,19 @@ const openOfficialChannel = () => {
   top: 0;
   left: 0;
   z-index: 3;
-  width: 55px;
-  height: 20px;
-  background: url("@/assets/images/webp/activity-label-bg-pc.webp") left top / 55px 20px no-repeat;
+  width: 85px;
+  height: 28px;
+  background: url("@/assets/images/webp/activity-label-bg-pc.webp") left top / 85px 28px no-repeat;
 }
 
 .activity-label-text {
   height: 100%;
   display: flex;
   align-items: center;
-  padding-left: 9px;
+  justify-content: center;
+  margin-left: -10px;
   color: #000;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1;
 }
@@ -278,9 +289,9 @@ const openOfficialChannel = () => {
 .visual-card {
   position: relative;
   width: 100%;
-  height: 112px;
+  height: 142px;
   border: 1px solid #fbe59a;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: #060606;
   background-position: center;
   background-size: cover;
@@ -296,61 +307,65 @@ const openOfficialChannel = () => {
     radial-gradient(circle at 42% 24%, rgba(255, 220, 105, 0.48), transparent 34%);
 }
 
-.brand-pill {
-  position: absolute;
-  top: 14px;
-  left: 30px;
-  z-index: 2;
-  width: 55px;
-  height: 19px;
-}
-
-.brand-pill-img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: fill;
-}
-
-.activity-title {
-  position: absolute;
-  left: 10px;
-  top: 42px;
-  z-index: 2;
-  max-width: 96px;
-  font-family: YouSheBiaoTiHei, "PingFang SC", sans-serif;
-  font-size: 18px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0;
-  background: linear-gradient(180deg, #fff 17.8%, #fde420 56.02%, #ffc800 82.2%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.activity-item:nth-child(6) .activity-title {
-  font-size: 15px;
-}
-
-.activity-summary {
-  position: absolute;
-  left: 10px;
-  bottom: 12px;
-  z-index: 2;
-  max-width: 94px;
-  min-height: 19px;
+.visual-card-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0 8px;
-  border: 1px solid #fbe59a;
-  border-radius: 16px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 45%),
-    linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
-  box-shadow: inset 0 -1px 2px rgba(233, 201, 126, 0.58);
+  width: 240px;
+  height: 100%;
+  padding: 20px 0px;
+
+  .activity-title {
+    margin-top: 14px;
+    text-align: center;
+    z-index: 2;
+    font-family: YouSheBiaoTiHei, "PingFang SC", sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0;
+    background: linear-gradient(180deg, #fff 17.8%, #fde420 56.02%, #ffc800 82.2%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .activity-summary {
+    margin-top: 10px;
+    z-index: 2;
+    max-width: 140px;
+    min-height: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    border: 1px solid #fbe59a;
+    border-radius: 16px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 45%),
+      linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
+    box-shadow: inset 0 -1px 2px rgba(233, 201, 126, 0.58);
+  }
+
+  .brand-pill {
+    z-index: 2;
+    width: 75px;
+    height: 26px;
+
+    .brand-pill-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: fill;
+    }
+  }
+
+
 }
+
+
+
+
 
 .summary-text {
   color: #ffd43d;
@@ -362,11 +377,11 @@ const openOfficialChannel = () => {
 
 .activity-prize-img {
   position: absolute;
-  right: -16px;
-  bottom: -12px;
+  right: 0;
+  bottom: 0;
   z-index: 1;
-  width: 88px;
-  height: 88px;
+  width: 144px;
+  height: 144px;
   object-fit: contain;
   pointer-events: none;
 }
@@ -559,10 +574,9 @@ const openOfficialChannel = () => {
 .contact-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 10px;
   position: relative;
-  min-height: 150px;
-  padding-bottom: 20px;
+  min-height: 130px;
 }
 
 .contact-info {
@@ -571,6 +585,8 @@ const openOfficialChannel = () => {
 }
 
 .act-contact {
+  display: flex;
+  align-items: center;
   font-size: 16px;
   font-weight: 500;
   margin: 0 0 8px;
@@ -583,7 +599,7 @@ const openOfficialChannel = () => {
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: #ffdc69;
+  color: #fff;
 }
 
 .contact-handle {
@@ -591,27 +607,14 @@ const openOfficialChannel = () => {
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
-  color: #d4b258;
+  color: #FFDC69;
   display: flex;
   align-items: center;
 }
 
-.contact-handle:active {
-  opacity: 0.6;
-}
-
-.person-img {
-  width: 148px;
-  height: 148px;
-  opacity: 1;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-}
-
 .copy-icon {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   margin-left: 4px;
   -webkit-tap-highlight-color: transparent;
 }
@@ -632,23 +635,18 @@ const openOfficialChannel = () => {
 }
 
 .tg-button-img {
-  height: 32px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 16px;
-  border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 45%),
-    linear-gradient(180deg, #ffdc69 0%, #b48735 100%);
-  color: #160f02;
+  border-radius: 99px;
   font-size: 13px;
   font-weight: 800;
-  box-shadow: 0 4px 12px rgba(255, 216, 106, 0.2);
   animation: tgButtonBreath 1.8s ease-in-out infinite;
 }
 
 @keyframes tgButtonBreath {
+
   0%,
   100% {
     transform: scale(1);
