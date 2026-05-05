@@ -7,7 +7,7 @@
         官方商务
         <img class="title-dot" src="@/assets/images/webp/icon-title-dot.webp" alt="" loading="lazy" width="28" height="28" />
       </h2>
-      <p class="section-subtitle">只认准以下商务人员，其他勿信，谨防被骗</p>
+      <p class="section-subtitle">点击头像可直接联系客服，看清ID谨防被骗！</p>
     </div>
 
     <!-- 主卡片：两个部门同时显示 -->
