@@ -174,6 +174,7 @@ function copy(text) {
   justify-content: space-between;
   gap: 16px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .partner-card {
