@@ -87,11 +87,14 @@
     .tag-remove:hover{background:var(--danger);color:#fff}
 
     /* Image upload */
-    .image-upload-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#fafbfc}
+    .image-upload-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#fafbfc;position:relative}
     .image-upload-area:hover{border-color:var(--primary)}
     .image-upload-area.has-image{padding:6px}
     .image-upload-area img,.image-upload-area video{max-width:100%;max-height:160px;border-radius:8px;object-fit:contain}
     .upload-text{color:var(--text-muted);font-size:12px;margin-top:6px}
+    .upload-clear-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border:none;border-radius:999px;background:rgba(15,23,42,.72);color:#fff;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(15,23,42,.2);opacity:0;pointer-events:none;transition:background .15s ease,opacity .15s ease,transform .15s ease;z-index:2}
+    .image-upload-area.has-image .upload-clear-btn{opacity:1;pointer-events:auto}
+    .upload-clear-btn:hover{background:var(--danger);transform:scale(1.05)}
     .image-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
     /* Activity */
@@ -496,6 +499,8 @@ let currentRole = '' // 'superadmin' or 'siteadmin'
 const API = window.location.origin
 let authHeartbeatTimer = null
 let sessionExpiredNotified = false
+const videoCoverKeyMap = { about_video_pc: 'about_cover_pc', about_video_h5: 'about_cover_h5' }
+const coverVideoKeyMap = { about_cover_pc: 'about_video_pc', about_cover_h5: 'about_video_h5' }
 
 function showToast(msg, type='success') {
   const c = document.getElementById('toastContainer')
@@ -551,7 +556,14 @@ async function apiRequest(u, options = {}) {
 async function apiGet(u){return apiRequest(u)}
 async function apiPut(u,d){return apiRequest(u,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
 async function apiPost(u,d){return apiRequest(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})}
-async function apiDelete(u){return apiRequest(u,{method:'DELETE'})}
+async function apiDelete(u,d){
+  const options={method:'DELETE'}
+  if(d!==undefined){
+    options.headers={'Content-Type':'application/json'}
+    options.body=JSON.stringify(d)
+  }
+  return apiRequest(u,options)
+}
 
 // ==================== Auth ====================
 async function checkAuth(options = {}) {
@@ -1071,18 +1083,66 @@ async function saveSearch(){const r=await apiPut(`/api/admin/config/search_confi
 function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
 function triggerVideoUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('videoInput').click()}
 function triggerAvatarUpload(el){currentAvatarInput=el;document.getElementById('avatarFileInput').click()}
+function getUploadPreviewType(k){return videoCoverKeyMap[k]?'video':'image'}
+function isLocalUploadUrl(url){
+  if(!url||typeof url!=='string')return false
+  try{
+    const pathname=new URL(url, window.location.origin).pathname
+    return pathname.startsWith('/api/uploads/')||pathname.startsWith('/uploads/')
+  }catch{
+    return false
+  }
+}
+function refreshUploadPreviewByKey(k){
+  if(!k)return
+  if(getUploadPreviewType(k)==='video'){
+    renderUploadPreview(k,configData[k]||'','video',configData[videoCoverKeyMap[k]]||'')
+  }else{
+    renderUploadPreview(k,configData[k]||'','image')
+  }
+}
+function refreshLinkedUploadPreviews(k){
+  refreshUploadPreviewByKey(k)
+  if(coverVideoKeyMap[k]) refreshUploadPreviewByKey(coverVideoKeyMap[k])
+  if(videoCoverKeyMap[k]) refreshUploadPreviewByKey(videoCoverKeyMap[k])
+}
 function renderUploadPreview(k,url,type='image',poster=''){
   const el=document.getElementById(`upload-${k}`)
   if(!el)return
   if(url){
-    el.innerHTML=type==='video'
+    const clearTitle=type==='video'?'清理当前视频':'清理当前图片'
+    const media=type==='video'
       ? `<video src="${url}" ${poster ? `poster="${poster}"` : ''} muted controls></video><div class="upload-text">点击更换视频</div>`
       : `<img src="${url}" /><div class="upload-text">点击更换</div>`
+    el.innerHTML=`<button type="button" class="upload-clear-btn" title="${clearTitle}" aria-label="${clearTitle}" onclick="clearUpload('${k}',event)">×</button>${media}`
     el.classList.add('has-image')
   }else{
     el.innerHTML=type==='video'?'<div class="upload-text">🎬 点击上传视频</div>':'<div class="upload-text">📤 点击上传</div>'
     el.classList.remove('has-image')
   }
+}
+
+async function clearUpload(k,event){
+  if(event){event.preventDefault();event.stopPropagation()}
+  const uploadSite=currentSite
+  const currentUrl=configData[k]
+  if(!uploadSite||!currentUrl)return
+
+  const r=await apiPut(`/api/admin/config/${k}?site=${uploadSite}`,{value:'',category:'images'})
+  if(!r)return
+  if(!r.success)return showToast(r.error||'清理失败','error')
+
+  configData[k]=''
+  refreshLinkedUploadPreviews(k)
+
+  if(isLocalUploadUrl(currentUrl)){
+    const cleanup=await apiDelete(`/api/admin/upload?site=${uploadSite}`,{url:currentUrl})
+    if(cleanup&&!cleanup.success){
+      console.warn('[upload] 文件清理失败:', cleanup.error || cleanup.message || currentUrl)
+    }
+  }
+
+  showToast('已清理当前上传内容')
 }
 
 async function captureVideoPoster(file){
@@ -1132,19 +1192,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('fileInput').addEventListener('change',async(e)=>{
     const f=e.target.files[0]
     const uploadKey=currentUploadKey
-    const uploadTarget=currentUploadTarget
     const uploadSite=currentSite
     if(!f||!uploadKey)return
     try{const d=await uploadAdminFile(f, uploadSite);if(!d){e.target.value='';return}
-    if(d.success){if(uploadTarget){uploadTarget.innerHTML=`<img src="${d.data.url}" /><div class="upload-text">点击更换</div>`;uploadTarget.classList.add('has-image')}
-    await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'});showToast('上传成功')}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
+    if(d.success){const saved=await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'});if(!saved){e.target.value='';return}
+    if(saved.success){configData[uploadKey]=d.data.url;refreshLinkedUploadPreviews(uploadKey);showToast('上传成功')}else{showToast(saved.error,'error')}}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
     e.target.value=''
   })
 
   document.getElementById('videoInput').addEventListener('change',async(e)=>{
     const f=e.target.files[0]
     const uploadKey=currentUploadKey
-    const uploadTarget=currentUploadTarget
     const uploadSite=currentSite
     if(!f||!uploadKey)return
     try{
@@ -1153,14 +1211,21 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(!d.success){showToast(d.error,'error');e.target.value='';return}
       const poster=await uploadAdminFile(posterFile, uploadSite)
       if(!poster){e.target.value='';return}
-      if(uploadTarget){renderUploadPreview(uploadKey,d.data.url,'video', poster.success ? poster.data.url : '')}
-      await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'})
+      const savedVideo=await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'})
+      if(!savedVideo){e.target.value='';return}
+      if(!savedVideo.success){showToast(savedVideo.error,'error');e.target.value='';return}
+      configData[uploadKey]=d.data.url
       if(poster.success){
         const coverKey=uploadKey==='about_video_h5'?'about_cover_h5':'about_cover_pc'
-        await apiPut(`/api/admin/config/${coverKey}?site=${uploadSite}`,{value:poster.data.url,category:'images'})
-        configData[coverKey]=poster.data.url
-        renderUploadPreview(coverKey,poster.data.url,'image')
+        const savedCover=await apiPut(`/api/admin/config/${coverKey}?site=${uploadSite}`,{value:poster.data.url,category:'images'})
+        if(savedCover&&savedCover.success){
+          configData[coverKey]=poster.data.url
+          refreshLinkedUploadPreviews(coverKey)
+        }else if(savedCover){
+          showToast(savedCover.error,'error')
+        }
       }
+      refreshLinkedUploadPreviews(uploadKey)
       showToast(poster.success?'视频上传成功，已生成封面':'视频上传成功，封面生成失败')
     }catch(err){showToast('视频上传失败','error')}
     e.target.value=''

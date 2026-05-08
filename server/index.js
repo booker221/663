@@ -67,6 +67,37 @@ function removeUploadedFile(file) {
   }
 }
 
+function resolveUploadFilePath(fileUrl = '') {
+  if (!fileUrl || typeof fileUrl !== 'string') return ''
+
+  let pathname = fileUrl.trim()
+  try {
+    pathname = new URL(fileUrl, 'http://localhost').pathname
+  } catch {
+    pathname = fileUrl.trim()
+  }
+
+  let relativePath = ''
+  if (pathname.startsWith('/api/uploads/')) {
+    relativePath = pathname.slice('/api/uploads/'.length)
+  } else if (pathname.startsWith('/uploads/')) {
+    relativePath = pathname.slice('/uploads/'.length)
+  } else {
+    return ''
+  }
+
+  const resolvedPath = path.resolve(uploadsDir, relativePath)
+  const uploadsRoot = `${path.resolve(uploadsDir)}${path.sep}`
+  return resolvedPath.startsWith(uploadsRoot) ? resolvedPath : ''
+}
+
+function containsValueDeep(input, target) {
+  if (input === target) return true
+  if (Array.isArray(input)) return input.some(item => containsValueDeep(item, target))
+  if (input && typeof input === 'object') return Object.values(input).some(value => containsValueDeep(value, target))
+  return false
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const kind = getUploadKind(file.originalname)
@@ -447,6 +478,50 @@ app.post('/api/admin/upload-video', requireSiteAccess, (req, res, next) => {
     res.json({ success: true, data: { url: fileUrl, filename: req.file.filename, size: req.file.size } })
   } catch (err) {
     console.error('[upload-video] 处理错误:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// 清理上传文件（先清空配置，再按需删除未被引用的物理文件）
+app.delete('/api/admin/upload', requireSiteAccess, (req, res) => {
+  try {
+    const siteId = req.query.site
+    if (!siteId) return res.status(400).json({ error: '缺少 site 参数' })
+
+    const { url } = req.body || {}
+    if (!url || typeof url !== 'string') {
+      return res.status(400).json({ error: '缺少要删除的 url' })
+    }
+
+    const filePath = resolveUploadFilePath(url)
+    if (!filePath) {
+      return res.status(400).json({ error: '仅支持删除 uploads 目录中的文件' })
+    }
+
+    const currentConfig = getAllConfig(siteId)
+    if (containsValueDeep(currentConfig, url)) {
+      return res.json({
+        success: true,
+        deleted: false,
+        skipped: true,
+        message: '文件仍被其他配置引用，已保留物理文件'
+      })
+    }
+
+    if (!fs.existsSync(filePath)) {
+      return res.json({
+        success: true,
+        deleted: false,
+        skipped: true,
+        message: '文件不存在或已删除'
+      })
+    }
+
+    fs.unlinkSync(filePath)
+    console.log(`[upload] 删除: ${url}`)
+    res.json({ success: true, deleted: true })
+  } catch (err) {
+    console.error('[upload] 删除失败:', err)
     res.status(500).json({ error: err.message })
   }
 })
