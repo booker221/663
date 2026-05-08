@@ -6,7 +6,9 @@
   "scripts": {
     "postinstall": "npm rebuild better-sqlite3",
     "start": "node index.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "pack": "node ../scripts/package-backend.mjs",
+    "pack:with-db": "node ../scripts/package-backend.mjs --with-db"
   },
   "dependencies": {
     "better-sqlite3": "^11.7.0",
