@@ -73,7 +73,7 @@ watchEffect(() => {
 })
 
 const onInput = (e) => {
-  searchHandle.value = searchHandle.value.replace(/[^a-zA-Z0-9@]/g, '')
+  searchHandle.value = searchHandle.value.replace(/[^a-zA-Z0-9_@]/g, '')
 }
 
 const handleSearch = () => {
