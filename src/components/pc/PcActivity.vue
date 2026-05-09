@@ -80,12 +80,7 @@ import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/confi
 import { activities, activityToHtml } from '@/stores/siteConfig.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import cardBg from '@/assets/images/webp/activity-card-bg-pc.webp'
-import prize1 from '@/assets/images/webp/activity-card-prize-pc-1.webp'
-import prize2 from '@/assets/images/webp/activity-card-prize-pc-2.webp'
-import prize3 from '@/assets/images/webp/activity-card-prize-pc-3.webp'
-import prize4 from '@/assets/images/webp/activity-card-prize-pc-4.webp'
-import prize5 from '@/assets/images/webp/activity-card-prize-pc-5.webp'
-import prize6 from '@/assets/images/webp/activity-card-prize-pc-6.webp'
+
 
 const MAX_ACTIVITY_CARDS = 6
 
