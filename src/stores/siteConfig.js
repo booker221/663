@@ -221,6 +221,14 @@ function esc(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
+function normalizeActivityEntry(activity = {}) {
+  return {
+    ...activity,
+    pcImage: resolveAssetUrl(activity.pcImage || activity.pc_image || ''),
+    h5Image: resolveAssetUrl(activity.h5Image || activity.h5_image || ''),
+  }
+}
+
 /**
  * 活动数据格式（结构化）
  */
@@ -334,7 +342,7 @@ export async function loadRemoteConfig() {
 
   // 合并活动列表
   if (data.activities && Array.isArray(data.activities)) {
-    activities.splice(0, activities.length, ...data.activities)
+    activities.splice(0, activities.length, ...data.activities.map(normalizeActivityEntry))
   }
 
   // 合并服务信息

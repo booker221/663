@@ -17,18 +17,8 @@
             <div class="activity-label">
               <div class="activity-label-text">{{ card.label }}</div>
             </div>
-            <div class="visual-card" :style="{ backgroundImage: `url(${cardBg})` }">
-              <div class="visual-card-content">
-                <div class="brand-pill">
-                  <img class="brand-pill-img" src="@/assets/images/webp/activity-brand-pill-pc.webp" alt=""
-                    loading="lazy" />
-                </div>
-                <div class="activity-title">{{ card.title }}</div>
-                <div v-if="card.summary" class="activity-summary">
-                  <div class="summary-text">{{ card.summary }}</div>
-                </div>
-              </div>
-              <img class="activity-prize-img" :src="card.prize" alt="" loading="lazy" />
+            <div class="visual-card" :class="{ 'has-card-image': !!card.h5Image }">
+              <img v-if="card.h5Image" class="activity-visual-img" :src="card.h5Image" alt="" loading="lazy" />
             </div>
           </div>
         </div>
@@ -97,20 +87,20 @@ import prize4 from '@/assets/images/webp/activity-card-prize-pc-4.webp'
 import prize5 from '@/assets/images/webp/activity-card-prize-pc-5.webp'
 import prize6 from '@/assets/images/webp/activity-card-prize-pc-6.webp'
 
-const prizeImages = [prize1, prize2, prize3, prize4, prize5, prize6]
+const MAX_ACTIVITY_CARDS = 6
 
 const activityPersonImage = computed(() => images.activity_person_h5 || defaultActPerson)
 const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
 const selectedActivity = ref(null)
 
 const activityCards = computed(() => activities
-  .slice(0, prizeImages.length)
+  .slice(0, MAX_ACTIVITY_CARDS)
   .map((item, index) => ({
     index,
-    prize: prizeImages[index],
     label: `活动${index + 1}`,
     title: (item.title || '').trim(),
     summary: (item.summary || item.subtitle || '').trim(),
+    h5Image: (item.h5Image || '').trim(),
     sections: Array.isArray(item.sections) ? item.sections : [],
     content: item.content || '',
   }))
@@ -132,7 +122,7 @@ function closeActivity() {
 }
 
 function hasActivityData(card) {
-  if (card.title || card.summary || (card.content || '').trim()) return true
+  if (card.title || card.summary || card.h5Image || (card.content || '').trim()) return true
   return card.sections.some(section => {
     if ((section.value || '').trim()) return true
     return Array.isArray(section.items) && section.items.some(item =>
@@ -298,92 +288,17 @@ const openOfficialChannel = () => {
   overflow: hidden;
 }
 
-.visual-card::before {
-  content: "";
+.activity-visual-img {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.48) 54%, rgba(0, 0, 0, 0.1) 100%),
-    radial-gradient(circle at 42% 24%, rgba(255, 220, 105, 0.48), transparent 34%);
-}
-
-.visual-card-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 240px;
+  z-index: 0;
+  width: 100%;
   height: 100%;
-  padding: 20px 0px;
-
-  .activity-title {
-    margin-top: 14px;
-    text-align: center;
-    z-index: 2;
-    font-family: YouSheBiaoTiHei, "PingFang SC", sans-serif;
-    font-size: 26px;
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: 0;
-    background: linear-gradient(180deg, #fff 17.8%, #fde420 56.02%, #ffc800 82.2%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .activity-summary {
-    margin-top: 10px;
-    z-index: 2;
-    max-width: 140px;
-    min-height: 23px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 8px;
-    border: 1px solid #fbe59a;
-    border-radius: 16px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 45%),
-      linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
-    box-shadow: inset 0 -1px 2px rgba(233, 201, 126, 0.58);
-  }
-
-  .brand-pill {
-    z-index: 2;
-    width: 75px;
-    height: 26px;
-
-    .brand-pill-img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: fill;
-    }
-  }
-
-
+  object-fit: cover;
 }
 
-
-
-
-
-.summary-text {
-  color: #ffd43d;
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1.1;
-  white-space: nowrap;
-}
-
-.activity-prize-img {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  width: 144px;
-  height: 144px;
-  object-fit: contain;
-  pointer-events: none;
+.visual-card::before {
+  content: none;
 }
 
 /* ====== 内容排版 ====== */

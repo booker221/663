@@ -10,16 +10,8 @@
           <div class="activity-label">
             <div class="activity-label-text">{{ card.label }}</div>
           </div>
-          <div class="visual-card" :style="{ backgroundImage: `url(${cardBg})` }">
-            <div class="brand-pill">
-              <img class="brand-pill-img" src="@/assets/images/webp/activity-brand-pill-pc.webp" alt="合兴集团一路向前"
-                loading="lazy" />
-            </div>
-            <div class="activity-title">{{ card.title }}</div>
-            <div class="activity-summary">
-              <div class="summary-text">{{ card.summary }}</div>
-            </div>
-            <img class="activity-prize-img" :src="card.prize" alt="" loading="lazy" />
+          <div class="visual-card" :class="{ 'has-card-image': !!card.pcImage }">
+            <img v-if="card.pcImage" class="activity-visual-img" :src="card.pcImage" alt="" loading="lazy" />
           </div>
         </div>
       </div>
@@ -95,18 +87,18 @@ import prize4 from '@/assets/images/webp/activity-card-prize-pc-4.webp'
 import prize5 from '@/assets/images/webp/activity-card-prize-pc-5.webp'
 import prize6 from '@/assets/images/webp/activity-card-prize-pc-6.webp'
 
-const prizeImages = [prize1, prize2, prize3, prize4, prize5, prize6]
+const MAX_ACTIVITY_CARDS = 6
 
 const selectedActivity = ref(null)
 
 const activityCards = computed(() => activities
-  .slice(0, prizeImages.length)
+  .slice(0, MAX_ACTIVITY_CARDS)
   .map((item, index) => ({
     index,
-    prize: prizeImages[index],
     label: `活动${index + 1}`,
     title: (item.title || '').trim(),
     summary: (item.summary || item.subtitle || '').trim(),
+    pcImage: (item.pcImage || '').trim(),
     sections: Array.isArray(item.sections) ? item.sections : [],
     content: item.content || '',
   }))
@@ -130,7 +122,7 @@ function closeActivity() {
 }
 
 function hasActivityData(card) {
-  if (card.title || card.summary || (card.content || '').trim()) return true
+  if (card.title || card.summary || card.pcImage || (card.content || '').trim()) return true
   return card.sections.some(section => {
     if ((section.value || '').trim()) return true
     return Array.isArray(section.items) && section.items.some(item =>
@@ -144,9 +136,9 @@ function hasActivityData(card) {
 .activity-card {
   position: relative;
   width: min(100%, 1140px);
-  min-height: 680px;
   margin: 0 auto;
-  padding: 73px 17px 34px;
+  padding: 73px  17px 34px;
+  padding-bottom: 150px;
   border: 1px solid #fbe59a;
   border-radius: 20px;
   background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
@@ -227,86 +219,17 @@ function hasActivityData(card) {
   overflow: hidden;
 }
 
-.visual-card::before {
-  content: "";
+.activity-visual-img {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.36) 55%, rgba(0, 0, 0, 0.08) 100%),
-    radial-gradient(circle at 44% 26%, rgba(255, 220, 105, 0.56), transparent 34%);
-  pointer-events: none;
-}
-
-.brand-pill {
-  position: absolute;
-  top: 19px;
-  left: 58px;
-  z-index: 2;
-  display: block;
-  width: 81px;
-  height: 28px;
-  overflow: hidden;
-}
-
-.brand-pill-img {
-  display: block;
+  z-index: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
 }
 
-.activity-title {
-  position: absolute;
-  left: 22px;
-  top: 58px;
-  z-index: 2;
-  max-width: 205px;
-  font-family: YouSheBiaoTiHei;
-  font-size: 31px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0;
-  background: linear-gradient(180deg, #FFF 17.8%, #FDE420 56.02%, #FFC800 82.2%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.activity-item:nth-child(6) .activity-title {
-  font-size: 24px;
-  top: 62px;
-}
-
-.activity-summary {
-  position: absolute;
-  left: 37px;
-  bottom: 24px;
-  z-index: 2;
-  display: flex;
-  min-width: 150px;
-  height: 25px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 16px;
-  border: 1px solid #fbe59a;
-  border-radius: 20px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 45%),
-    linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
-  box-shadow:
-    inset 0 1px 3px rgba(255, 255, 255, 0.32),
-    inset 0 -1px 2px rgba(233, 201, 126, 0.7),
-    0 0 8px rgba(255, 220, 105, 0.18);
-  white-space: nowrap;
-}
-
-.summary-text {
-  color: #ffd43d;
-  font-family: "PingFang SC", sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1;
-  text-shadow: 0 0 0.5px #000;
+.visual-card::before {
+  content: none;
 }
 
 .activity-prize-img {

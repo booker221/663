@@ -103,6 +103,8 @@
     .activity-header h4{font-size:13px;font-weight:600}
     .activity-body{padding:14px}
     .activity-body textarea{min-height:160px;font-family:'Menlo',monospace;font-size:12px}
+    .activity-image-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .activity-image-grid .form-group{margin-bottom:0}
 
     /* Structured activity editor */
     .section-row{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fafbfc;position:relative}
@@ -494,7 +496,7 @@
 
 <script>
 let configData = {}, currentSite = '', sites = []
-let currentUploadKey = null, currentUploadTarget = null, currentAvatarInput = null
+let currentUploadKey = null, currentUploadTarget = null, currentAvatarInput = null, currentActivityImageUpload = null
 let currentRole = '' // 'superadmin' or 'siteadmin'
 const API = window.location.origin
 let authHeartbeatTimer = null
@@ -931,11 +933,13 @@ function migrateHtmlToSections(html) {
  * 确保活动数据使用结构化 sections 格式
  */
 function normalizeActivity(a) {
+  const pcImage = a.pcImage || a.pc_image || ''
+  const h5Image = a.h5Image || a.h5_image || ''
   if (a.sections && Array.isArray(a.sections)) {
-    return { title: a.title || '', summary: a.summary || a.subtitle || '', sections: a.sections }
+    return { title: a.title || '', summary: a.summary || a.subtitle || '', pcImage, h5Image, sections: a.sections }
   }
   // 旧格式：有 content 字段（HTML字符串）
-  return { title: a.title || '', summary: a.summary || a.subtitle || '', sections: migrateHtmlToSections(a.content) }
+  return { title: a.title || '', summary: a.summary || a.subtitle || '', pcImage, h5Image, sections: migrateHtmlToSections(a.content) }
 }
 
 /**
@@ -970,6 +974,19 @@ function renderActivities(data) {
           <input class="form-input" value="${esc(a.summary || '')}" maxlength="20" onchange="activities[${i}].summary=this.value;renderActivities(activities)" placeholder="如：满足条件 奖金翻倍" />
         </div>
         <div class="form-group">
+          <label class="form-label">visual-card 图片 <span style="font-weight:400;color:var(--text-muted)">(PC 和 H5 分开上传，上传后记得点击底部保存)</span></label>
+          <div class="activity-image-grid">
+            <div class="form-group">
+              <label class="form-label">PC 图</label>
+              ${renderActivityImageUpload(i, 'pcImage', a.pcImage, '🖼️ 点击上传 PC 图', '点击更换 PC 图')}
+            </div>
+            <div class="form-group">
+              <label class="form-label">H5 图</label>
+              ${renderActivityImageUpload(i, 'h5Image', a.h5Image, '🖼️ 点击上传 H5 图', '点击更换 H5 图')}
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="form-label">内容块 <span style="font-weight:400;color:var(--text-muted)">(每个块是一行内容，可按需添加)</span></label>
           <div id="sections-${i}">${renderSections(i, a.sections)}</div>
           <div class="add-section-bar">
@@ -985,6 +1002,20 @@ function renderActivities(data) {
       </div>
     </div>
   `).join('')
+}
+
+function renderActivityImageUpload(actIdx, field, url, emptyText, filledText) {
+  if (url) {
+    return `<div class="image-upload-area has-image" onclick="triggerActivityCardUpload(${actIdx},'${field}')">
+      <button type="button" class="upload-clear-btn" title="清空当前图片" aria-label="清空当前图片" onclick="clearActivityCardImage(${actIdx},'${field}',event)">×</button>
+      <img src="${esc(url)}" alt="" />
+      <div class="upload-text">${filledText}</div>
+    </div>`
+  }
+
+  return `<div class="image-upload-area" onclick="triggerActivityCardUpload(${actIdx},'${field}')">
+    <div class="upload-text">${emptyText}</div>
+  </div>`
 }
 
 function renderSections(actIdx, sections) {
@@ -1015,10 +1046,22 @@ function renderSections(actIdx, sections) {
 }
 
 function addActivity() {
-  activities.push({ title: '新活动', summary: '', sections: [{ type: 'text', value: '' }] })
+  activities.push({ title: '新活动', summary: '', pcImage: '', h5Image: '', sections: [{ type: 'text', value: '' }] })
   renderActivities(activities)
 }
 function removeActivity(i) { activities.splice(i, 1); renderActivities(activities) }
+function triggerActivityCardUpload(actIdx, field){
+  currentActivityImageUpload = { actIdx, field }
+  currentUploadKey = null
+  currentUploadTarget = null
+  document.getElementById('fileInput').click()
+}
+function clearActivityCardImage(actIdx, field, event){
+  if(event){event.preventDefault();event.stopPropagation()}
+  activities[actIdx][field] = ''
+  renderActivities(activities)
+  showToast('已清空活动图，记得保存', 'warning')
+}
 
 function addSection(actIdx, type) {
   if (type === 'tiers') {
@@ -1060,7 +1103,13 @@ function refreshPreview(actIdx) {
 
 async function saveActivities() {
   // 保存时只存结构化字段（不再存 content HTML）
-  const cleanData = activities.map(a => ({ title: a.title, summary: a.summary || '', sections: a.sections }))
+  const cleanData = activities.map(a => ({
+    title: a.title,
+    summary: a.summary || '',
+    pcImage: a.pcImage || '',
+    h5Image: a.h5Image || '',
+    sections: a.sections
+  }))
   const r = await apiPut(`/api/admin/config/activities${siteQ()}`, { value: cleanData, category: 'activities' })
   if (!r) return
   r.success ? showToast('已保存') : showToast(r.error, 'error')
@@ -1080,9 +1129,9 @@ async function saveGuarantee(){const r=await apiPut(`/api/admin/config/guarantee
 async function saveSearch(){const r=await apiPut(`/api/admin/config/search_config${siteQ()}`,{value:{placeholder:getVal('search_placeholder'),defaultValue:getVal('search_defaultValue'),successText:getVal('search_successText'),failText:getVal('search_failText')},category:'search'});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')}
 
 // Images
-function triggerUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
-function triggerVideoUpload(k,el){currentUploadKey=k;currentUploadTarget=el;document.getElementById('videoInput').click()}
-function triggerAvatarUpload(el){currentAvatarInput=el;document.getElementById('avatarFileInput').click()}
+function triggerUpload(k,el){currentActivityImageUpload=null;currentUploadKey=k;currentUploadTarget=el;document.getElementById('fileInput').click()}
+function triggerVideoUpload(k,el){currentActivityImageUpload=null;currentUploadKey=k;currentUploadTarget=el;document.getElementById('videoInput').click()}
+function triggerAvatarUpload(el){currentActivityImageUpload=null;currentAvatarInput=el;document.getElementById('avatarFileInput').click()}
 function getUploadPreviewType(k){return videoCoverKeyMap[k]?'video':'image'}
 function isLocalUploadUrl(url){
   if(!url||typeof url!=='string')return false
@@ -1191,12 +1240,27 @@ async function uploadAdminFile(file, site){
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('fileInput').addEventListener('change',async(e)=>{
     const f=e.target.files[0]
+    const activityUpload=currentActivityImageUpload
     const uploadKey=currentUploadKey
     const uploadSite=currentSite
-    if(!f||!uploadKey)return
-    try{const d=await uploadAdminFile(f, uploadSite);if(!d){e.target.value='';return}
-    if(d.success){const saved=await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'});if(!saved){e.target.value='';return}
-    if(saved.success){configData[uploadKey]=d.data.url;refreshLinkedUploadPreviews(uploadKey);showToast('上传成功')}else{showToast(saved.error,'error')}}else{showToast(d.error,'error')}}catch(err){showToast('上传失败','error')}
+    if(!f||(!uploadKey&&!activityUpload))return
+    try{
+      const d=await uploadAdminFile(f, uploadSite);if(!d){e.target.value='';return}
+      if(!d.success){showToast(d.error,'error');e.target.value='';return}
+
+      if(activityUpload){
+        const targetActivity=activities[activityUpload.actIdx]
+        if(targetActivity){
+          targetActivity[activityUpload.field]=d.data.url
+          renderActivities(activities)
+          showToast('活动图已上传，记得点击保存')
+        }
+      }else if(uploadKey){
+        const saved=await apiPut(`/api/admin/config/${uploadKey}?site=${uploadSite}`,{value:d.data.url,category:'images'});if(!saved){e.target.value='';return}
+        if(saved.success){configData[uploadKey]=d.data.url;refreshLinkedUploadPreviews(uploadKey);showToast('上传成功')}else{showToast(saved.error,'error')}
+      }
+    }catch(err){showToast('上传失败','error')}
+    currentActivityImageUpload=null
     e.target.value=''
   })
 
