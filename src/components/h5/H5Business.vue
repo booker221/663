@@ -6,7 +6,7 @@
         <div class="dept-label">
           <div class="dept-label-text">推广招商部</div>
         </div>
-        <div class="partner-list">
+        <div class="partner-list" :class="{ 'partner-list--featured': shouldFeatureFirstCard(promotePartners) }">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
               <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="80" height="80" />
@@ -27,7 +27,7 @@
         <div class="dept-label">
           <div class="dept-label-text">支付通道招商部</div>
         </div>
-        <div class="partner-list">
+        <div class="partner-list" :class="{ 'partner-list--featured': shouldFeatureFirstCard(thirdPartners) }">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
               <img class="partner-avatar" :src="p.avatar" :alt="p.name" />
@@ -65,6 +65,10 @@ const thirdPartners = THIRD_PARTNERS
 
 function copy(text) {
   copyToClipboard(text)
+}
+
+function shouldFeatureFirstCard(partners) {
+  return partners.length % 2 === 1
 }
 </script>
 
@@ -156,7 +160,7 @@ function copy(text) {
   gap: 4px;
 }
 
-.partner-card:first-child {
+.partner-list--featured .partner-card:first-child {
   grid-column: 1 / -1;
 }
 
