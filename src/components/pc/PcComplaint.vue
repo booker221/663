@@ -2,7 +2,16 @@
   <PcSectionPanel section-id="complaint" title="投诉接受" desc="全程跟进对接，沟通无障碍">
     <div class="complaint-card">
       <div class="partner-left">
-        <div class="partner-avatar-wrap">
+        <a
+          v-if="COMPLAINT_CONTACT.url"
+          class="partner-avatar-wrap avatar-link"
+          :href="COMPLAINT_CONTACT.url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" width="88" height="88" />
+        </a>
+        <div v-else class="partner-avatar-wrap">
           <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name" width="88" height="88" />
         </div>
         <div class="partner-name">{{ COMPLAINT_CONTACT.name }}</div>
@@ -62,9 +71,20 @@ function copy(text) {
 
 .partner-avatar-wrap {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 80px;
   height: 80px;
   flex-shrink: 0;
+}
+
+.avatar-link {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.avatar-link:hover {
+  transform: scale(1.08);
 }
 
 .partner-avatar {

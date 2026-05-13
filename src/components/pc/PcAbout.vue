@@ -6,6 +6,8 @@
           ref="videoRef"
           class="video-card about-media"
           :poster="images.about_cover_pc || undefined"
+          autoplay
+          :muted="isMuted"
           preload="metadata"
           playsinline
           @play="isPlaying = true"
@@ -45,7 +47,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import DynamicImage from '@/components/common/DynamicImage.vue'
 import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import { images, remoteSiteMeta } from '@/stores/siteConfig.js'
@@ -58,20 +60,61 @@ const aboutTitle = computed(() => {
 
 const videoRef = ref(null)
 const isPlaying = ref(false)
+const isMuted = ref(true)
 
 function playVideo() {
-  videoRef.value?.play()
+  const video = videoRef.value
+  if (!video) return
+
+  enableSound(video)
+  video.play()
 }
 
 function toggleVideo() {
   const video = videoRef.value
   if (!video) return
+
+  if (isMuted.value || video.muted) {
+    enableSound(video)
+    if (video.paused) video.play()
+    return
+  }
+
   if (video.paused) {
     video.play()
   } else {
     video.pause()
   }
 }
+
+function enableSound(video) {
+  isMuted.value = false
+  video.muted = false
+  if (video.volume === 0) video.volume = 1
+}
+
+watch(
+  () => images.about_video_pc,
+  async (videoSrc) => {
+    if (!videoSrc) {
+      isPlaying.value = false
+      isMuted.value = true
+      return
+    }
+
+    await nextTick()
+
+    const video = videoRef.value
+    if (!video) return
+
+    isMuted.value = true
+    video.muted = true
+    await video.play().catch(() => {
+      isPlaying.value = false
+    })
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped lang="scss">
@@ -127,7 +170,7 @@ function toggleVideo() {
   height: 80px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.45);
+  background: #44413C;
   transform: translate(-50%, -50%);
   display: grid;
   place-items: center;
@@ -136,7 +179,7 @@ function toggleVideo() {
 }
 
 .play-button:hover {
-  background: rgba(255, 255, 255, 0.58);
+  background: #44413C;
   transform: translate(-50%, -50%) scale(1.04);
 }
 

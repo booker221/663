@@ -4,7 +4,17 @@
     <div class="complaint-card">
       <!-- 左：头像 + 名字 -->
       <div class="partner-left">
-        <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name + ' 头像'" loading="lazy"
+        <a
+          v-if="COMPLAINT_CONTACT.url"
+          class="avatar-link"
+          :href="COMPLAINT_CONTACT.url"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name + ' 头像'" loading="lazy"
+            width="88" height="88" />
+        </a>
+        <img v-else class="partner-avatar" :src="COMPLAINT_CONTACT.avatar" :alt="COMPLAINT_CONTACT.name + ' 头像'" loading="lazy"
           width="88" height="88" />
         <div class="partner-name">{{ COMPLAINT_CONTACT.name }}</div>
       </div>
@@ -61,6 +71,17 @@ function copy(text) {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+}
+
+.avatar-link {
+  display: flex;
+  flex-shrink: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.avatar-link:active {
+  transform: scale(0.94);
 }
 
 .partner-name {

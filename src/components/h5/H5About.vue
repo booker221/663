@@ -6,6 +6,8 @@
           ref="videoRef"
           class="video-card about-media"
           :poster="images.about_cover_h5 || undefined"
+          autoplay
+          :muted="isMuted"
           preload="metadata"
           playsinline
           @play="isPlaying = true"
@@ -48,7 +50,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import DynamicImage from '@/components/common/DynamicImage.vue'
 import H5SectionPanel from '@/components/h5/H5SectionPanel.vue'
 import { images, remoteSiteMeta } from '@/stores/siteConfig.js'
@@ -57,20 +59,61 @@ const aboutTitle = computed(() => remoteSiteMeta.value?.name ? `关于${Array.fr
 
 const videoRef = ref(null)
 const isPlaying = ref(false)
+const isMuted = ref(true)
 
 function playVideo() {
-  videoRef.value?.play()
+  const video = videoRef.value
+  if (!video) return
+
+  enableSound(video)
+  video.play()
 }
 
 function toggleVideo() {
   const video = videoRef.value
   if (!video) return
+
+  if (isMuted.value || video.muted) {
+    enableSound(video)
+    if (video.paused) video.play()
+    return
+  }
+
   if (video.paused) {
     video.play()
   } else {
     video.pause()
   }
 }
+
+function enableSound(video) {
+  isMuted.value = false
+  video.muted = false
+  if (video.volume === 0) video.volume = 1
+}
+
+watch(
+  () => images.about_video_h5,
+  async (videoSrc) => {
+    if (!videoSrc) {
+      isPlaying.value = false
+      isMuted.value = true
+      return
+    }
+
+    await nextTick()
+
+    const video = videoRef.value
+    if (!video) return
+
+    isMuted.value = true
+    video.muted = true
+    await video.play().catch(() => {
+      isPlaying.value = false
+    })
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
@@ -127,8 +170,8 @@ function toggleVideo() {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(255, 220, 105, 0.26);
-  box-shadow: 0 0 18px rgba(255, 220, 105, 0.22);
+  background: #44413C;
+  box-shadow: 0 0 18px rgba(68, 65, 60, 0.22);
   transform: translate(-50%, -50%);
 }
 
@@ -138,7 +181,7 @@ function toggleVideo() {
   margin-left: 4px;
   border-top: 11px solid transparent;
   border-bottom: 11px solid transparent;
-  border-left: 16px solid #ffdc69;
+  border-left: 16px solid #FFFFFF;
 }
 
 :deep(.image-placeholder) {
