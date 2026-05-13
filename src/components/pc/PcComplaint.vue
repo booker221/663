@@ -4,7 +4,7 @@
       <div class="partner-left">
         <a
           v-if="COMPLAINT_CONTACT.url"
-          class="partner-avatar-wrap avatar-link"
+          class="partner-avatar-wrap avatar-link live-avatar-link"
           :href="COMPLAINT_CONTACT.url"
           target="_blank"
           rel="noopener noreferrer"

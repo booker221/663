@@ -10,7 +10,7 @@
         <div class="partner-list">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
             <div class="partner-profile">
-              <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
+              <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link live-avatar-link">
                 <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="88" height="88" />
               </a>
               <div class="partner-name">{{ p.name }}</div>
@@ -39,7 +39,7 @@
         <div class="partner-list">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
             <div class="partner-profile">
-              <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link">
+              <a :href="p.url" target="_blank" rel="noopener noreferrer" class="avatar-link live-avatar-link">
                 <img class="partner-avatar" :src="p.avatar" :alt="p.name" loading="lazy" width="88" height="88" />
               </a>
               <div class="partner-name">{{ p.name }}</div>
