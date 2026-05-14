@@ -80,7 +80,7 @@ import H5Guarantee from '@/components/h5/H5Guarantee.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import collabBannerH5 from '@/assets/images/webp/collab-banner-h5-ui.webp'
-import deptHintH5 from '@/assets/images/png/dept-hint-h5.png'
+import deptHintH5 from '@/assets/images/webp/dept-hint-h5.webp'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS

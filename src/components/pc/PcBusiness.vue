@@ -92,7 +92,7 @@ import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import PcGuarantee from '@/components/pc/PcGuarantee.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
-import deptHintPc from '@/assets/images/png/dept-hint-pc.png'
+import deptHintPc from '@/assets/images/webp/dept-hint-pc.webp'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS
