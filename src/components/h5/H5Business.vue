@@ -44,7 +44,9 @@
         </div>
       </div>
 
-      <H5Guarantee embedded />
+      <section id="guarantee">
+        <H5Guarantee embedded />
+      </section>
 
       <div class="collab-banner-wrap">
         <img class="collab-banner" :src="collabBannerH5" alt="寻求代投资源合作" loading="lazy" />

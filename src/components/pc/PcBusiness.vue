@@ -60,7 +60,9 @@
         </div>
       </div>
 
-      <PcGuarantee embedded />
+      <section id="guarantee">
+        <PcGuarantee embedded />
+      </section>
 
       <div class="collab-banner-wrap">
         <img class="collab-banner" src="@/assets/images/webp/collab-banner-pc-ui.webp" alt="寻求代投资源合作背景" loading="lazy"
