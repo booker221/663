@@ -3,8 +3,20 @@
     <div class="section-card">
       <!-- 推广招商部 -->
       <div class="dept-block">
-        <div class="dept-label">
-          <div class="dept-label-text">推广招商部</div>
+        <div class="dept-header">
+          <div class="dept-label">
+            <div class="dept-label-text">推广招商部</div>
+          </div>
+          <div class="dept-label-hint-wrap">
+            <img
+              class="dept-label-hint"
+              :src="deptHintH5"
+              alt="点击头像获取 TG 联系方式"
+              loading="lazy"
+              width="416"
+              height="53"
+            />
+          </div>
         </div>
         <div class="partner-list" :class="{ 'partner-list--featured': shouldFeatureFirstCard(promotePartners) }">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
@@ -16,16 +28,25 @@
               <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" loading="lazy" width="36" height="36" />
               <div>{{ p.handle }}</div>
             </div>
-            <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)" @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
-              <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" loading="lazy" width="44" height="44" />
-            </div>
           </div>
         </div>
       </div>
       <!-- 支付通道招商部 -->
       <div class="dept-block">
-        <div class="dept-label">
-          <div class="dept-label-text">支付通道招商部</div>
+        <div class="dept-header">
+          <div class="dept-label">
+            <div class="dept-label-text">支付通道招商部</div>
+          </div>
+          <div class="dept-label-hint-wrap">
+            <img
+              class="dept-label-hint"
+              :src="deptHintH5"
+              alt="点击头像获取 TG 联系方式"
+              loading="lazy"
+              width="416"
+              height="53"
+            />
+          </div>
         </div>
         <div class="partner-list" :class="{ 'partner-list--featured': shouldFeatureFirstCard(thirdPartners) }">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
@@ -37,9 +58,7 @@
               <img class="icon-tg" src="@/assets/images/webp/icon-telegram.webp" alt="Telegram" />
               <div>{{ p.handle }}</div>
             </div>
-            <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)" @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
-              <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" loading="lazy" width="44" height="44" />
-            </div>
+         
           </div>
         </div>
       </div>
@@ -61,6 +80,7 @@ import H5Guarantee from '@/components/h5/H5Guarantee.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
 import collabBannerH5 from '@/assets/images/webp/collab-banner-h5-ui.webp'
+import deptHintH5 from '@/assets/images/png/dept-hint-h5.png'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS
@@ -91,18 +111,28 @@ function shouldFeatureFirstCard(partners) {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding: 18px 4px 4px;
   border: 0.5px solid rgba(255, 220, 105, 0.2);
   border-radius: 10px;
   background: linear-gradient(180deg, rgba(255, 220, 105, 0.16) 0%, rgba(255, 220, 105, 0) 49.7%, rgba(255, 220, 105, 0.16) 100%);
 }
 
+.dept-header {
+  display: grid;
+  width: 100%;
+  justify-items: center;
+}
+
+.dept-header > * {
+  grid-area: 1 / 1;
+}
+
 .dept-label {
   position: relative;
   width: 256px;
   height: 44px;
-  margin: -18px auto 0;
+  margin: -18px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -153,6 +183,23 @@ function shouldFeatureFirstCard(partners) {
   -webkit-background-clip: text;
   background-clip: text;
   white-space: nowrap;
+}
+
+.dept-label-hint-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  z-index: 1;
+}
+
+.dept-label-hint {
+  margin-top: 20px;
+  width: 208px;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 /* 联系人列表 */
@@ -235,25 +282,7 @@ function shouldFeatureFirstCard(partners) {
   max-width: 100%;
 }
 
-.partner-copy {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  display: grid;
-  place-items: center;
-}
-
-.icon-copy {
-  width: 44px;
-  height: 44px;
-}
-
+ 
 .collab-banner-wrap {
   width: 100%;
 }

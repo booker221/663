@@ -4,8 +4,20 @@
     <div class="section-card">
       <!-- 推广招商部 -->
       <div class="dept-block">
-        <div class="dept-label">
-          <div class="dept-label-text">{{ promoteDeptLabel }}</div>
+        <div class="dept-header">
+          <div class="dept-label">
+            <div class="dept-label-text">{{ promoteDeptLabel }}</div>
+          </div>
+          <div class="dept-label-hint-wrap">
+            <img
+              class="dept-label-hint"
+              :src="deptHintPc"
+              alt="点击头像获取 TG 联系方式"
+              loading="lazy"
+              width="464"
+              height="53"
+            />
+          </div>
         </div>
         <div class="partner-list">
           <div v-for="p in promotePartners" :key="p.handle" class="partner-card">
@@ -21,11 +33,6 @@
                   width="34" height="32" />
                 <div class="tg-content">{{ p.handle }}</div>
               </div>
-              <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)"
-                @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy"
-                  width="50" height="50" />
-              </div>
             </div>
           </div>
         </div>
@@ -33,8 +40,20 @@
 
       <!-- 支付通道招商部 -->
       <div class="dept-block">
-        <div class="dept-label">
-          <div class="dept-label-text">{{ thirdDeptLabel }}</div>
+        <div class="dept-header">
+          <div class="dept-label">
+            <div class="dept-label-text">{{ thirdDeptLabel }}</div>
+          </div>
+          <div class="dept-label-hint-wrap">
+            <img
+              class="dept-label-hint"
+              :src="deptHintPc"
+              alt="点击头像获取 TG 联系方式"
+              loading="lazy"
+              width="464"
+              height="53"
+            />
+          </div>
         </div>
         <div class="partner-list">
           <div v-for="p in thirdPartners" :key="p.handle" class="partner-card">
@@ -50,11 +69,7 @@
                   width="34" height="32" />
                 <div class="tg-content">{{ p.handle }}</div>
               </div>
-              <div class="partner-copy" role="button" tabindex="0" title="复制" @click="copy(p.handle)"
-                @keydown.enter.prevent="copy(p.handle)" @keydown.space.prevent="copy(p.handle)">
-                <img class="icon-copy" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="点击复制" loading="lazy"
-                  width="50" height="50" />
-              </div>
+            
             </div>
           </div>
         </div>
@@ -77,6 +92,7 @@ import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import PcGuarantee from '@/components/pc/PcGuarantee.vue'
 import { PROMOTE_PARTNERS, THIRD_PARTNERS } from '@/config/contacts.js'
 import { copyToClipboard } from '@/utils/copy.js'
+import deptHintPc from '@/assets/images/png/dept-hint-pc.png'
 
 const promotePartners = PROMOTE_PARTNERS
 const thirdPartners = THIRD_PARTNERS
@@ -108,12 +124,22 @@ function copy(text) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
   width: 100%;
   padding: 0 20px 20px;
   border: 1px solid rgba(255, 220, 105, 0.2);
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(255, 220, 105, 0.16) 0%, rgba(255, 220, 105, 0) 49.7%, rgba(255, 220, 105, 0.16) 100%);
+}
+
+.dept-header {
+  display: grid;
+  width: 100%;
+  justify-items: center;
+}
+
+.dept-header > * {
+  grid-area: 1 / 1;
 }
 
 .dept-label {
@@ -169,6 +195,23 @@ function copy(text) {
   -webkit-background-clip: text;
 }
 
+.dept-label-hint-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 34px;
+  z-index: 1;
+}
+
+.dept-label-hint {
+margin-top: 34px;
+  width: 232px;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
 /* 联系人横向列表 */
 .partner-list {
   display: flex;
@@ -183,7 +226,7 @@ function copy(text) {
   flex: 0 0 calc((100% - 32px) / 3);
   display: flex;
   min-width: 0;
-  height: 286px;
+  height: 230px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -283,31 +326,7 @@ function copy(text) {
   min-width: 0;
 }
 
-.partner-copy {
-  width: 50px;
-  height: 50px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: transform 0.2s, background 0.2s;
-}
-
-.partner-copy:hover {
-  background: transparent;
-  transform: translateY(-1px);
-}
-
-.icon-copy {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-}
-
+ 
 /* 合作横幅 */
 .collab-banner-wrap {
   width: 100%;
