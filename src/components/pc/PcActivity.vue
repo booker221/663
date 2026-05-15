@@ -16,42 +16,19 @@
         </div>
       </div>
 
-      <a v-if="officialChannelUrl" :href="officialChannelUrl" target="_blank" rel="noopener noreferrer"
-        class="tg-button-link">
-        <img class="tg-button-img" src="@/assets/images/webp/activity-tg-button-pc.webp" alt="TG官方频道" width="192"
-          height="48" />
-      </a>
-
       <div class="contact-row">
-        <div class="act-contact">
-          <div class="contact-label">商务合作：</div>
-          <div class="contact-handle" role="button" tabindex="0" title="点击复制"
-            @click="copyToClipboard(BUSINESS_CONTACT.handle)"
-            @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)"
-            @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
-            {{ BUSINESS_CONTACT.handle }}
-          </div>
-          <div class="copy-btn" role="button" tabindex="0" title="复制" @click="copyToClipboard(BUSINESS_CONTACT.handle)"
-            @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)"
-            @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
-            <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44" height="44" />
-          </div>
-        </div>
-
-        <div class="act-contact">
-          <div class="contact-label">TG招商群：</div>
-          <div class="contact-handle" role="button" tabindex="0" title="点击复制"
-            @click="copyToClipboard(TG_RECRUIT_GROUP.url)"
-            @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)"
-            @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
-            {{ TG_RECRUIT_GROUP.url }}
-          </div>
-          <div class="copy-btn" role="button" tabindex="0" title="复制" @click="copyToClipboard(TG_RECRUIT_GROUP.url)"
-            @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)"
-            @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
-            <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44" height="44" />
-          </div>
-        </div>
+        <a v-if="officialChannelUrl" :href="officialChannelUrl" target="_blank" rel="noopener noreferrer"
+          class="contact-button-link">
+          <img class="contact-button-img" :src="officialButtonImage" alt="TG官方频道" width="384" height="96" />
+        </a>
+        <a v-if="businessContactUrl" :href="businessContactUrl" target="_blank" rel="noopener noreferrer"
+          class="contact-button-link">
+          <img class="contact-button-img" :src="businessButtonImage" alt="TG商务合作" width="384" height="96" />
+        </a>
+        <a v-if="recruitGroupUrl" :href="recruitGroupUrl" target="_blank" rel="noopener noreferrer"
+          class="contact-button-link">
+          <img class="contact-button-img" :src="recruitButtonImage" alt="TG招商群" width="384" height="96" />
+        </a>
       </div>
 
       <img class="coin-icon" src="@/assets/images/webp/activity-coin-pc.webp" alt="" />
@@ -78,8 +55,9 @@ import { computed, ref } from 'vue'
 import PcSectionPanel from '@/components/pc/PcSectionPanel.vue'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
 import { activities, activityToHtml } from '@/stores/siteConfig.js'
-import { copyToClipboard } from '@/utils/copy.js'
-import cardBg from '@/assets/images/webp/activity-card-bg-pc.webp'
+import officialButtonImage from '@/assets/images/gif/activity-button-official.gif'
+import businessButtonImage from '@/assets/images/gif/activity-button-business.gif'
+import recruitButtonImage from '@/assets/images/gif/activity-button-recruit.gif'
 
 
 const MAX_ACTIVITY_CARDS = 6
@@ -101,6 +79,8 @@ const activityCards = computed(() => activities
 )
 
 const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
+const businessContactUrl = computed(() => (BUSINESS_CONTACT.url || '').trim())
+const recruitGroupUrl = computed(() => (TG_RECRUIT_GROUP.url || '').trim())
 
 const selectedActivityContent = computed(() => {
   if (!selectedActivity.value) return ''
@@ -133,7 +113,7 @@ function hasActivityData(card) {
   width: min(100%, 1140px);
   margin: 0 auto;
   padding: 73px  17px 34px;
-  padding-bottom: 150px;
+  padding-bottom: 100px;
   border: 1px solid #fbe59a;
   border-radius: 20px;
   background: linear-gradient(180deg, #2d2d2d 0%, #000 49.9%, #2d2d2d 100%);
@@ -247,100 +227,31 @@ function hasActivityData(card) {
   box-shadow: 0 0 18px rgba(255, 220, 105, 0.22);
 }
 
-.tg-button-link {
-  display: block;
-  width: 192px;
-  height: 48px;
-  margin-top: 28px;
-  transform-origin: center;
-  animation: tgButtonBreath 1.8s ease-in-out infinite;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.tg-button-link:hover {
-  opacity: 0.86;
-  animation-play-state: paused;
-  transform: scale(1.04);
-}
-
-.tg-button-img {
-  display: block;
-  width: 192px;
-  height: 48px;
-  object-fit: contain;
-}
-
-@keyframes tgButtonBreath {
-  0%,
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 0 rgba(255, 220, 105, 0));
-  }
-
-  50% {
-    transform: scale(1.045);
-    filter: drop-shadow(0 0 14px rgba(255, 220, 105, 0.45));
-  }
-}
-
 .contact-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
   width: 100%;
-  margin-top: 21px;
+  margin-top: 28px;
 }
 
-.act-contact {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0;
-  min-width: 0;
-  font-family: "PingFang SC", sans-serif;
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 24px;
-  white-space: nowrap;
+.contact-button-link {
+  display: block;
+  width: 192px;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
-.contact-label {
-  color: #fff;
-}
-
-.contact-handle {
-  color: #ffdc69;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.contact-handle:hover {
-  opacity: 0.82;
-}
-
-.copy-btn {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-}
-
-.copy-btn:hover {
+.contact-button-link:hover {
+  opacity: 0.88;
   transform: translateY(-1px);
 }
 
-.copy-icon {
+.contact-button-img {
   display: block;
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
+  width: 100%;
+  height: auto;
 }
 
 .coin-icon {

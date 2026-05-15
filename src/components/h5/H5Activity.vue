@@ -23,34 +23,21 @@
           </div>
         </div>
 
-        <!-- 底部人物 + 联系方式 -->
+        <!-- 底部联系按钮 -->
         <div class="contact-row">
-          <div class="contact-info">
-            <div v-if="officialChannelUrl" class="tg-button-link" role="button" tabindex="0"
-              @click="openOfficialChannel" @keydown.enter.prevent="openOfficialChannel"
-              @keydown.space.prevent="openOfficialChannel">
-              <img class="tg-button-img" src="@/assets/images/webp/activity-tg-button-pc.webp" alt="TG官方频道" />
-            </div>
-            <div class="act-contact">
-              <div class="contact-label">商务合作：</div>
-              <div class="contact-handle" role="button" tabindex="0" @click="copyToClipboard(BUSINESS_CONTACT.handle)"
-                @keydown.enter.prevent="copyToClipboard(BUSINESS_CONTACT.handle)"
-                @keydown.space.prevent="copyToClipboard(BUSINESS_CONTACT.handle)">
-                {{ BUSINESS_CONTACT.handle }}
-                <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44"
-                  height="44" />
-              </div>
-            </div>
-            <div class="act-contact">
-              <div class="contact-label">TG招商群：</div>
-              <div class="contact-handle" role="button" tabindex="0" @click="copyToClipboard(TG_RECRUIT_GROUP.url)"
-                @keydown.enter.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)"
-                @keydown.space.prevent="copyToClipboard(TG_RECRUIT_GROUP.url)">
-                {{ TG_RECRUIT_GROUP.url }}
-                <img class="copy-icon" src="@/assets/images/webp/icon-copy-gold-pc.webp" alt="复制" width="44"
-                  height="44" />
-              </div>
-            </div>
+          <div class="contact-buttons">
+            <a v-if="officialChannelUrl" :href="officialChannelUrl" target="_blank" rel="noopener noreferrer"
+              class="contact-button-link">
+              <img class="contact-button-img" :src="officialButtonImage" alt="TG官方频道" width="384" height="96" />
+            </a>
+            <a v-if="businessContactUrl" :href="businessContactUrl" target="_blank" rel="noopener noreferrer"
+              class="contact-button-link">
+              <img class="contact-button-img" :src="businessButtonImage" alt="TG商务合作" width="384" height="96" />
+            </a>
+            <a v-if="recruitGroupUrl" :href="recruitGroupUrl" target="_blank" rel="noopener noreferrer"
+              class="contact-button-link">
+              <img class="contact-button-img" :src="recruitButtonImage" alt="TG招商群" width="384" height="96" />
+            </a>
           </div>
         </div>
       </div>
@@ -75,17 +62,18 @@
 <script setup>
 import { ref, computed } from 'vue'
 import H5SectionPanel from '@/components/h5/H5SectionPanel.vue'
-import defaultActPerson from '@/assets/images/webp/activity-person-h5-new.webp'
 import { BUSINESS_CONTACT, TG_RECRUIT_GROUP, TG_OFFICIAL_CHANNEL } from '@/config/contacts.js'
-import { activities, images, activityToHtml } from '@/stores/siteConfig.js'
-import { copyToClipboard } from '@/utils/copy.js'
-import cardBg from '@/assets/images/webp/activity-card-bg-pc.webp'
+import { activities, activityToHtml } from '@/stores/siteConfig.js'
+import officialButtonImage from '@/assets/images/gif/activity-button-official.gif'
+import businessButtonImage from '@/assets/images/gif/activity-button-business.gif'
+import recruitButtonImage from '@/assets/images/gif/activity-button-recruit.gif'
 
 
 const MAX_ACTIVITY_CARDS = 6
 
-const activityPersonImage = computed(() => images.activity_person_h5 || defaultActPerson)
 const officialChannelUrl = computed(() => (TG_OFFICIAL_CHANNEL.url || '').trim())
+const businessContactUrl = computed(() => (BUSINESS_CONTACT.url || '').trim())
+const recruitGroupUrl = computed(() => (TG_RECRUIT_GROUP.url || '').trim())
 const selectedActivity = ref(null)
 
 const activityCards = computed(() => activities
@@ -124,11 +112,6 @@ function hasActivityData(card) {
       (item.label || '').trim() || (item.amount || '').trim()
     )
   })
-}
-
-const openOfficialChannel = () => {
-  if (!officialChannelUrl.value) return
-  window.open(officialChannelUrl.value, '_blank', 'noopener,noreferrer')
 }
 </script>
 
@@ -483,89 +466,36 @@ const openOfficialChannel = () => {
 
 .contact-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 10px;
   position: relative;
-  min-height: 130px;
+  min-height: auto;
 }
 
-.contact-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.act-contact {
+.contact-buttons {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  font-size: 16px;
-  font-weight: 500;
-  margin: 0 0 8px;
-  line-height: 22px;
-  word-break: break-all;
+  gap: 12px;
+  width: 100%;
+  padding: 4px 0 8px;
 }
 
-.contact-label {
-  font-family: PingFang SC;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  color: #fff;
-}
-
-.contact-handle {
-  font-family: PingFang SC;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  color: #FFDC69;
-  display: flex;
-  align-items: center;
-}
-
-.copy-icon {
-  width: 22px;
-  height: 22px;
-  margin-left: 4px;
+.contact-button-link {
+  display: block;
+  width: min(212px, calc(100% - 48px));
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
-.copy-icon:active {
-  opacity: 0.4;
+.contact-button-link:active {
+  opacity: 0.86;
+  transform: scale(0.98);
 }
 
-.tg-button-link {
-  display: inline-flex;
-  align-items: center;
-  margin-bottom: 8px;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.tg-button-link:active {
-  opacity: 0.7;
-}
-
-.tg-button-img {
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 99px;
-  font-size: 13px;
-  font-weight: 800;
-  animation: tgButtonBreath 1.8s ease-in-out infinite;
-}
-
-@keyframes tgButtonBreath {
-
-  0%,
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 0 rgba(255, 220, 105, 0));
-  }
-
-  50% {
-    transform: scale(1.045);
-    filter: drop-shadow(0 0 10px rgba(255, 220, 105, 0.42));
-  }
+.contact-button-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 </style>
