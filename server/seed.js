@@ -131,10 +131,6 @@ const seedData = [
     ]
   },
 
-  // =========== 服务体系 ===========
-  { key: 'service_title', value: '一对一专员', label: '服务标题', category: 'service' },
-  { key: 'service_desc', value: '除指派专员进行日常业务对接外，另委派项目负责人履行监督职能。该负责人统筹项目全局，具备快速决策与纠偏响应能力，旨在最大限度降低沟通成本，保障项目高质量交付，共创双赢局面。', label: '服务描述', category: 'service' },
-
   // =========== 担保认证 ===========
   {
     key: 'guarantee_accounts', label: '担保账户列表', category: 'guarantee',
@@ -169,7 +165,9 @@ const seedData = [
   { key: 'about_video_pc', value: '', label: 'PC关于我们视频', category: 'images' },
   { key: 'about_video_h5', value: '', label: 'H5关于我们视频', category: 'images' },
   { key: 'values_pc', value: '', label: 'PC核心价值观图片', category: 'images' },
-  { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' }
+  { key: 'values_h5', value: '', label: 'H5核心价值观图片', category: 'images' },
+  { key: 'service_card_bg_pc', value: '', label: 'PC服务体系整图', category: 'images' },
+  { key: 'service_card_bg_h5', value: '', label: 'H5服务体系整图', category: 'images' }
 ]
 
 try {

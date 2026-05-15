@@ -346,11 +346,14 @@
     <!-- ===== 服务体系 ===== -->
     <div class="section-panel" id="section-service">
       <h1 class="page-title">服务体系 <span class="current-site-badge" id="badge-service"></span></h1>
+      <p class="page-desc">上传服务体系整图后，前台将直接展示整张图片，无需再维护卡片文案。</p>
       <div class="card">
-        <div class="form-group"><label class="form-label">标题 <span class="form-hint-inline">（最多20字）</span></label><input class="form-input" id="service_title" maxlength="20" /></div>
-        <div class="form-group"><label class="form-label">描述 <span class="form-hint-inline">（最多300字）</span></label><textarea class="form-textarea" id="service_desc" rows="4" maxlength="300"></textarea></div>
+        <div class="card-title">🖼️ 服务体系整图</div>
+        <div class="image-grid">
+          <div class="form-group"><label class="form-label">PC端整图</label><div class="image-upload-area" onclick="triggerUpload('service_card_bg_pc',this)" id="upload-service_card_bg_pc"><div class="upload-text">📤 点击上传</div></div></div>
+          <div class="form-group"><label class="form-label">H5端整图</label><div class="image-upload-area" onclick="triggerUpload('service_card_bg_h5',this)" id="upload-service_card_bg_h5"><div class="upload-text">📤 点击上传</div></div></div>
+        </div>
       </div>
-      <div class="save-bar"><button class="btn btn-primary" onclick="saveService()">💾 保存</button></div>
     </div>
 
     <!-- ===== 担保认证 ===== -->
@@ -873,10 +876,9 @@ function populateAllForms() {
   const co=c.complaint_contact||{};setVal('complaint_name',co.name||'');setVal('complaint_handle',co.handle||'');setVal('complaint_url',co.url||'');setVal('complaint_avatar',co.avatar||'')
   renderPartnerList('promote',c.promote_partners||[]);renderPartnerList('third',c.third_partners||[])
   renderActivities(c.activities||[])
-  setVal('service_title',c.service_title||'');setVal('service_desc',c.service_desc||'')
   renderGuaranteeTags(c.guarantee_accounts||[])
   const sc=c.search_config||{};setVal('search_placeholder',sc.placeholder||'');setVal('search_defaultValue',sc.defaultValue||'');setVal('search_successText',sc.successText||'');setVal('search_failText',sc.failText||'')
-  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','about_cover_pc','about_cover_h5','values_pc','values_h5']
+  const imgKeys=['site_favicon','logo_main','logo_text','logo_domain','hero_banner_pc','hero_banner_h5','about_cover_pc','about_cover_h5','values_pc','values_h5','service_card_bg_pc','service_card_bg_h5']
   imgKeys.forEach(k=>renderUploadPreview(k,c[k],'image'))
   renderUploadPreview('about_video_pc',c.about_video_pc,'video',c.about_cover_pc||'')
   renderUploadPreview('about_video_h5',c.about_video_h5,'video',c.about_cover_h5||'')
@@ -1130,9 +1132,6 @@ async function saveActivities() {
   if (!r) return
   r.success ? showToast('已保存') : showToast(r.error, 'error')
 }
-
-// Service
-async function saveService(){const r=await apiPut('/api/admin/config'+siteQ(),{items:[{key:'service_title',value:getVal('service_title'),category:'service'},{key:'service_desc',value:getVal('service_desc'),category:'service'}]});if(!r)return;r.success?showToast('已保存'):showToast(r.error,'error')}
 
 // Guarantee
 let guaranteeAccounts=[]

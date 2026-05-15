@@ -5,6 +5,7 @@
 import express from 'express'
 import session from 'express-session'
 import cors from 'cors'
+import http from 'http'
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
@@ -530,7 +531,24 @@ app.delete('/api/admin/upload', requireSiteAccess, (req, res) => {
 app.use('/admin', express.static(path.join(__dirname, 'admin')))
 
 // ==================== 启动 ====================
-app.listen(PORT, () => {
+const server = http.createServer(app)
+
+server.on('error', (err) => {
+  if (err?.code === 'EADDRINUSE') {
+    console.error('')
+    console.error(`端口 ${PORT} 已被占用，后端服务未能启动。`)
+    console.error(`可先执行: lsof -nP -iTCP:${PORT} -sTCP:LISTEN`)
+    console.error('再结束旧进程: kill <PID>')
+    console.error(`或者临时换端口启动: PORT=${Number(PORT) + 1} npm run start`)
+    console.error('')
+    process.exit(1)
+  }
+
+  console.error('[server] 启动失败:', err)
+  process.exit(1)
+})
+
+server.on('listening', () => {
   const sites = getAllSites()
   console.log('')
   console.log('╔════════════════════════════════════════════════╗')
@@ -546,3 +564,5 @@ app.listen(PORT, () => {
   }
   console.log('')
 })
+
+server.listen(PORT)

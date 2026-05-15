@@ -234,12 +234,6 @@ function normalizeActivityEntry(activity = {}) {
  */
 export const activities = reactive([])
 
-// ========== 服务体系 ==========
-export const serviceInfo = reactive({
-  title: '',
-  desc: '',
-})
-
 // ========== 图片资源 ==========
 export const images = reactive({
   site_favicon: logoMain,
@@ -258,8 +252,6 @@ export const images = reactive({
   activity_person_h5: '',
   activity_bg_h5: '',
   activity_bg_pc: '',
-  service_person_pc: '',
-  service_person_h5: '',
   service_card_bg_pc: '',
   service_card_bg_h5: '',
 })
@@ -344,10 +336,6 @@ export async function loadRemoteConfig() {
   if (data.activities && Array.isArray(data.activities)) {
     activities.splice(0, activities.length, ...data.activities.map(normalizeActivityEntry))
   }
-
-  // 合并服务信息
-  if (data.service_title) serviceInfo.title = data.service_title
-  if (data.service_desc) serviceInfo.desc = data.service_desc
 
   // 合并图片（所有可配置的图片 key）
   Object.keys(images).forEach(key => {
