@@ -120,7 +120,7 @@ watch(
 .video-shell {
   position: relative;
   width: 100%;
-  height: 178px;
+  height: 100%;
   border: 1px solid #a9713f;
   border-radius: 12px;
   background: #eef4ff;
